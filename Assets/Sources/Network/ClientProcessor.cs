@@ -18,26 +18,31 @@ namespace Assets.Sources.Network
     {
         private ConcurrentQueue<byte[]> _queueBufferFromServer;
         private IPacketHandlerImplementation _packetHandlerImplementation;
-        private UdpClient _udpClient;
+        private TcpClient _tcpClient;
+        private NetworkStream _networkStream;
         private IPEndPoint _endPoint;
-        private bool _isSuccessConected = false;
 
-        public bool IsConnected => _isSuccessConected;
+        private event Action<int> _onReceivedNetworkBuffer;
+        private event Action<int> _onSendingNetworkBuffer;
+
+        public bool IsConnected => _tcpClient.Connected;
 
         private void Awake()
         {
             _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 27017);
-            _udpClient = new UdpClient();
+            _tcpClient = new TcpClient();
 
             try
             {
-                _udpClient.Connect(_endPoint);
-                _isSuccessConected = true;
+                _tcpClient.Connect(_endPoint);
+                _networkStream = _tcpClient.GetStream();
+
+                Task.Factory.StartNew(ReceivedPacketAsync);
             }
             catch (Exception exception)
             {
                 Debug.LogError(exception.Message);
-                if (_isSuccessConected)
+                if (IsConnected)
                     Terminate();
 
                 Destroy(gameObject);
@@ -45,6 +50,28 @@ namespace Assets.Sources.Network
 
             _queueBufferFromServer = new ConcurrentQueue<byte[]>();
             _packetHandlerImplementation = new PacketImplentation();
+        }
+
+        private void OnEnable()
+        {
+            _onReceivedNetworkBuffer += ClientProcessorPrivateHandlerReceivedNetworkBuffer;
+            _onSendingNetworkBuffer += ClientProcessorPrivateHandlerSendingNetworkBuffer;
+        }
+
+        private void OnDisable()
+        {
+            _onReceivedNetworkBuffer -= ClientProcessorPrivateHandlerReceivedNetworkBuffer;
+            _onSendingNetworkBuffer -= ClientProcessorPrivateHandlerSendingNetworkBuffer;
+        }
+
+        private void ClientProcessorPrivateHandlerSendingNetworkBuffer(int obj)
+        {
+            Debug.Log($"[{nameof(ClientProcessorPrivateHandlerSendingNetworkBuffer)}]: size packet - {obj}");
+        }
+
+        private void ClientProcessorPrivateHandlerReceivedNetworkBuffer(int obj)
+        {
+            Debug.Log($"[{nameof(ClientProcessorPrivateHandlerReceivedNetworkBuffer)}]: size packet - {obj}");
         }
 
         private void FixedUpdate()
@@ -65,7 +92,7 @@ namespace Assets.Sources.Network
 
         public async Task SendPacketAsync(NetworkPacket packet)
         {
-            if (!_isSuccessConected)
+            if (!IsConnected)
                 return;
 
             byte[] buffer = packet.GetBuffer();
@@ -79,14 +106,17 @@ namespace Assets.Sources.Network
             data.AddRange(BitConverter.GetBytes((short)size));
             data.AddRange(buffer);
 
+            _onSendingNetworkBuffer?.Invoke(data.Count);
+
             try
             {
-                await _udpClient.SendAsync(data.ToArray(), data.Count);
+                await _networkStream.WriteAsync(data.ToArray(), offset: 0, data.Count);
+                await _networkStream.FlushAsync();
             }
             catch (Exception exception)
             {
                 Debug.LogError(exception.Message);
-                if (_isSuccessConected)
+                if (IsConnected)
                     Terminate();
 
                 Destroy(gameObject);
@@ -117,29 +147,30 @@ namespace Assets.Sources.Network
                 if (countPackets != packetLenght - sizeof(short))
                     throw null;
 
-                Task.Factory.StartNew(() => _packetHandler.Execute(buffer.BuildBufferToPacket(extraBytes: 0), this));
+                _onReceivedNetworkBuffer?.Invoke(buffer.Length);
+                _queueBufferFromServer.Enqueue(buffer);
             }
             catch (Exception exception)
             {
                 Debug.Log(exception.Message);
 
-                if (_isSuccessConected)
+                if (IsConnected)
                     Terminate();
             }
         }
 
         private void OnApplicationQuit()
         {
-            if (_isSuccessConected)
+            if (IsConnected)
                 Terminate();
         }
 
         private void Terminate()
         {
-            _udpClient.Close();
-            _udpClient.Dispose();
-
-            _isSuccessConected = false;
+            _networkStream.Close();
+            _networkStream.Dispose();
+            _tcpClient.Close();
+            _tcpClient.Dispose();
         }
     }
 }
