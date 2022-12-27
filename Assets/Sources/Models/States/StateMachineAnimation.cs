@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using Assets.Sources.Interfaces;
 using Assets.Sources.Models.States.StateAnimations;
 
@@ -21,21 +20,6 @@ namespace Assets.Sources.Models.States
         {
             _stateAnimation = stateAnimation;
             _stateAnimation.ExecuteAnimation(_animator);
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Q))
-                SetAnimation(new StateAnimationRun());
-
-            if (Input.GetKeyDown(KeyCode.W))
-                SetAnimation(new StateAnimationCastSpell1());
-
-            if (Input.GetKeyDown(KeyCode.E))
-                SetAnimation(new StateAnimationCastSpell2());
-
-            if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.E))
-                SetAnimation(new StateAnimationIdle());
         }
     }
 }

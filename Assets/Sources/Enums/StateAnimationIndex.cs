@@ -7,9 +7,8 @@
         AnimationCastSpell1,
         AnimationCastSpell2,
         AnimationDeath,
-        AnimationAttack1,
-        AnimationAttack2,
-        AnimationAttack3,
-        AnimationAttack4
+        AnimationBaseAttack,
+        AnimationMagicAttack1,
+        AnimationMagicAttack2
     }
 }

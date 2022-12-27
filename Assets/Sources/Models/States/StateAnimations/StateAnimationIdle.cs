@@ -7,6 +7,7 @@ namespace Assets.Sources.Models.States.StateAnimations
     public sealed class StateAnimationIdle : IStateAnimation
     {
         public StateAnimationIndex AnimationIndex => StateAnimationIndex.AnimationIdle;
+        public bool KnocksDownOtherAnimation => true;
 
         public void ExecuteAnimation(Animator animator)
         {

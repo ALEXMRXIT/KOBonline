@@ -7,6 +7,7 @@ namespace Assets.Sources.Models.States.StateAnimations
     public sealed class StateAnimationCastSpell1 : IStateAnimation
     {
         public StateAnimationIndex AnimationIndex => StateAnimationIndex.AnimationCastSpell1;
+        public bool KnocksDownOtherAnimation => true;
 
         public void ExecuteAnimation(Animator animator)
         {
