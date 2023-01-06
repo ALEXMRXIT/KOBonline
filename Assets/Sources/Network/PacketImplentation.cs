@@ -1,14 +1,33 @@
 ﻿using System;
-using Assets.Sources.Interfaces;
 using Assets.Sources.Models;
+using Assets.Sources.Interfaces;
+using System.Collections.Generic;
+using Assets.Sources.Network.InPacket;
 
 namespace Assets.Sources.Network
 {
-    public sealed class PacketImplentation : IPacketHandlerImplementation
+    public sealed class PacketImplentation
     {
-        public PacketImplementCodeResult ExecuteImplement(INetworkPacket networkPacket)
+        public PacketImplentation()
         {
-            throw new NotImplementedException();
+            _packetHandlerServices = new Dictionary<byte, Type>();
+
+            _packetHandlerServices.Add(0x00, typeof(MessageServerReceived));
+        }
+
+        private readonly Dictionary<byte, Type> _packetHandlerServices;
+
+        public PacketImplementCodeResult ExecuteImplement
+            (NetworkPacket networkPacket, ClientProcessor clientProcessor)
+        {
+            NetworkBasePacket basePacket = (NetworkBasePacket)Activator.CreateInstance(
+                _packetHandlerServices[networkPacket.FirstOpcode], networkPacket, clientProcessor);
+
+            if (basePacket == null)
+                throw new ArgumentNullException(nameof(basePacket),
+                    $"Packet with opcode: {networkPacket.FirstOpcode:X2} doesn't exist in the dictionary.");
+
+            return basePacket.RunImpl();
         }
     }
 }

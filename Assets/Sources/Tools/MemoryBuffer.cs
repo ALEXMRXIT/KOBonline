@@ -142,6 +142,14 @@ namespace Assets.Sources.Tools
             return source = Copy(source, 0, new byte[source.Length + additionalLength], 0, source.Length);
         }
 
+        public static unsafe byte[] InsertIndexBuffer(byte[] buffer, int index, byte value)
+        {
+            fixed (byte* ptrBuffer = buffer)
+                *(ptrBuffer + index) = value;
+
+            return buffer;
+        }
+
         public static string ToString(byte[] buffer)
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();

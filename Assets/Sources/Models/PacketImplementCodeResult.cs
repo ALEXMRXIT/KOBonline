@@ -4,7 +4,7 @@
 
 namespace Assets.Sources.Models
 {
-    public readonly struct PacketImplementCodeResult
+    public struct PacketImplementCodeResult
     {
         public PacketImplementCodeResult(int errorCode, string message, Exception? exception = default)
         {
@@ -13,8 +13,8 @@ namespace Assets.Sources.Models
             InnerException = exception;
         }
 
-        public readonly int ErrorCode;
-        public readonly string ErrorMessage;
-        public readonly Exception? InnerException;
+        public int ErrorCode;
+        public string ErrorMessage;
+        public Exception? InnerException;
     }
 }

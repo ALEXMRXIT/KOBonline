@@ -5,7 +5,7 @@ using Assets.Sources.Interfaces;
 
 namespace Assets.Sources.Network
 {
-    public struct NetworkPacket : INetworkPacket
+    public struct NetworkPacket
     {
         private const int DefaultOverflowValue = 128;
         private byte[] _buffer;

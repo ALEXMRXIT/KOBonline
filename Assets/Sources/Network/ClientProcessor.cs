@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using UnityEngine;
 using System.Net.Sockets;
+using Assets.Sources.Enums;
 using Assets.Sources.Tools;
 using Assets.Sources.Models;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Assets.Sources.Network
     public sealed class ClientProcessor : MonoBehaviour, INetworkProcessor
     {
         private ConcurrentQueue<byte[]> _queueBufferFromServer;
-        private IPacketHandlerImplementation _packetHandlerImplementation;
+        private PacketImplentation _packetHandlerImplementation;
         private TcpClient _tcpClient;
         private NetworkStream _networkStream;
         private IPEndPoint _endPoint;
@@ -27,8 +28,11 @@ namespace Assets.Sources.Network
 
         public bool IsConnected => _tcpClient.Connected;
 
+        public static INetworkProcessor Instance;
+
         private void Awake()
         {
+            Instance = this;
             _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 27017);
             _tcpClient = new TcpClient();
 
@@ -54,16 +58,21 @@ namespace Assets.Sources.Network
 
         private void OnEnable()
         {
+#if UNITY_EDITOR
             _onReceivedNetworkBuffer += ClientProcessorPrivateHandlerReceivedNetworkBuffer;
             _onSendingNetworkBuffer += ClientProcessorPrivateHandlerSendingNetworkBuffer;
+#endif
         }
 
         private void OnDisable()
         {
+#if UNITY_EDITOR
             _onReceivedNetworkBuffer -= ClientProcessorPrivateHandlerReceivedNetworkBuffer;
             _onSendingNetworkBuffer -= ClientProcessorPrivateHandlerSendingNetworkBuffer;
+#endif
         }
 
+#if UNITY_EDITOR
         private void ClientProcessorPrivateHandlerSendingNetworkBuffer(int obj)
         {
             Debug.Log($"[{nameof(ClientProcessorPrivateHandlerSendingNetworkBuffer)}]: size packet - {obj}");
@@ -73,13 +82,14 @@ namespace Assets.Sources.Network
         {
             Debug.Log($"[{nameof(ClientProcessorPrivateHandlerReceivedNetworkBuffer)}]: size packet - {obj}");
         }
+#endif
 
         private void FixedUpdate()
         {
             if (_queueBufferFromServer.TryDequeue(out byte[] buffer))
             {
                  PacketImplementCodeResult packetImplementCodeResult =
-                    _packetHandlerImplementation.ExecuteImplement(buffer.BufferToNetworkPacket(extraBytes: 0));
+                    _packetHandlerImplementation.ExecuteImplement(buffer.BufferToNetworkPacket(extraBytes: 0), this);
 
                 if (packetImplementCodeResult.InnerException != null)
                 {
@@ -90,36 +100,31 @@ namespace Assets.Sources.Network
             }
         }
 
-        public async Task SendPacketAsync(NetworkPacket packet)
+        public async Task SendPacketAsync(NetworkPacket packet, PacketImportance packetImportance = PacketImportance.None)
         {
-            if (!IsConnected)
-                return;
-
             byte[] buffer = packet.GetBuffer();
 
-            if (buffer == null || buffer.Length == 0)
-                return;
+            int lengthPacket = sizeof(short);
+            int sizeAllPacket = buffer.Length + lengthPacket + sizeof(byte);
 
-            int size = buffer.Length + sizeof(short);
-            List<byte> data = new List<byte>(capacity: size);
+            byte[] data = new byte[sizeAllPacket];
+            data = MemoryBuffer.InsertIndexBuffer(data, index: 0, (byte)packetImportance);
+            MemoryBuffer.Copy(BitConverter.GetBytes((short)sizeAllPacket), srcOffset: 0, data, sizeof(byte), sizeof(short));
+            MemoryBuffer.Copy(buffer, srcOffset: 0, data, sizeAllPacket - buffer.Length, sizeAllPacket);
 
-            data.AddRange(BitConverter.GetBytes((short)size));
-            data.AddRange(buffer);
-
-            _onSendingNetworkBuffer?.Invoke(data.Count);
+#if UNITY_EDITOR
+            _onSendingNetworkBuffer?.Invoke(data.Length);
+#endif
 
             try
             {
-                await _networkStream.WriteAsync(data.ToArray(), offset: 0, data.Count);
+                await _networkStream.WriteAsync(data, offset: 0, data.Length);
                 await _networkStream.FlushAsync();
             }
-            catch (Exception exception)
+            catch
             {
-                Debug.LogError(exception.Message);
                 if (IsConnected)
                     Terminate();
-
-                Destroy(gameObject);
             }
         }
 
@@ -147,7 +152,10 @@ namespace Assets.Sources.Network
                 if (countPackets != packetLenght - sizeof(short))
                     throw null;
 
+#if UNITY_EDITOR
                 _onReceivedNetworkBuffer?.Invoke(buffer.Length);
+#endif
+
                 _queueBufferFromServer.Enqueue(buffer);
             }
             catch (Exception exception)

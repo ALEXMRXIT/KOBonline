@@ -1,9 +1,11 @@
 ﻿using Assets.Sources.Models;
+using Assets.Sources.Network;
 
 namespace Assets.Sources.Interfaces
 {
     public interface IPacketHandlerImplementation
     {
-        public PacketImplementCodeResult ExecuteImplement(INetworkPacket networkPacket);
+        public PacketImplementCodeResult ExecuteImplement
+            (NetworkPacket networkPacket, ClientProcessor clientProcessor);
     }
 }
