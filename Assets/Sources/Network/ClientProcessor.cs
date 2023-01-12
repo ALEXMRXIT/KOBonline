@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using UnityEngine;
+using System.Threading;
 using System.Net.Sockets;
 using Assets.Sources.Enums;
 using Assets.Sources.Tools;
@@ -8,6 +9,7 @@ using Assets.Sources.Models;
 using System.Threading.Tasks;
 using Assets.Sources.Interfaces;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using System.Collections.Concurrent;
 
 #pragma warning disable IDE0090
@@ -22,6 +24,7 @@ namespace Assets.Sources.Network
         private TcpClient _tcpClient;
         private NetworkStream _networkStream;
         private IPEndPoint _endPoint;
+        private CancellationTokenSource _cancelationTokenSources;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
@@ -29,10 +32,15 @@ namespace Assets.Sources.Network
         public bool IsConnected => _tcpClient.Connected;
 
         public static INetworkProcessor Instance;
+        public static GameSession ClientSession;
 
         private void Awake()
         {
             Instance = this;
+            ClientSession = new GameSession(SessionStatus.SessionAuthorization);
+            ClientSession.OnSessionChange += ClientSessionOnSessionChange;
+            _cancelationTokenSources = new CancellationTokenSource();
+
             _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 27017);
             _tcpClient = new TcpClient();
 
@@ -41,7 +49,7 @@ namespace Assets.Sources.Network
                 _tcpClient.Connect(_endPoint);
                 _networkStream = _tcpClient.GetStream();
 
-                Task.Factory.StartNew(ReceivedPacketAsync);
+                Task.Factory.StartNew(() => ReceivedPacketAsync(_cancelationTokenSources), _cancelationTokenSources.Token);
             }
             catch (Exception exception)
             {
@@ -54,6 +62,20 @@ namespace Assets.Sources.Network
 
             _queueBufferFromServer = new ConcurrentQueue<byte[]>();
             _packetHandlerImplementation = new PacketImplentation();
+        }
+
+        private void ClientSessionOnSessionChange(SessionStatus obj)
+        {
+#if UNITY_EDITOR
+            Debug.Log($"Session change {Enum.GetName(typeof(SessionStatus), obj)}");
+#endif
+
+            switch (obj)
+            {
+                case SessionStatus.SessionGameMenu:
+                    SceneManager.LoadScene("Main");
+                    break;
+            }
         }
 
         private void OnEnable()
@@ -128,42 +150,56 @@ namespace Assets.Sources.Network
             }
         }
 
-        private async Task ReceivedPacketAsync()
+        private async Task ReceivedPacketAsync(CancellationTokenSource cancellationTokenSource)
         {
-            try
+            while (true)
             {
-                byte[] buffer = new byte[sizeof(short)];
-                int bytesRead = await _networkStream.ReadAsync(buffer, offset: 0, buffer.Length);
-
-                if (bytesRead == 0 || bytesRead != sizeof(short))
-                    throw null;
-
-                short packetLenght = BitConverter.ToInt16(buffer, startIndex: 0);
-                buffer = new byte[packetLenght - sizeof(short)];
-
-                int countPackets = 0;
-                while (countPackets < (packetLenght - sizeof(short)))
+                try
                 {
-                    bytesRead = await _networkStream.ReadAsync
-                        (buffer, countPackets, buffer.Length - countPackets);
-                    countPackets += bytesRead;
-                }
+                    byte[] buffer = new byte[sizeof(short)];
+                    int bytesRead = await _networkStream.ReadAsync(buffer, offset: 0, buffer.Length);
 
-                if (countPackets != packetLenght - sizeof(short))
-                    throw null;
+                    if (bytesRead == 0 || bytesRead != sizeof(short))
+                        throw null;
+
+                    short packetLenght = BitConverter.ToInt16(buffer, startIndex: 0);
+                    buffer = new byte[packetLenght - sizeof(short)];
+
+                    int countPackets = 0;
+                    while (countPackets < (packetLenght - sizeof(short)))
+                    {
+                        bytesRead = await _networkStream.ReadAsync
+                            (buffer, countPackets, buffer.Length - countPackets);
+                        countPackets += bytesRead;
+                    }
+
+                    if (countPackets != packetLenght - sizeof(short))
+                        throw null;
 
 #if UNITY_EDITOR
-                _onReceivedNetworkBuffer?.Invoke(buffer.Length);
+                    _onReceivedNetworkBuffer?.Invoke(buffer.Length);
 #endif
 
-                _queueBufferFromServer.Enqueue(buffer);
-            }
-            catch (Exception exception)
-            {
-                Debug.Log(exception.Message);
+                    _queueBufferFromServer.Enqueue(buffer);
+                }
+                catch (OperationCanceledException canceledException)
+                {
+                    Debug.Log(canceledException.Message);
 
-                if (IsConnected)
-                    Terminate();
+                    if (IsConnected)
+                        Terminate();
+
+                    return;
+                }
+                catch (Exception exception)
+                {
+                    Debug.Log(exception.Message);
+
+                    if (IsConnected)
+                        Terminate();
+                }
+
+                cancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
         }
 
@@ -171,6 +207,8 @@ namespace Assets.Sources.Network
         {
             if (IsConnected)
                 Terminate();
+
+            ClientSession.OnSessionChange -= ClientSessionOnSessionChange;
         }
 
         private void Terminate()
@@ -179,6 +217,7 @@ namespace Assets.Sources.Network
             _networkStream.Dispose();
             _tcpClient.Close();
             _tcpClient.Dispose();
+            _cancelationTokenSources.Cancel();
         }
     }
 }

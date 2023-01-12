@@ -5,6 +5,7 @@ using Assets.Sources.Models;
 using Assets.Sources.Network;
 using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Sources.Network.InPacket
 {
@@ -50,6 +51,9 @@ namespace Assets.Sources.Network.InPacket
                         break;
                     case MessageId.ReasonUserOrPassWrong:
                         _authLogic.ShowErrorMessage($"Invalid username or password, please try again later.");
+                        break;
+                    case MessageId.MessageCharacterCreate:
+                        CharacterLoadedWithServer.Instance.EnableUICreateCharacter();
                         break;
                 }
             }

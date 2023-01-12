@@ -13,6 +13,7 @@ namespace Assets.Sources.Network
             _packetHandlerServices = new Dictionary<byte, Type>();
 
             _packetHandlerServices.Add(0x00, typeof(MessageServerReceived));
+            _packetHandlerServices.Add(0x01, typeof(SessionChanged));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

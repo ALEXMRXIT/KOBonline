@@ -33,9 +33,14 @@ namespace Assets.Sources.MechanicUI
         private void ButtonHandleAuth(AuthType authType)
         {
             if (!ValidInput(_loginInput.text, _passwordInput.text))
+            {
+                _passwordInput.text = string.Empty;
                 return;
+            }
 
             _networkProcessor.SendPacketAsync(AuthClient.AuthToPacket(_loginInput.text, _passwordInput.text, authType));
+            _passwordInput.text = string.Empty;
+            _errorText.text = string.Empty;
         }
 
         private bool ValidInput(string login, string password)
