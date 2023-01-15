@@ -14,6 +14,7 @@ namespace Assets.Sources.Network
 
             _packetHandlerServices.Add(0x00, typeof(MessageServerReceived));
             _packetHandlerServices.Add(0x01, typeof(SessionChanged));
+            _packetHandlerServices.Add(0x02, typeof(SelectableCharacter));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

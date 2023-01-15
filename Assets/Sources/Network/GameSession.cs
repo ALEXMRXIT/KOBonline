@@ -30,7 +30,7 @@ namespace Assets.Sources.Network
             return $"Session: {Enum.GetName(typeof(SessionStatus), _sessionStatus)}";
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             return obj is GameSession;
         }

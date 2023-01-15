@@ -1,5 +1,6 @@
 using UnityEngine;
 using Assets.Sources.Network;
+using Assets.Sources.Interfaces;
 using Assets.Sources.Network.OutPacket;
 
 namespace Assets.Sources.Models
@@ -8,6 +9,7 @@ namespace Assets.Sources.Models
     {
         [SerializeField] private GameObject _blockPanel;
         [SerializeField] private GameObject _createCharacterPanel;
+        [SerializeField] private GameObject _gameRunPanel;
         private INetworkProcessor _clientProcessor;
 
         public static CharacterLoadedWithServer Instance;
@@ -26,6 +28,17 @@ namespace Assets.Sources.Models
 
             _blockPanel.SetActive(false);
             _createCharacterPanel.SetActive(true);
+        }
+
+        public void EnableUIGameRun()
+        {
+            Debug.Log($"{nameof(EnableUIGameRun)} enable ui.");
+
+            _blockPanel.SetActive(false);
+            if (_createCharacterPanel.activeSelf)
+                _createCharacterPanel.SetActive(false);
+
+            _gameRunPanel.SetActive(true);
         }
     }
 }

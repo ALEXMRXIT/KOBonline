@@ -2,9 +2,12 @@
 using System.Threading.Tasks;
 using Assets.Sources.Network;
 
-public interface INetworkProcessor
+namespace Assets.Sources.Interfaces
 {
-    public bool IsConnected { get; }
-    public Task SendPacketAsync(NetworkPacket packet,
-        PacketImportance packetImportance = PacketImportance.None);
+    public interface INetworkProcessor
+    {
+        public bool IsConnected { get; }
+        public Task SendPacketAsync(NetworkPacket packet,
+            PacketImportance packetImportance = PacketImportance.None);
+    }
 }

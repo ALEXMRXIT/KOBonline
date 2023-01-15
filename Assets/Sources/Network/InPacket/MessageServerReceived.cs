@@ -14,17 +14,23 @@ namespace Assets.Sources.Network.InPacket
         public MessageServerReceived(NetworkPacket networkPacket, ClientProcessor clientProcessor)
         {
             _messageType = networkPacket.ReadByte();
+            _client = clientProcessor;
 
             if (_messageType == 0x00)
                 _message = networkPacket.ReadString();
 
-            _authLogic = AuthLogic.Instance;
+            if (clientProcessor.ClientMenu == ClientCurrentMenu.Login)
+                _authLogic = AuthLogic.Instance;
+            else if (clientProcessor.ClientMenu == ClientCurrentMenu.Create)
+                _customerCreateLogic = CustomerCreateLogic.Instance;
         }
 
         private readonly byte _messageType;
         private readonly string _message;
         private readonly ClientProcessor _client;
         private readonly AuthLogic _authLogic;
+        private readonly CustomerCreateLogic _customerCreateLogic;
+        private delegate void CallBalckMessageError(string message);
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -33,6 +39,12 @@ namespace Assets.Sources.Network.InPacket
 #endif
 
             PacketImplementCodeResult codeError = new PacketImplementCodeResult();
+            CallBalckMessageError messageError = null;
+
+            if (_client.ClientMenu == ClientCurrentMenu.Login)
+                messageError = _authLogic.ShowErrorMessage;
+            else if (_client.ClientMenu == ClientCurrentMenu.Create)
+                messageError = _customerCreateLogic.ShowErrorMessage;
 
             try
             {
@@ -41,19 +53,42 @@ namespace Assets.Sources.Network.InPacket
                     case MessageId.MessageSimpleMessage:
                         break;
                     case MessageId.MessageLoginIsEmpty:
-                        _authLogic.ShowErrorMessage($"Login cannot be less than 6 characters long.");
+                        messageError($"Login cannot be less than 6 characters long.");
                         break;
                     case MessageId.MessagePasswordIsEmpty:
-                        _authLogic.ShowErrorMessage($"Password cannot be less than 4 characters long.");
+                        messageError($"Password cannot be less than 4 characters long.");
                         break;
                     case MessageId.MessageOperationFail:
-                        _authLogic.ShowErrorMessage($"Operation failed, please try again later.");
+                        messageError($"Operation failed, please try again later.");
                         break;
                     case MessageId.ReasonUserOrPassWrong:
-                        _authLogic.ShowErrorMessage($"Invalid username or password, please try again later.");
+                        messageError($"Invalid username or password, please try again later.");
                         break;
                     case MessageId.MessageCharacterCreate:
+                        _client.ClientMenu = ClientCurrentMenu.Create;
                         CharacterLoadedWithServer.Instance.EnableUICreateCharacter();
+                        break;
+                    case MessageId.MessageCharacterNameIsEmpty:
+                        messageError($"Name cannot be empty.");
+                        break;
+                    case MessageId.MessageNameExists:
+                        messageError("This name already exists, please use another one.");
+                        break;
+                    case MessageId.MessageInvalidNamePattern:
+                        messageError("Invalid characters were found in your name. You can only use letters and numbers.");
+                        break;
+                    case MessageId.MessageBlockCreateCharacter:
+                        messageError("At this point in time, it is not allowed to create characters. Contact technical support.");
+                        break;
+                    case MessageId.MessageMaxCharacter:
+                        messageError("You have reached the maximum character limit.");
+                        break;
+                    case MessageId.MessageIncorrectName:
+                        messageError("Your name is not available.");
+                        break;
+                    case MessageId.MessageGameRun:
+                        _client.ClientMenu = ClientCurrentMenu.Game;
+                        CharacterLoadedWithServer.Instance.EnableUIGameRun();
                         break;
                 }
             }

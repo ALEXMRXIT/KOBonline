@@ -16,6 +16,14 @@ namespace Assets.Sources.Models
             _stateMachineAnimation = GetComponent<StateMachineAnimation>();
         }
 
+        public void CheckGettingComponent()
+        {
+            if (_stateMachineAnimation == null)
+                _stateMachineAnimation = GetComponent<StateMachineAnimation>();
+
+            _stateMachineAnimation.CheckGettingComponent();
+        }
+
         public void SetCharacterState(IStateAnimation stateAnimation)
         {
             if (stateAnimation is StateAnimationAttack || _isAttacked)

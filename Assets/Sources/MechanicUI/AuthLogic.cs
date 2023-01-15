@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Assets.Sources.Enums;
 using Assets.Sources.Network;
+using Assets.Sources.Interfaces;
 using Assets.Sources.Network.OutPacket;
 
 namespace Assets.Sources.MechanicUI

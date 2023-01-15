@@ -25,11 +25,17 @@ namespace Assets.Sources.Network
         private NetworkStream _networkStream;
         private IPEndPoint _endPoint;
         private CancellationTokenSource _cancelationTokenSources;
+        private ClientCurrentMenu _clientCurrentMenu = ClientCurrentMenu.Login;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
 
         public bool IsConnected => _tcpClient.Connected;
+        public ClientCurrentMenu ClientMenu
+        {
+            get => _clientCurrentMenu;
+            set => _clientCurrentMenu = value;
+        }
 
         public static INetworkProcessor Instance;
         public static GameSession ClientSession;
