@@ -7,6 +7,10 @@ namespace Assets.Sources.MechanicUI
     {
         [SerializeField] private Button _fightButton;
         [SerializeField] private Button _chooseModeButton;
+        [SerializeField] private Button _pvpOnlyButton;
+        [SerializeField] private Button _singleOnlyButton;
+
+        [Space]
         [SerializeField] private GameObject _panelChooseMode;
 
         public static ModeFightUI Instance;
@@ -24,12 +28,20 @@ namespace Assets.Sources.MechanicUI
 
         private void FightButtonHandler()
         {
-            Debug.Log($"Click fight!");
         }
 
         private void ChooseModeButtonHandler()
         {
-            Debug.Log($"Click choose mode.");
+            _panelChooseMode.SetActive(!_panelChooseMode.activeSelf);
+        }
+
+        private void PVPOnlyButtonHandler()
+        {
+            _panelChooseMode.SetActive(!_panelChooseMode.activeSelf);
+        }
+
+        private void SingleOnlyButtonHandler()
+        {
             _panelChooseMode.SetActive(!_panelChooseMode.activeSelf);
         }
     }
