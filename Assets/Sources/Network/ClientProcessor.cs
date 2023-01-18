@@ -81,6 +81,9 @@ namespace Assets.Sources.Network
                 case SessionStatus.SessionGameMenu:
                     SceneManager.LoadScene("Main");
                     break;
+                case SessionStatus.SessionGameFighting:
+                    SceneManager.LoadScene("Arena1");
+                    break;
             }
         }
 
