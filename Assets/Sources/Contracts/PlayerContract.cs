@@ -11,6 +11,7 @@ namespace Assets.Sources.Contracts
         public int Health { get; set; }
         public int Mana { get; set; }
         public PlayerSex Sex { get; set; }
+        public int PlayerRank { get; set; }
         public int Strength { get; set; }
         public int Agility { get; set; }
         public int Intelligence { get; set; }
