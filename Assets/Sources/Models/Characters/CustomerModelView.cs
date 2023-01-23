@@ -3,7 +3,9 @@ using UnityEngine;
 using System.Collections;
 using Assets.Sources.Enums;
 using Assets.Sources.Models;
+using Assets.Sources.Network;
 using Assets.Sources.Contracts;
+using Assets.Sources.Interfaces;
 using System.Collections.Generic;
 using Assets.Sources.Models.States.StateAnimations;
 
@@ -90,7 +92,7 @@ namespace Assets.Sources.Models.Characters
             return this;
         }
 
-        public void ShowModel()
+        public GameObject ShowModel()
         {
             PoolModelObject poolModelObject = _poolObject.GetModelByIdentifier
                     <ParticleSystem>(PoolObjecPoolObjectIdentifier.EffectSpawnCharacter);
@@ -99,10 +101,10 @@ namespace Assets.Sources.Models.Characters
 
             StartCoroutine(ParticleDurationOff(particleSystem.main.duration, poolModelObject));
 
-            ShowModelExecute();
+            return ShowModelExecute();
         }
 
-        private void ShowModelExecute()
+        private GameObject ShowModelExecute()
         {
             int index = 0;
 
@@ -122,11 +124,14 @@ namespace Assets.Sources.Models.Characters
                     break;
             }
 
-            _tempCharacter[_currentActiveModel]._playerModel.SetActive(false);
-            _tempCharacter[index]._playerModel.SetActive(true);
-            _tempCharacter[index]._characterState.SetCharacterState(new StateAnimationIdle());
+            GameObject model = _tempCharacter[index]._playerModel;
 
+            _tempCharacter[_currentActiveModel]._playerModel.SetActive(false);
+            model.SetActive(true);
+            _tempCharacter[index]._characterState.SetCharacterState(new StateAnimationIdle());
             _currentActiveModel = index;
+
+            return model;
         }
 
         private IEnumerator ParticleDurationOff(float duration, PoolModelObject poolModelObject)

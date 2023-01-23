@@ -7,6 +7,7 @@ using Assets.Sources.Enums;
 using Assets.Sources.Tools;
 using Assets.Sources.Models;
 using System.Threading.Tasks;
+using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -26,11 +27,16 @@ namespace Assets.Sources.Network
         private IPEndPoint _endPoint;
         private CancellationTokenSource _cancelationTokenSources;
         private ClientCurrentMenu _clientCurrentMenu = ClientCurrentMenu.Login;
+        private PlayerContract _playerContract;
+        private GameObject _mainPlayerOrigin;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
 
         public bool IsConnected => _tcpClient.Connected;
+        public PlayerContract GetPlayerContract { get => _playerContract; set => _playerContract = value; }
+        public GameObject GetMainPlayer { get => _mainPlayerOrigin; set => _mainPlayerOrigin = value; }
+
         public ClientCurrentMenu ClientMenu
         {
             get => _clientCurrentMenu;
@@ -227,6 +233,11 @@ namespace Assets.Sources.Network
             _tcpClient.Close();
             _tcpClient.Dispose();
             _cancelationTokenSources.Cancel();
+        }
+
+        public ClientProcessor GetParentObject()
+        {
+            return this;
         }
     }
 }

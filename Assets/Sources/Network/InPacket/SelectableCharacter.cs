@@ -48,6 +48,7 @@ namespace Assets.Sources.Network.InPacket
             {
                 CustomerModelView.Instance.ModelFinalBuild(playerContract, showModel: true);
                 MainUI.Instance.UpdateUI(playerContract);
+                _client.GetPlayerContract = playerContract;
             }
             catch (Exception exception)
             {
