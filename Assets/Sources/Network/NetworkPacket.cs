@@ -118,6 +118,16 @@ namespace Assets.Sources.Network
             _offset += sizeof(double);
         }
 
+        public unsafe void WriteFloat(float value)
+        {
+            ValidateBufferSize(sizeof(float));
+
+            fixed (byte* buffer = _buffer)
+                *(float*)(buffer + _offset) = value;
+
+            _offset += sizeof(float);
+        }
+
         public unsafe void WriteDouble(params double[] values)
         {
             int length = values.Length * sizeof(double);
@@ -224,6 +234,17 @@ namespace Assets.Sources.Network
             {
                 double value = *(double*)(buffer + _offset);
                 _offset += sizeof(double);
+
+                return value;
+            }
+        }
+
+        public unsafe float ReadFloat()
+        {
+            fixed (byte* buffer = _buffer)
+            {
+                float value = *(float*)(buffer + _offset);
+                _offset += sizeof(float);
 
                 return value;
             }

@@ -33,7 +33,7 @@ namespace Assets.Sources.Network.InPacket
         public override PacketImplementCodeResult RunImpl()
         {
 #if UNITY_EDITOR
-            Debug.Log($"Execute {nameof(SelectableCharacter)}.");
+            Debug.Log($"Execute {nameof(CharacterEnemyInfo)}.");
 #endif
 
             PacketImplementCodeResult codeError = new PacketImplementCodeResult();

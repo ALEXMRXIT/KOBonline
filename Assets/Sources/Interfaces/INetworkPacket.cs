@@ -13,6 +13,7 @@ namespace Assets.Sources.Interfaces
         public unsafe void WriteInt(params int[] values);
         public unsafe void WriteIntArray(int[] values);
         public unsafe void WriteDouble(double values);
+        public unsafe void WriteFloat(float value);
         public unsafe void WriteDouble(params double[] values);
         public unsafe void WriteLong(long value);
         public unsafe void WriteLong(params long[] values);
@@ -25,6 +26,7 @@ namespace Assets.Sources.Interfaces
         public unsafe short ReadShort();
         public unsafe int ReadInt();
         public unsafe double ReadDouble();
+        public unsafe float ReadFloat();
         public unsafe long ReadLong();
         public unsafe string ReadString();
         public bool InternalReadBool();

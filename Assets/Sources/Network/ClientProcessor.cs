@@ -29,6 +29,7 @@ namespace Assets.Sources.Network
         private ClientCurrentMenu _clientCurrentMenu = ClientCurrentMenu.Login;
         private PlayerContract _playerContract;
         private GameObject _mainPlayerOrigin;
+        private bool _playerPacketLoaded = false;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
@@ -36,6 +37,7 @@ namespace Assets.Sources.Network
         public bool IsConnected => _tcpClient.Connected;
         public PlayerContract GetPlayerContract { get => _playerContract; set => _playerContract = value; }
         public GameObject GetMainPlayer { get => _mainPlayerOrigin; set => _mainPlayerOrigin = value; }
+        public bool GetPlayerPacketLoaded { get => _playerPacketLoaded; set => _playerPacketLoaded = value; }
 
         public ClientCurrentMenu ClientMenu
         {

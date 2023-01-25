@@ -94,9 +94,9 @@ namespace Assets.Sources.Models.Characters
             return this;
         }
 
-        public GameObject ShowModel()
+        public GameObject ShowModel(bool updatePosition = false)
         {
-            GameObject model = ShowModelExecute();
+            GameObject model = ShowModelExecute(updatePosition);
 
             PoolModelObject poolModelObject = _poolObject.GetModelByIdentifier
                     <ParticleSystem>(PoolObjecPoolObjectIdentifier.EffectSpawnCharacter);
@@ -109,7 +109,7 @@ namespace Assets.Sources.Models.Characters
             return model;
         }
 
-        private GameObject ShowModelExecute()
+        private GameObject ShowModelExecute(bool updatePosition = false)
         {
             int index = 0;
 
@@ -133,6 +133,15 @@ namespace Assets.Sources.Models.Characters
 
             _tempCharacter[_currentActiveModel]._playerModel.SetActive(false);
             model.SetActive(true);
+
+            if (updatePosition)
+            {
+                model.transform.position = new Vector3(BuildPlayerContract.PositionX,
+                    BuildPlayerContract.PositionY, BuildPlayerContract.PositionZ);
+                model.transform.rotation = Quaternion.Euler(new Vector3(BuildPlayerContract.RotationX,
+                    BuildPlayerContract.RotationY, BuildPlayerContract.RotationZ));
+            }
+
             _tempCharacter[index]._characterState.SetCharacterState(new StateAnimationIdle());
             _currentActiveModel = index;
 
