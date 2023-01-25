@@ -53,6 +53,8 @@ namespace Assets.Sources.Models.Characters
             for (int iterator = 0; iterator < _characters.Length; iterator++)
             {
                 GameObject character = Instantiate(_characters[iterator], _characterSpawn);
+                character.transform.SetParent(null);
+                character.transform.position = _characterSpawn.position;
 
                 _tempCharacter.Add(new ModelObject(character));
                 _tempCharacter[iterator]._playerModel.SetActive(false);
@@ -94,14 +96,17 @@ namespace Assets.Sources.Models.Characters
 
         public GameObject ShowModel()
         {
+            GameObject model = ShowModelExecute();
+
             PoolModelObject poolModelObject = _poolObject.GetModelByIdentifier
                     <ParticleSystem>(PoolObjecPoolObjectIdentifier.EffectSpawnCharacter);
             ParticleSystem particleSystem = (ParticleSystem)poolModelObject._component;
+            particleSystem.gameObject.transform.position = model.transform.position;
             particleSystem.Play();
 
             StartCoroutine(ParticleDurationOff(particleSystem.main.duration, poolModelObject));
 
-            return ShowModelExecute();
+            return model;
         }
 
         private GameObject ShowModelExecute()

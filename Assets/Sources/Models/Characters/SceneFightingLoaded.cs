@@ -16,7 +16,8 @@ namespace Assets.Sources.Models.Characters
         {
             _networkProcessor = ClientProcessor.Instance;
 
-            _networkProcessor.GetParentObject().GetMainPlayer = _customerModelView.ShowModel();
+            _networkProcessor.GetParentObject().GetMainPlayer = _customerModelView.ModelFinalBuild(
+                _networkProcessor.GetParentObject().GetPlayerContract, showModel: true).ShowModel();
             _networkProcessor.SendPacketAsync(LoadSceneFightingSuccess.ToPacket());
         }
     }

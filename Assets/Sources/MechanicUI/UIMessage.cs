@@ -24,7 +24,7 @@ namespace Assets.Sources.MechanicUI
 
             _mainCountScore.text = count.ToString();
 
-            if (count == 1)
+            if (count < 1)
                 _mainCountScore.gameObject.SetActive(false);
         }
     }
