@@ -26,25 +26,29 @@ namespace Assets.Sources.Models.Characters
 
         private IEnumerator WaitPacketCharacterPosition()
         {
-            while (true)
+            yield return new WaitUntil(() => _networkProcessor.GetParentObject().GetPlayerPacketLoaded);
+            _networkProcessor.GetParentObject().GetMainPlayer = _customerModelView.ModelFinalBuild(
+                _networkProcessor.GetParentObject().GetPlayerContract, showModel: false).
+                    ShowModel(updatePosition: true, blockDisableActive: true);
+
+            if (_networkProcessor.GetParentObject().GetPlayerContract.RotationY == 0f)
             {
-                yield return new WaitForSecondsRealtime(0.5f);
-                if (_networkProcessor.GetParentObject().GetPlayerPacketLoaded)
-                {
-                    _networkProcessor.GetParentObject().GetMainPlayer = _customerModelView.ModelFinalBuild(
-                        _networkProcessor.GetParentObject().GetPlayerContract,
-                        showModel: true).ShowModel(updatePosition: true);
-                    _networkProcessor.SendPacketAsync(LoadSceneFightingSuccess.ToPacket());
-
-                    if (_networkProcessor.GetParentObject().GetPlayerContract.RotationY == 0f)
-                    {
-                        _mainCamera.transform.position = _positionCamera2;
-                        _mainCamera.transform.rotation = Quaternion.Euler(_rotationCamera2);
-                    }
-
-                    break;
-                }
+                _mainCamera.transform.position = _positionCamera2;
+                _mainCamera.transform.rotation = Quaternion.Euler(_rotationCamera2);
             }
+
+            yield return new WaitUntil(() => _networkProcessor.GetParentObject().GetPlayerPacketEnemyInfoLoaded);
+            _networkProcessor.GetParentObject().GetEnemyPlayer = _customerModelView.ModelFinalBuild(
+                _networkProcessor.GetParentObject().GetEnemyContract, showModel: false).
+                    ShowModel(updatePosition: true, blockDisableActive: true);
+
+            _networkProcessor.SendPacketAsync(LoadSceneFightingSuccess.ToPacket());
+        }
+
+        private void OnDestroy()
+        {
+            _networkProcessor.GetParentObject().GetPlayerPacketLoaded = false;
+            _networkProcessor.GetParentObject().GetPlayerPacketEnemyInfoLoaded = false;
         }
     }
 }

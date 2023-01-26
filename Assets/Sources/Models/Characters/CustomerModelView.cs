@@ -94,9 +94,9 @@ namespace Assets.Sources.Models.Characters
             return this;
         }
 
-        public GameObject ShowModel(bool updatePosition = false)
+        public GameObject ShowModel(bool updatePosition = false, bool blockDisableActive = false)
         {
-            GameObject model = ShowModelExecute(updatePosition);
+            GameObject model = ShowModelExecute(updatePosition, blockDisableActive);
 
             PoolModelObject poolModelObject = _poolObject.GetModelByIdentifier
                     <ParticleSystem>(PoolObjecPoolObjectIdentifier.EffectSpawnCharacter);
@@ -109,7 +109,7 @@ namespace Assets.Sources.Models.Characters
             return model;
         }
 
-        private GameObject ShowModelExecute(bool updatePosition = false)
+        private GameObject ShowModelExecute(bool updatePosition = false, bool blockDisableActive = false)
         {
             int index = 0;
 
@@ -131,7 +131,11 @@ namespace Assets.Sources.Models.Characters
 
             GameObject model = _tempCharacter[index]._playerModel;
 
-            _tempCharacter[_currentActiveModel]._playerModel.SetActive(false);
+            if (!blockDisableActive)
+                _tempCharacter[_currentActiveModel]._playerModel.SetActive(false);
+            else if (model.activeSelf)
+                model = Instantiate(_characters[index], null);
+
             model.SetActive(true);
 
             if (updatePosition)

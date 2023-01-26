@@ -15,19 +15,27 @@ namespace Assets.Sources.Network.InPacket
     {
         public CharacterEnemyInfo(NetworkPacket networkPacket, ClientProcessor clientProcessor)
         {
-            playerContract = new PlayerContract();
+            _playerContract = new PlayerContract();
             _client = clientProcessor;
 
-            playerContract.ObjId = networkPacket.ReadLong();
-            playerContract.CharacterName = networkPacket.ReadString();
-            playerContract.Health = networkPacket.ReadInt();
-            playerContract.Mana = networkPacket.ReadInt();
-            playerContract.Sex = (PlayerSex)networkPacket.ReadInt();
-            playerContract.PlayerRank = networkPacket.ReadInt();
-            playerContract.CharacterBaseClass = (BaseClass)networkPacket.ReadInt();
+            _playerContract.ObjId = networkPacket.ReadLong();
+            _playerContract.CharacterName = networkPacket.ReadString();
+            _playerContract.Health = networkPacket.ReadInt();
+            _playerContract.Mana = networkPacket.ReadInt();
+            _playerContract.Sex = (PlayerSex)networkPacket.ReadInt();
+            _playerContract.PlayerRank = networkPacket.ReadInt();
+            _playerContract.CharacterBaseClass = (BaseClass)networkPacket.ReadInt();
+
+            _playerContract.PositionX = networkPacket.ReadFloat();
+            _playerContract.PositionY = networkPacket.ReadFloat();
+            _playerContract.PositionZ = networkPacket.ReadFloat();
+
+            _playerContract.RotationX = networkPacket.ReadFloat();
+            _playerContract.RotationY = networkPacket.ReadFloat();
+            _playerContract.RotationZ = networkPacket.ReadFloat();
         }
 
-        private readonly PlayerContract playerContract;
+        private readonly PlayerContract _playerContract;
         private readonly ClientProcessor _client;
 
         public override PacketImplementCodeResult RunImpl()
@@ -40,7 +48,8 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                
+                _client.GetEnemyContract = _playerContract;
+                _client.GetPlayerPacketEnemyInfoLoaded = true;
             }
             catch (Exception exception)
             {

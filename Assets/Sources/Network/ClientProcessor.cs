@@ -28,16 +28,22 @@ namespace Assets.Sources.Network
         private CancellationTokenSource _cancelationTokenSources;
         private ClientCurrentMenu _clientCurrentMenu = ClientCurrentMenu.Login;
         private PlayerContract _playerContract;
+        private PlayerContract _enemyContract;
         private GameObject _mainPlayerOrigin;
+        private GameObject _enemyPlayerOrigin;
         private bool _playerPacketLoaded = false;
+        private bool _playerPacketEnemyInfoLoaded = false;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
 
         public bool IsConnected => _tcpClient.Connected;
         public PlayerContract GetPlayerContract { get => _playerContract; set => _playerContract = value; }
+        public PlayerContract GetEnemyContract { get => _enemyContract; set => _enemyContract = value; }
         public GameObject GetMainPlayer { get => _mainPlayerOrigin; set => _mainPlayerOrigin = value; }
+        public GameObject GetEnemyPlayer { get => _enemyPlayerOrigin; set => _enemyPlayerOrigin = value; }
         public bool GetPlayerPacketLoaded { get => _playerPacketLoaded; set => _playerPacketLoaded = value; }
+        public bool GetPlayerPacketEnemyInfoLoaded { get => _playerPacketEnemyInfoLoaded; set => _playerPacketEnemyInfoLoaded = value; }
 
         public ClientCurrentMenu ClientMenu
         {
