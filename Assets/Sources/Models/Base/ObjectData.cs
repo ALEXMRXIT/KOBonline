@@ -9,6 +9,7 @@ namespace Assets.Sources.Models.Base
         public GameObject GameObjectModel;
         public PlayerContract ObjectContract;
         public CharacterTarget ObjectTarget;
+        public HUDCharacterComponent ObjectHUD;
         public Vector3 UpdatePositionInServer;
         public bool ObjectIsLoadData = false;
     }

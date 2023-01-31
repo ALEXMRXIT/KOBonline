@@ -45,13 +45,19 @@ namespace Assets.Sources.Models.Characters
                 _networkProcessor.GetParentObject().GetEnemyData.ObjectContract, showModel: false).
                     ShowModel(updatePosition: true, blockDisableActive: true);
 
-            CharacterTarget mainTarget = _networkProcessor.GetParentObject().
-                GetPlayerData.GameObjectModel.AddComponent<CharacterTarget>();
-            CharacterTarget enemyTarget = _networkProcessor.GetParentObject().
-                GetEnemyData.GameObjectModel.AddComponent<CharacterTarget>();
+            CharacterTarget mainTarget = _networkProcessor.GetParentObject()
+                .GetPlayerData.GameObjectModel.AddComponent<CharacterTarget>();
+            CharacterTarget enemyTarget = _networkProcessor.GetParentObject()
+                .GetEnemyData.GameObjectModel.AddComponent<CharacterTarget>();
+            HUDCharacterComponent hudMain = _networkProcessor.GetParentObject()
+                .GetPlayerData.GameObjectModel.GetComponent<HUDCharacterComponent>();
+            HUDCharacterComponent hudEnemy = _networkProcessor.GetParentObject()
+                .GetEnemyData.GameObjectModel.GetComponent<HUDCharacterComponent>();
 
             _networkProcessor.GetParentObject().GetPlayerData.ObjectTarget = mainTarget;
+            _networkProcessor.GetParentObject().GetPlayerData.ObjectHUD = hudMain;
             _networkProcessor.GetParentObject().GetEnemyData.ObjectTarget = enemyTarget;
+            _networkProcessor.GetParentObject().GetEnemyData.ObjectHUD = hudEnemy;
 
             if (!mainTarget.IsTargetHook())
                 mainTarget.SetTarget(_networkProcessor.GetParentObject().GetEnemyData.GameObjectModel.transform);

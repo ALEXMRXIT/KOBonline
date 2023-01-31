@@ -31,7 +31,6 @@ namespace Assets.Sources.Network
         private ClientCurrentMenu _clientCurrentMenu = ClientCurrentMenu.Login;
         private ObjectData _playerData;
         private ObjectData _enemyData;
-        private CharacterTarget _target;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
@@ -39,7 +38,6 @@ namespace Assets.Sources.Network
         public bool IsConnected => _tcpClient.Connected;
         public ObjectData GetPlayerData { get => _playerData; set => _playerData = value; }
         public ObjectData GetEnemyData { get => _enemyData; set => _enemyData = value; }
-        public CharacterTarget GetCurrentTarget { get => _target; set => _target = value; }
 
         public ClientCurrentMenu ClientMenu
         {

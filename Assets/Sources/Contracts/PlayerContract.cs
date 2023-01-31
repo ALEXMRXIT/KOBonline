@@ -8,7 +8,9 @@ namespace Assets.Sources.Contracts
         public long ObjId { get; set; }
         public string CharacterName { get; set; }
         public int Level { get; set; }
+        public int MinHealth { get; set; }
         public int Health { get; set; }
+        public int MinMana { get; set; }
         public int Mana { get; set; }
         public PlayerSex Sex { get; set; }
         public int PlayerRank { get; set; }
