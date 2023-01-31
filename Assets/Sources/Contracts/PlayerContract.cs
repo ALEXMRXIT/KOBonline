@@ -24,5 +24,7 @@ namespace Assets.Sources.Contracts
         public float RotationX { get; set; }
         public float RotationY { get; set; }
         public float RotationZ { get; set; }
+        public int AttackDistance { get; set; }
+        public int MoveSpeed { get; set; }
     }
 }

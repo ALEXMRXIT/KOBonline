@@ -8,6 +8,7 @@ using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI;
 using UnityEngine.SceneManagement;
 using Assets.Sources.Models.Characters;
+using UnityEditor.PackageManager;
 
 namespace Assets.Sources.Network.InPacket
 {
@@ -44,14 +45,18 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                _client.GetPlayerContract.PositionX = _positionX;
-                _client.GetPlayerContract.PositionY = _positionY;
-                _client.GetPlayerContract.PositionZ = _positionZ;
+                _client.GetPlayerData.ObjectContract.PositionX = _positionX;
+                _client.GetPlayerData.ObjectContract.PositionY = _positionY;
+                _client.GetPlayerData.ObjectContract.PositionZ = _positionZ;
 
-                _client.GetPlayerContract.RotationX = _rotationX;
-                _client.GetPlayerContract.RotationY = _rotationY;
-                _client.GetPlayerContract.RotationZ = _rotationZ;
-                _client.GetPlayerPacketLoaded = true;
+                _client.GetPlayerData.ObjectContract.RotationX = _rotationX;
+                _client.GetPlayerData.ObjectContract.RotationY = _rotationY;
+                _client.GetPlayerData.ObjectContract.RotationZ = _rotationZ;
+
+                _client.GetPlayerData.UpdatePositionInServer = new Vector3(
+                    _positionX, _positionY, _positionZ);
+
+                _client.GetPlayerData.ObjectIsLoadData = true;
             }
             catch (Exception exception)
             {

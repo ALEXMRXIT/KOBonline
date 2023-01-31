@@ -3,6 +3,7 @@ using System.Collections;
 using Assets.Sources.Models;
 using Assets.Sources.Network;
 using Assets.Sources.Interfaces;
+using Assets.Sources.Models.Camera;
 using Assets.Sources.Network.OutPacket;
 
 namespace Assets.Sources.Models.Characters
@@ -10,7 +11,7 @@ namespace Assets.Sources.Models.Characters
     public sealed class SceneFightingLoaded : MonoBehaviour
     {
         [SerializeField] private CustomerModelView _customerModelView;
-        [SerializeField] private GameObject _mainCamera;
+        [SerializeField] private TargetSurveillanceCamera _mainCamera;
 
         [Space]
         [SerializeField] private Vector3 _positionCamera2;
@@ -21,34 +22,57 @@ namespace Assets.Sources.Models.Characters
         private void Start()
         {
             _networkProcessor = ClientProcessor.Instance;
-            StartCoroutine(WaitPacketCharacterPosition());
+            StartCoroutine(SetBattleSceneForActors());
         }
 
-        private IEnumerator WaitPacketCharacterPosition()
+        private IEnumerator SetBattleSceneForActors()
         {
-            yield return new WaitUntil(() => _networkProcessor.GetParentObject().GetPlayerPacketLoaded);
-            _networkProcessor.GetParentObject().GetMainPlayer = _customerModelView.ModelFinalBuild(
-                _networkProcessor.GetParentObject().GetPlayerContract, showModel: false).
+            yield return new WaitUntil(() => _networkProcessor.GetParentObject().GetPlayerData.ObjectIsLoadData);
+            _networkProcessor.GetParentObject().GetPlayerData.GameObjectModel = _customerModelView.ModelFinalBuild(
+                _networkProcessor.GetParentObject().GetPlayerData.ObjectContract, showModel: false).
                     ShowModel(updatePosition: true, blockDisableActive: true);
 
-            if (_networkProcessor.GetParentObject().GetPlayerContract.RotationY == 0f)
+            if (_networkProcessor.GetParentObject().GetPlayerData.ObjectContract.RotationY == 0f)
             {
-                _mainCamera.transform.position = _positionCamera2;
-                _mainCamera.transform.rotation = Quaternion.Euler(_rotationCamera2);
+                _mainCamera.gameObject.transform.position = _positionCamera2;
+                _mainCamera.gameObject.transform.rotation = Quaternion.Euler(_rotationCamera2);
             }
 
-            yield return new WaitUntil(() => _networkProcessor.GetParentObject().GetPlayerPacketEnemyInfoLoaded);
-            _networkProcessor.GetParentObject().GetEnemyPlayer = _customerModelView.ModelFinalBuild(
-                _networkProcessor.GetParentObject().GetEnemyContract, showModel: false).
+            _mainCamera.SetupCameraMovedForTarget(_networkProcessor.GetParentObject().GetPlayerData.GameObjectModel.transform);
+
+            yield return new WaitUntil(() => _networkProcessor.GetParentObject().GetEnemyData.ObjectIsLoadData);
+            _networkProcessor.GetParentObject().GetEnemyData.GameObjectModel = _customerModelView.ModelFinalBuild(
+                _networkProcessor.GetParentObject().GetEnemyData.ObjectContract, showModel: false).
                     ShowModel(updatePosition: true, blockDisableActive: true);
+
+            CharacterTarget mainTarget = _networkProcessor.GetParentObject().
+                GetPlayerData.GameObjectModel.AddComponent<CharacterTarget>();
+            CharacterTarget enemyTarget = _networkProcessor.GetParentObject().
+                GetEnemyData.GameObjectModel.AddComponent<CharacterTarget>();
+
+            _networkProcessor.GetParentObject().GetPlayerData.ObjectTarget = mainTarget;
+            _networkProcessor.GetParentObject().GetEnemyData.ObjectTarget = enemyTarget;
+
+            if (!mainTarget.IsTargetHook())
+                mainTarget.SetTarget(_networkProcessor.GetParentObject().GetEnemyData.GameObjectModel.transform);
+            else throw new System.ArgumentException(nameof(mainTarget));
+
+            if (!enemyTarget.IsTargetHook())
+                enemyTarget.SetTarget(_networkProcessor.GetParentObject().GetPlayerData.GameObjectModel.transform);
+            else throw new System.ArgumentException(nameof(enemyTarget));
 
             _networkProcessor.SendPacketAsync(LoadSceneFightingSuccess.ToPacket());
         }
 
         private void OnDestroy()
         {
-            _networkProcessor.GetParentObject().GetPlayerPacketLoaded = false;
-            _networkProcessor.GetParentObject().GetPlayerPacketEnemyInfoLoaded = false;
+            _networkProcessor.GetParentObject().GetPlayerData.ObjectIsLoadData = false;
+            _networkProcessor.GetParentObject().GetPlayerData.ObjectTarget = null;
+            _networkProcessor.GetParentObject().GetPlayerData.GameObjectModel = null;
+
+            _networkProcessor.GetParentObject().GetEnemyData.ObjectIsLoadData = false;
+            _networkProcessor.GetParentObject().GetEnemyData.ObjectTarget = null;
+            _networkProcessor.GetParentObject().GetEnemyData.GameObjectModel = null;
         }
     }
 }

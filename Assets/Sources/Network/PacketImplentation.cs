@@ -19,6 +19,9 @@ namespace Assets.Sources.Network
             _packetHandlerServices.Add(0x04, typeof(CharacterEnemyInfo));
             _packetHandlerServices.Add(0x05, typeof(SendTimeBuff));
             _packetHandlerServices.Add(0x06, typeof(UpdateContractPositionInScene));
+            _packetHandlerServices.Add(0x07, typeof(UpdateCharacterMainPosition));
+            _packetHandlerServices.Add(0x08, typeof(AddMovementComponent));
+            _packetHandlerServices.Add(0x09, typeof(UpdateCharacterEnemyPosition));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

@@ -1785,7 +1785,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _customerModelView: {fileID: 798678689}
-  _mainCamera: {fileID: 1147667065}
+  _mainCamera: {fileID: 1147667069}
   _positionCamera2: {x: -6, y: 1, z: -21}
   _rotationCamera2: {x: 45, y: -330, z: 0}
 --- !u!1001 &840441054
@@ -2298,6 +2298,7 @@ GameObject:
   - component: {fileID: 1147667068}
   - component: {fileID: 1147667067}
   - component: {fileID: 1147667066}
+  - component: {fileID: 1147667069}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2379,6 +2380,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 45, y: 215, z: 0}
+--- !u!114 &1147667069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1147667065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91c662038eb584a0cba6a8f35fd51a99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1202805048
 GameObject:
   m_ObjectHideFlags: 0

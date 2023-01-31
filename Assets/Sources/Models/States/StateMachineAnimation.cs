@@ -24,6 +24,9 @@ namespace Assets.Sources.Models.States
 
         public void SetAnimation(IStateAnimation stateAnimation)
         {
+            if (_stateAnimation == stateAnimation)
+                return;
+
             _stateAnimation = stateAnimation;
             _stateAnimation.ExecuteAnimation(_animator);
         }

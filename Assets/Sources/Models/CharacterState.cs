@@ -34,6 +34,8 @@ namespace Assets.Sources.Models
                 {
                     _stateMachineAnimation.SetAnimation(stateAnimation);
                     _isAttacked = true;
+
+                    return;
                 }
             }
 

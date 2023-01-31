@@ -10,8 +10,10 @@ using System.Threading.Tasks;
 using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using System.Collections.Generic;
+using Assets.Sources.Models.Base;
 using UnityEngine.SceneManagement;
 using System.Collections.Concurrent;
+using Assets.Sources.Models.Characters;
 
 #pragma warning disable IDE0090
 
@@ -27,23 +29,17 @@ namespace Assets.Sources.Network
         private IPEndPoint _endPoint;
         private CancellationTokenSource _cancelationTokenSources;
         private ClientCurrentMenu _clientCurrentMenu = ClientCurrentMenu.Login;
-        private PlayerContract _playerContract;
-        private PlayerContract _enemyContract;
-        private GameObject _mainPlayerOrigin;
-        private GameObject _enemyPlayerOrigin;
-        private bool _playerPacketLoaded = false;
-        private bool _playerPacketEnemyInfoLoaded = false;
+        private ObjectData _playerData;
+        private ObjectData _enemyData;
+        private CharacterTarget _target;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
 
         public bool IsConnected => _tcpClient.Connected;
-        public PlayerContract GetPlayerContract { get => _playerContract; set => _playerContract = value; }
-        public PlayerContract GetEnemyContract { get => _enemyContract; set => _enemyContract = value; }
-        public GameObject GetMainPlayer { get => _mainPlayerOrigin; set => _mainPlayerOrigin = value; }
-        public GameObject GetEnemyPlayer { get => _enemyPlayerOrigin; set => _enemyPlayerOrigin = value; }
-        public bool GetPlayerPacketLoaded { get => _playerPacketLoaded; set => _playerPacketLoaded = value; }
-        public bool GetPlayerPacketEnemyInfoLoaded { get => _playerPacketEnemyInfoLoaded; set => _playerPacketEnemyInfoLoaded = value; }
+        public ObjectData GetPlayerData { get => _playerData; set => _playerData = value; }
+        public ObjectData GetEnemyData { get => _enemyData; set => _enemyData = value; }
+        public CharacterTarget GetCurrentTarget { get => _target; set => _target = value; }
 
         public ClientCurrentMenu ClientMenu
         {

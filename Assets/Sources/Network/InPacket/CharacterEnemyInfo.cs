@@ -6,6 +6,7 @@ using Assets.Sources.Network;
 using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI;
+using Assets.Sources.Models.Base;
 using UnityEngine.SceneManagement;
 using Assets.Sources.Models.Characters;
 
@@ -33,6 +34,8 @@ namespace Assets.Sources.Network.InPacket
             _playerContract.RotationX = networkPacket.ReadFloat();
             _playerContract.RotationY = networkPacket.ReadFloat();
             _playerContract.RotationZ = networkPacket.ReadFloat();
+            _playerContract.AttackDistance = networkPacket.ReadInt();
+            _playerContract.MoveSpeed = networkPacket.ReadInt();
         }
 
         private readonly PlayerContract _playerContract;
@@ -48,8 +51,12 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                _client.GetEnemyContract = _playerContract;
-                _client.GetPlayerPacketEnemyInfoLoaded = true;
+                _client.GetEnemyData.ObjectContract = _playerContract;
+
+                _client.GetEnemyData.UpdatePositionInServer = new Vector3(
+                    _playerContract.PositionX, _playerContract.PositionY, _playerContract.PositionZ);
+
+                _client.GetEnemyData.ObjectIsLoadData = true;
             }
             catch (Exception exception)
             {
