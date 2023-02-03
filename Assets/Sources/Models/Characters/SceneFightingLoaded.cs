@@ -59,6 +59,13 @@ namespace Assets.Sources.Models.Characters
             _networkProcessor.GetParentObject().GetEnemyData.ObjectTarget = enemyTarget;
             _networkProcessor.GetParentObject().GetEnemyData.ObjectHUD = hudEnemy;
 
+            _networkProcessor.GetParentObject().GetPlayerData.ObjectBaseEffectWhereAttack = _networkProcessor
+                .GetParentObject().GetPlayerData.GameObjectModel.GetComponent<BaseAttackEffect>()
+                    .Init(_networkProcessor.GetParentObject().GetPlayerData.ObjectContract.CharacterBaseClass);
+            _networkProcessor.GetParentObject().GetEnemyData.ObjectBaseEffectWhereAttack = _networkProcessor
+                .GetParentObject().GetEnemyData.GameObjectModel.GetComponent<BaseAttackEffect>()
+                    .Init(_networkProcessor.GetParentObject().GetEnemyData.ObjectContract.CharacterBaseClass);
+
             if (!mainTarget.IsTargetHook())
                 mainTarget.SetTarget(_networkProcessor.GetParentObject().GetEnemyData.GameObjectModel.transform);
             else throw new System.ArgumentException(nameof(mainTarget));

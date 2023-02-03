@@ -10,6 +10,7 @@ namespace Assets.Sources.Models.Base
         public PlayerContract ObjectContract;
         public CharacterTarget ObjectTarget;
         public HUDCharacterComponent ObjectHUD;
+        public BaseAttackEffect ObjectBaseEffectWhereAttack;
         public Vector3 UpdatePositionInServer;
         public bool ObjectIsLoadData = false;
     }

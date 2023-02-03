@@ -9,7 +9,7 @@ namespace Assets.Sources.Models.States.StateAnimations
         public StateAnimationIndex AnimationIndex => StateAnimationIndex.AnimationDeath;
         public bool KnocksDownOtherAnimation => true;
 
-        public void ExecuteAnimation(Animator animator)
+        public void ExecuteAnimation(Animator animator, float speed = 1f)
         {
             animator.SetInteger("Index", (int)AnimationIndex);
         }

@@ -22,13 +22,13 @@ namespace Assets.Sources.Models.States
                 _animator = GetComponent<Animator>();
         }
 
-        public void SetAnimation(IStateAnimation stateAnimation)
+        public void SetAnimation(IStateAnimation stateAnimation, float speed = 1f)
         {
             if (_stateAnimation == stateAnimation)
                 return;
 
             _stateAnimation = stateAnimation;
-            _stateAnimation.ExecuteAnimation(_animator);
+            _stateAnimation.ExecuteAnimation(_animator, speed);
         }
     }
 }

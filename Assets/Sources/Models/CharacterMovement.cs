@@ -24,6 +24,7 @@ namespace Assets.Sources.Models
             ObjectData data, ClientProcessor clientProcessor)
         {
             _characterState = GetComponent<CharacterState>();
+
             _characterTarget = characterTarget;
             _objectData = data;
             _clientProcessor = clientProcessor;
@@ -41,7 +42,7 @@ namespace Assets.Sources.Models
                 _characterTarget.GetCurrentTarget().position);
             if (dist < _objectData.ObjectContract.AttackDistance)
             {
-                _characterState.SetCharacterState(_animationAttack);
+                _characterState.SetCharacterState(_animationAttack, _objectData.ObjectContract.AttackSpeed);
                 return;
             }
 

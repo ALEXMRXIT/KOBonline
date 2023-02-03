@@ -34,7 +34,8 @@ namespace Assets.Sources.Network.InPacket
             _playerContract.Experience = networkPacket.ReadLong();
             _playerContract.CharacterBaseClass = (BaseClass)networkPacket.ReadInt();
             _playerContract.AttackDistance = networkPacket.ReadInt();
-            _playerContract.MoveSpeed = networkPacket.ReadInt();
+            _playerContract.MoveSpeed = networkPacket.ReadFloat();
+            _playerContract.AttackSpeed = networkPacket.ReadFloat();
         }
 
         private readonly PlayerContract _playerContract;
