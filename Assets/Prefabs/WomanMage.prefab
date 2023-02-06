@@ -30339,6 +30339,7 @@ GameObject:
   - component: {fileID: 510519399}
   - component: {fileID: 4275855125745452599}
   - component: {fileID: 5432682985562048963}
+  - component: {fileID: 2002887982675654883}
   m_Layer: 0
   m_Name: WomanMage
   m_TagString: Untagged
@@ -30447,6 +30448,22 @@ MonoBehaviour:
   - {fileID: 790822648534145435}
   - {fileID: 790822648534145433}
   _effectSpeed: 1
+--- !u!114 &2002887982675654883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3253229132135432474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3071409d434745fe8cd42681075cce5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _fire: {fileID: 6359675861744004763, guid: 964b8ac0a9b6247ef861d15ad13a0ff2, type: 3}
+  _effectTrigger: {fileID: 6240011344849456690, guid: 5c6be6a3b7f8f4b1094b4daf1e15267b,
+    type: 3}
+  _hand: {fileID: 4058042002397479811}
 --- !u!1 &3378161401955836481
 GameObject:
   m_ObjectHideFlags: 0

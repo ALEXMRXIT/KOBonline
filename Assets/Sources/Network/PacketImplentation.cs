@@ -24,6 +24,7 @@ namespace Assets.Sources.Network
             _packetHandlerServices.Add(0x09, typeof(UpdateCharacterEnemyPosition));
             _packetHandlerServices.Add(0x0A, typeof(AddHUDInMainCharacter));
             _packetHandlerServices.Add(0x0B, typeof(AddHUDInEnemyCharacter));
+            _packetHandlerServices.Add(0x0C, typeof(CharacterAttackCombat));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

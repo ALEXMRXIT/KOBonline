@@ -22,22 +22,19 @@ namespace Assets.Sources.Models.Characters
             return this;
         }
 
-        public IEnumerator PlayEffectLoop(float duration)
+        public IEnumerator PlayEffectLoop(float duration, BaseAttackSpawnEffect baseAttackSpawnEffect)
         {
             if (_currentBaseClass == BaseClass.Mage)
             {
-                float lengthClip = 2.283334f;
+                float lengthClip = 2.283334f / duration;
                 foreach (ParticleSystem particleSystem in _effect)
                 {
                     var main = particleSystem.main;
                     main.simulationSpeed = duration;
                 }
 
-                if (duration > 1f)
-                    lengthClip = lengthClip / duration;
-
                 _effect[0].gameObject.SetActive(true);
-                yield return new WaitForSecondsRealtime(lengthClip);
+                yield return baseAttackSpawnEffect.SpawnFireBaseAttack(lengthClip);
                 _effect[0].gameObject.SetActive(false);
             }
         }

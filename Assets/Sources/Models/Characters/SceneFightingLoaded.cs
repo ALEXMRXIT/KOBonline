@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Sources.Enums;
 using Assets.Sources.Models;
 using Assets.Sources.Network;
 using Assets.Sources.Interfaces;
+using Assets.Sources.Models.Base;
 using Assets.Sources.Models.Camera;
 using Assets.Sources.Network.OutPacket;
 
@@ -62,9 +64,16 @@ namespace Assets.Sources.Models.Characters
             _networkProcessor.GetParentObject().GetPlayerData.ObjectBaseEffectWhereAttack = _networkProcessor
                 .GetParentObject().GetPlayerData.GameObjectModel.GetComponent<BaseAttackEffect>()
                     .Init(_networkProcessor.GetParentObject().GetPlayerData.ObjectContract.CharacterBaseClass);
+            _networkProcessor.GetParentObject().GetPlayerData.GameObjectModel
+                .GetComponent<BaseAttackSpawnEffect>().Init(_networkProcessor.GetParentObject()
+                    .GetPlayerData.ObjectContract.CharacterBaseClass, _networkProcessor.GetParentObject().GetEnemyData);
+
             _networkProcessor.GetParentObject().GetEnemyData.ObjectBaseEffectWhereAttack = _networkProcessor
                 .GetParentObject().GetEnemyData.GameObjectModel.GetComponent<BaseAttackEffect>()
                     .Init(_networkProcessor.GetParentObject().GetEnemyData.ObjectContract.CharacterBaseClass);
+            _networkProcessor.GetParentObject().GetEnemyData.GameObjectModel
+                .GetComponent<BaseAttackSpawnEffect>().Init(_networkProcessor.GetParentObject()
+                    .GetEnemyData.ObjectContract.CharacterBaseClass, _networkProcessor.GetParentObject().GetPlayerData);
 
             if (!mainTarget.IsTargetHook())
                 mainTarget.SetTarget(_networkProcessor.GetParentObject().GetEnemyData.GameObjectModel.transform);

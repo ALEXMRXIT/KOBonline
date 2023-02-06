@@ -13,6 +13,7 @@ namespace Assets.Sources.Models
     {
         private StateMachineAnimation _stateMachineAnimation;
         private BaseAttackEffect _baseAttackEffect;
+        private BaseAttackSpawnEffect _baseAttackSpawnEffect;
         private bool _isAttacked = false;
         private Coroutine _coroutineEffectBaseAttack = null;
 
@@ -20,6 +21,7 @@ namespace Assets.Sources.Models
         {
             _stateMachineAnimation = GetComponent<StateMachineAnimation>();
             _baseAttackEffect = GetComponent<BaseAttackEffect>();
+            _baseAttackSpawnEffect = GetComponent<BaseAttackSpawnEffect>();
         }
 
         public void CheckGettingComponent()
@@ -62,7 +64,8 @@ namespace Assets.Sources.Models
         {
             while (true)
             {
-                yield return _baseAttackEffect.PlayEffectLoop(speedAttack);
+                yield return _baseAttackEffect.PlayEffectLoop(
+                    speedAttack, _baseAttackSpawnEffect);
             }
         }
     }

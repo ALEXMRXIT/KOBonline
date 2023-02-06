@@ -32,6 +32,9 @@ namespace Assets.Sources.MechanicUI
         [SerializeField] private Button _createCharacterButton;
         [SerializeField] private InputField _characterNameInputField;
         [SerializeField] private Text _errorTextMessage;
+        [SerializeField] private Text _descriptionClass;
+        [SerializeField] private Image _iconSlot;
+        [SerializeField] private Sprite[] _iconsClass;
 
         private INetworkProcessor _networkProcessor;
 
@@ -119,6 +122,27 @@ namespace Assets.Sources.MechanicUI
 
             editCharacterComponent._currentIndex = ClampIndexOutOfRangeValid
                 (editCharacterComponent._currentIndex, 0, editCharacterComponent._names.Length);
+
+            if (customerType == CustomerType.BaseClass)
+            {
+                _iconSlot.sprite = _iconsClass[editCharacterComponent._currentIndex];
+
+                switch ((BaseClass)editCharacterComponent._currentIndex)
+                {
+                    case BaseClass.Warrior:
+                        switch (lang.CurrentLangSelected)
+                        {
+                            case LangType.English: _descriptionClass.text = lang.ClassDescriptionWarrior; break;
+                        }
+                        break;
+                    case BaseClass.Mage:
+                        switch (lang.CurrentLangSelected)
+                        {
+                            case LangType.English: _descriptionClass.text = lang.ClassDescriptionWizzard; break;
+                        }
+                        break;
+                }
+            }
 
             switch (customerType)
             {
