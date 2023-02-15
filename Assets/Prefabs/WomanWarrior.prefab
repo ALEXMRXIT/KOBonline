@@ -3118,7 +3118,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _effect:
   - {fileID: 0}
-  _effectSpeed: 1
 --- !u!114 &8189180827158036182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3132,7 +3131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _fire: {fileID: 6359675861744004763, guid: 964b8ac0a9b6247ef861d15ad13a0ff2, type: 3}
-  _effectTrigger: {fileID: 6240011344849456690, guid: 5c6be6a3b7f8f4b1094b4daf1e15267b,
+  _effectTrigger: {fileID: 5928825890333758931, guid: b8830ea2c4c524d0b9ec07cfa1b9b2cc,
     type: 3}
   _hand: {fileID: 9123495962237334486}
 --- !u!1 &7910025440664226047

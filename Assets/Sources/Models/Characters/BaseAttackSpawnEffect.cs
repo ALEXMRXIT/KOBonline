@@ -21,15 +21,12 @@ namespace Assets.Sources.Models.Characters
             _data = data;
         }
 
-        public IEnumerator SpawnFireBaseAttack(float endDuration)
+        public IEnumerator SpawnFireBaseAttack(float pause)
         {
-            if (_baseClass == BaseClass.Mage)
-            {
-                yield return new WaitForSecondsRealtime(endDuration);
-                GameObject obj = Instantiate(_fire.gameObject, null)
-                    .GetComponent<FireBallLogic>().Init(_data.GameObjectModel.transform, _effectTrigger);
-                obj.transform.position = _hand.transform.position;
-            }
+            yield return new WaitForSecondsRealtime(pause);
+            GameObject obj = Instantiate(_fire.gameObject, null).
+                GetComponent<FireBallLogic>().Init(_data.GameObjectModel.transform, _effectTrigger);
+            obj.transform.position = _hand.transform.position;
         }
     }
 }

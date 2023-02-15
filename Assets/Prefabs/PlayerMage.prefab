@@ -458,7 +458,6 @@ MonoBehaviour:
   - {fileID: 1883737246304715566}
   - {fileID: 5604856897316914975}
   - {fileID: 4387817265983587500}
-  _effectSpeed: 1
 --- !u!114 &9134096561485490330
 MonoBehaviour:
   m_ObjectHideFlags: 0

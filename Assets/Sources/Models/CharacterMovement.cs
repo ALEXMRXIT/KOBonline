@@ -49,7 +49,7 @@ namespace Assets.Sources.Models
             transform.position = Vector3.MoveTowards(transform.position,
                 _characterTarget.GetCurrentTarget().position,
                 Time.deltaTime * _objectData.ObjectContract.MoveSpeed);
-            _characterState.SetCharacterState(_animationRun);
+            _characterState.SetCharacterState(_animationRun, _objectData.ObjectContract.MoveSpeed / 2f);
 
             dist = Vector3.Distance(transform.position, new Vector3(
                 _objectData.UpdatePositionInServer.x,

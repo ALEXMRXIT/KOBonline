@@ -12,7 +12,6 @@ namespace Assets.Sources.Models.Characters
         private BaseClass _currentBaseClass;
 
         [SerializeField] private ParticleSystem[] _effect;
-        [SerializeField] private float _effectSpeed = 1;
 
         public BaseAttackEffect Init(BaseClass baseClass)
         {
@@ -24,19 +23,43 @@ namespace Assets.Sources.Models.Characters
 
         public IEnumerator PlayEffectLoop(float duration, BaseAttackSpawnEffect baseAttackSpawnEffect)
         {
-            if (_currentBaseClass == BaseClass.Mage)
+            bool nullEffectReference = false;
+            if (_effect.Length > 0)
             {
-                float lengthClip = 2.283334f / duration;
+                if (_effect[0] == null)
+                    nullEffectReference = true;
+            }
+            else if (_effect == null || _effect.Length == 0)
+                nullEffectReference = true;
+
+            if (!nullEffectReference)
+            {
                 foreach (ParticleSystem particleSystem in _effect)
                 {
                     var main = particleSystem.main;
                     main.simulationSpeed = duration;
                 }
-
-                _effect[0].gameObject.SetActive(true);
-                yield return baseAttackSpawnEffect.SpawnFireBaseAttack(lengthClip);
-                _effect[0].gameObject.SetActive(false);
             }
+
+            float lengthClip = 0f;
+            float pauseTakeDamage = 0f;
+            if (_currentBaseClass == BaseClass.Mage)
+            {
+                lengthClip = 2.283334f / duration;
+                pauseTakeDamage = (lengthClip * 40f) / 100f;
+            }
+            else if (_currentBaseClass == BaseClass.Warrior)
+            {
+                lengthClip = 1.500f / duration;
+                pauseTakeDamage = (lengthClip * 50f) / 100f;
+            }
+
+            if (!nullEffectReference)
+                _effect[0].gameObject.SetActive(true);
+            yield return baseAttackSpawnEffect.SpawnFireBaseAttack(pauseTakeDamage);
+            yield return new WaitForSecondsRealtime(lengthClip - pauseTakeDamage);
+            if (!nullEffectReference)
+                _effect[0]?.gameObject.SetActive(false);
         }
     }
 }
