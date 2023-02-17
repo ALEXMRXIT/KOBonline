@@ -25,6 +25,7 @@ namespace Assets.Sources.Network
             _packetHandlerServices.Add(0x0A, typeof(AddHUDInMainCharacter));
             _packetHandlerServices.Add(0x0B, typeof(AddHUDInEnemyCharacter));
             _packetHandlerServices.Add(0x0C, typeof(CharacterAttackCombat));
+            _packetHandlerServices.Add(0x0D, typeof(SetLongDataLoader));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

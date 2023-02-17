@@ -21,6 +21,7 @@ namespace Assets.Sources.Network.InPacket
 
             _playerContract.AccountName = networkPacket.ReadString();
             _playerContract.ObjId = networkPacket.ReadLong();
+            _objId = _playerContract.ObjId;
             _playerContract.CharacterName = networkPacket.ReadString();
             _playerContract.Level = networkPacket.ReadInt();
             _playerContract.Health = networkPacket.ReadInt();
@@ -40,6 +41,7 @@ namespace Assets.Sources.Network.InPacket
 
         private readonly PlayerContract _playerContract;
         private readonly ClientProcessor _client;
+        private readonly long _objId;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -54,15 +56,19 @@ namespace Assets.Sources.Network.InPacket
                 CustomerModelView.Instance.ModelFinalBuild(_playerContract, showModel: true);
                 MainUI.Instance.UpdateUI(_playerContract);
 
-                _client.GetPlayerData = new ObjectData();
-                _client.GetEnemyData = new ObjectData();
-                _client.GetPlayerData.ObjectContract = _playerContract;
+                ObjectData playerData = new ObjectData();
+                playerData.ObjId = _objId;
+                playerData.IsBot = false;
+                playerData.ObjectContract = _playerContract;
+
+                _client.GetPlayers.Add(playerData);
             }
             catch (Exception exception)
             {
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
+                codeError.FireException = nameof(SelectableCharacter);
             }
 
             return codeError;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using Assets.Sources.Enums;
 using Assets.Sources.Models;
@@ -15,15 +16,17 @@ namespace Assets.Sources.Network.InPacket
         {
             _client = clientProcessor;
 
-            PositionX = networkPacket.ReadFloat();
-            PositionY = networkPacket.ReadFloat();
-            PositionZ = networkPacket.ReadFloat();
+            _objId = networkPacket.ReadLong();
+            _positionX = networkPacket.ReadFloat();
+            _positionY = networkPacket.ReadFloat();
+            _positionZ = networkPacket.ReadFloat();
         }
 
         private readonly ClientProcessor _client;
-        private readonly float PositionX;
-        private readonly float PositionY;
-        private readonly float PositionZ;
+        private readonly long _objId;
+        private readonly float _positionX;
+        private readonly float _positionY;
+        private readonly float _positionZ;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -34,13 +37,15 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                _client.GetEnemyData.UpdatePositionInServer = new Vector3(PositionX, PositionY, PositionZ);
+                _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId).UpdatePositionInServer =
+                    new Vector3(_positionX, _positionY, _positionZ);
             }
             catch (Exception exception)
             {
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
+                codeError.FireException = nameof(UpdateCharacterEnemyPosition);
             }
 
             return codeError;

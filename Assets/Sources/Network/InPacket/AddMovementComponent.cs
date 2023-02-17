@@ -28,17 +28,16 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                CharacterMovement mainMovement = _client.GetPlayerData.GameObjectModel.AddComponent<CharacterMovement>();
-                CharacterMovement enemyMovement = _client.GetEnemyData.GameObjectModel.AddComponent<CharacterMovement>();
-
-                mainMovement.Init(_client.GetPlayerData.ObjectTarget, _client.GetPlayerData, _client);
-                enemyMovement.Init(_client.GetEnemyData.ObjectTarget, _client.GetEnemyData, null);
+                foreach (ObjectData objectData in _client.GetPlayers)
+                    objectData.GameObjectModel.AddComponent<CharacterMovement>().
+                        Init(objectData.ObjectTarget, objectData);
             }
             catch (Exception exception)
             {
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
+                codeError.FireException = nameof(AddMovementComponent);
             }
 
             return codeError;

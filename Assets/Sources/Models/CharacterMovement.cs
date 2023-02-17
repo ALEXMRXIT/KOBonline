@@ -16,18 +16,15 @@ namespace Assets.Sources.Models
         private CharacterState _characterState;
         private CharacterTarget _characterTarget;
         private ObjectData _objectData;
-        private ClientProcessor _clientProcessor;
         private StateAnimationRun _animationRun;
         private StateAnimationAttack _animationAttack;
 
-        public void Init(CharacterTarget characterTarget,
-            ObjectData data, ClientProcessor clientProcessor)
+        public void Init(CharacterTarget characterTarget, ObjectData data)
         {
             _characterState = GetComponent<CharacterState>();
 
             _characterTarget = characterTarget;
             _objectData = data;
-            _clientProcessor = clientProcessor;
 
             _animationRun = new StateAnimationRun();
             _animationAttack = new StateAnimationAttack();

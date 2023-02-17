@@ -20,6 +20,7 @@ namespace Assets.Sources.Network.InPacket
             _client = clientProcessor;
 
             _playerContract.ObjId = networkPacket.ReadLong();
+            _objId = _playerContract.ObjId;
             _playerContract.CharacterName = networkPacket.ReadString();
             _playerContract.Health = networkPacket.ReadInt();
             _playerContract.Mana = networkPacket.ReadInt();
@@ -41,6 +42,7 @@ namespace Assets.Sources.Network.InPacket
 
         private readonly PlayerContract _playerContract;
         private readonly ClientProcessor _client;
+        private readonly long _objId;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -52,18 +54,23 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                _client.GetEnemyData.ObjectContract = _playerContract;
+                ObjectData enemyData = new ObjectData();
+                enemyData.ObjectContract = _playerContract;
+                enemyData.ObjId = _objId;
 
-                _client.GetEnemyData.UpdatePositionInServer = new Vector3(
+                enemyData.UpdatePositionInServer = new Vector3(
                     _playerContract.PositionX, _playerContract.PositionY, _playerContract.PositionZ);
 
-                _client.GetEnemyData.ObjectIsLoadData = true;
+                enemyData.ObjectIsLoadData = true;
+                _client.GetPlayers.Add(enemyData);
+                _client.GetNetworkDataLoader.Increment();
             }
             catch (Exception exception)
             {
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
+                codeError.FireException = nameof(CharacterEnemyInfo);
             }
 
             return codeError;

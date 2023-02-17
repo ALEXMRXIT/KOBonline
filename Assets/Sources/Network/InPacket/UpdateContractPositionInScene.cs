@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using Assets.Sources.Enums;
 using Assets.Sources.Models;
@@ -6,9 +7,10 @@ using Assets.Sources.Network;
 using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI;
+using UnityEditor.PackageManager;
+using Assets.Sources.Models.Base;
 using UnityEngine.SceneManagement;
 using Assets.Sources.Models.Characters;
-using UnityEditor.PackageManager;
 
 namespace Assets.Sources.Network.InPacket
 {
@@ -17,6 +19,8 @@ namespace Assets.Sources.Network.InPacket
         public UpdateContractPositionInScene(NetworkPacket networkPacket, ClientProcessor clientProcessor)
         {
             _client = clientProcessor;
+
+            _objId = networkPacket.ReadLong();
 
             _positionX = networkPacket.ReadFloat();
             _positionY = networkPacket.ReadFloat();
@@ -27,6 +31,7 @@ namespace Assets.Sources.Network.InPacket
             _rotationZ = networkPacket.ReadFloat();
         }
 
+        private readonly long _objId;
         private readonly float _positionX;
         private readonly float _positionY;
         private readonly float _positionZ;
@@ -45,24 +50,27 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                _client.GetPlayerData.ObjectContract.PositionX = _positionX;
-                _client.GetPlayerData.ObjectContract.PositionY = _positionY;
-                _client.GetPlayerData.ObjectContract.PositionZ = _positionZ;
+                ObjectData objectData = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
 
-                _client.GetPlayerData.ObjectContract.RotationX = _rotationX;
-                _client.GetPlayerData.ObjectContract.RotationY = _rotationY;
-                _client.GetPlayerData.ObjectContract.RotationZ = _rotationZ;
+                objectData.ObjectContract.PositionX = _positionX;
+                objectData.ObjectContract.PositionY = _positionY;
+                objectData.ObjectContract.PositionZ = _positionZ;
 
-                _client.GetPlayerData.UpdatePositionInServer = new Vector3(
+                objectData.ObjectContract.RotationX = _rotationX;
+                objectData.ObjectContract.RotationY = _rotationY;
+                objectData.ObjectContract.RotationZ = _rotationZ;
+
+                objectData.UpdatePositionInServer = new Vector3(
                     _positionX, _positionY, _positionZ);
 
-                _client.GetPlayerData.ObjectIsLoadData = true;
+                objectData.ObjectIsLoadData = true;
             }
             catch (Exception exception)
             {
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
+                codeError.FireException = nameof(UpdateContractPositionInScene);
             }
 
             return codeError;

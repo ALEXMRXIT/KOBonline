@@ -39,6 +39,7 @@ namespace Assets.Sources.Network.InPacket
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
+                codeError.FireException = nameof(SendTimeBuff);
             }
 
             return codeError;

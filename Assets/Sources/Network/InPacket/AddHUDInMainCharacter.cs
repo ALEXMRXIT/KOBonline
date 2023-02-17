@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using Assets.Sources.Tools;
 using Assets.Sources.Enums;
@@ -17,9 +18,10 @@ namespace Assets.Sources.Network.InPacket
         public AddHUDInMainCharacter(NetworkPacket networkPacket, ClientProcessor clientProcessor)
         {
             _client = clientProcessor;
-
-            networkPacket.ReadLong();
+            _objId = networkPacket.ReadLong();
             int count = networkPacket.ReadInt();
+
+            _objectData = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
 
             for (int iterator = 0; iterator < count; iterator++)
             {
@@ -27,23 +29,25 @@ namespace Assets.Sources.Network.InPacket
 
                 switch (code)
                 {
-                    case StatsCode.Level: _client.GetPlayerData.ObjectContract.Level = networkPacket.ReadInt(); break;
-                    case StatsCode.MinHealth: _client.GetPlayerData.ObjectContract.MinHealth = networkPacket.ReadInt(); break;
-                    case StatsCode.MaxHealth: _client.GetPlayerData.ObjectContract.Health = networkPacket.ReadInt(); break;
-                    case StatsCode.MinMana: _client.GetPlayerData.ObjectContract.MinMana = networkPacket.ReadInt(); break;
-                    case StatsCode.MaxMana: _client.GetPlayerData.ObjectContract.Mana = networkPacket.ReadInt(); break;
-                    case StatsCode.PlayerRank: _client.GetPlayerData.ObjectContract.PlayerRank = networkPacket.ReadInt(); break;
-                    case StatsCode.Strength: _client.GetPlayerData.ObjectContract.Strength = networkPacket.ReadInt(); break;
-                    case StatsCode.Agility: _client.GetPlayerData.ObjectContract.Agility = networkPacket.ReadInt(); break;
-                    case StatsCode.Intelligence: _client.GetPlayerData.ObjectContract.Intelligence = networkPacket.ReadInt(); break;
-                    case StatsCode.Endurance: _client.GetPlayerData.ObjectContract.Endurance = networkPacket.ReadInt(); break;
-                    case StatsCode.Experience: _client.GetPlayerData.ObjectContract.Experience = networkPacket.ReadInt(); break;
-                    case StatsCode.MoveSpeed: _client.GetPlayerData.ObjectContract.MoveSpeed = networkPacket.ReadInt(); break;
+                    case StatsCode.Level: _objectData.ObjectContract.Level = networkPacket.ReadInt(); break;
+                    case StatsCode.MinHealth: _objectData.ObjectContract.MinHealth = networkPacket.ReadInt(); break;
+                    case StatsCode.MaxHealth: _objectData.ObjectContract.Health = networkPacket.ReadInt(); break;
+                    case StatsCode.MinMana: _objectData.ObjectContract.MinMana = networkPacket.ReadInt(); break;
+                    case StatsCode.MaxMana: _objectData.ObjectContract.Mana = networkPacket.ReadInt(); break;
+                    case StatsCode.PlayerRank: _objectData.ObjectContract.PlayerRank = networkPacket.ReadInt(); break;
+                    case StatsCode.Strength: _objectData.ObjectContract.Strength = networkPacket.ReadInt(); break;
+                    case StatsCode.Agility: _objectData.ObjectContract.Agility = networkPacket.ReadInt(); break;
+                    case StatsCode.Intelligence: _objectData.ObjectContract.Intelligence = networkPacket.ReadInt(); break;
+                    case StatsCode.Endurance: _objectData.ObjectContract.Endurance = networkPacket.ReadInt(); break;
+                    case StatsCode.Experience: _objectData.ObjectContract.Experience = networkPacket.ReadInt(); break;
+                    case StatsCode.MoveSpeed: _objectData.ObjectContract.MoveSpeed = networkPacket.ReadInt(); break;
                 }
             }
         }
 
         private readonly ClientProcessor _client;
+        private readonly long _objId;
+        private readonly ObjectData _objectData;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -54,13 +58,14 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                _client.GetPlayerData.ObjectHUD.SetHUD(_client.GetPlayerData.ObjectContract);
+                _objectData.ObjectHUD.SetHUD(_objectData.ObjectContract);
             }
             catch (Exception exception)
             {
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
+                codeError.FireException = nameof(AddHUDInMainCharacter);
             }
 
             return codeError;

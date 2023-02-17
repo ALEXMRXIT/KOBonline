@@ -6,6 +6,8 @@ namespace Assets.Sources.Models.Base
 {
     public sealed class ObjectData
     {
+        public long ObjId;
+        public bool IsBot = true;
         public GameObject GameObjectModel;
         public PlayerContract ObjectContract;
         public CharacterTarget ObjectTarget;

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using System.Collections;
 using Assets.Sources.Enums;
 using Assets.Sources.Models;
@@ -29,72 +30,79 @@ namespace Assets.Sources.Models.Characters
 
         private IEnumerator SetBattleSceneForActors()
         {
-            yield return new WaitUntil(() => _networkProcessor.GetParentObject().GetPlayerData.ObjectIsLoadData);
-            _networkProcessor.GetParentObject().GetPlayerData.GameObjectModel = _customerModelView.ModelFinalBuild(
-                _networkProcessor.GetParentObject().GetPlayerData.ObjectContract, showModel: false).
-                    ShowModel(updatePosition: true, blockDisableActive: true);
-
-            if (_networkProcessor.GetParentObject().GetPlayerData.ObjectContract.RotationY == 0f)
+            foreach (ObjectData objectData in _networkProcessor.GetParentObject().GetPlayers)
             {
-                _mainCamera.gameObject.transform.position = _positionCamera2;
-                _mainCamera.gameObject.transform.rotation = Quaternion.Euler(_rotationCamera2);
+                if (!objectData.IsBot)
+                {
+                    yield return new WaitUntil(() => objectData.ObjectIsLoadData);
+
+                    objectData.GameObjectModel = _customerModelView.ModelFinalBuild(
+                        objectData.ObjectContract, showModel: false).ShowModel(updatePosition: true, blockDisableActive: true);
+
+                    if (objectData.ObjectContract.RotationY == 0f)
+                    {
+                        _mainCamera.gameObject.transform.position = _positionCamera2;
+                        _mainCamera.gameObject.transform.rotation = Quaternion.Euler(_rotationCamera2);
+                    }
+
+                    _mainCamera.SetupCameraMovedForTarget(objectData.GameObjectModel.transform);
+                    break;
+                }
             }
 
-            _mainCamera.SetupCameraMovedForTarget(_networkProcessor.GetParentObject().GetPlayerData.GameObjectModel.transform);
+            yield return new WaitUntil(() => _networkProcessor.GetParentObject().GetNetworkDataLoader.IsDataLoader());
 
-            yield return new WaitUntil(() => _networkProcessor.GetParentObject().GetEnemyData.ObjectIsLoadData);
-            _networkProcessor.GetParentObject().GetEnemyData.GameObjectModel = _customerModelView.ModelFinalBuild(
-                _networkProcessor.GetParentObject().GetEnemyData.ObjectContract, showModel: false).
-                    ShowModel(updatePosition: true, blockDisableActive: true);
+            int countPlayersInGameScene = _networkProcessor.GetParentObject().GetPlayers.Count;
+            for (int iterator = 0; iterator < countPlayersInGameScene - 1; iterator += 2)
+            {
+                ObjectData firstEnemy = _networkProcessor.GetParentObject().GetPlayers[iterator];
+                ObjectData secondEnemy = _networkProcessor.GetParentObject().GetPlayers[iterator + 1];
 
-            CharacterTarget mainTarget = _networkProcessor.GetParentObject()
-                .GetPlayerData.GameObjectModel.AddComponent<CharacterTarget>();
-            CharacterTarget enemyTarget = _networkProcessor.GetParentObject()
-                .GetEnemyData.GameObjectModel.AddComponent<CharacterTarget>();
-            HUDCharacterComponent hudMain = _networkProcessor.GetParentObject()
-                .GetPlayerData.GameObjectModel.GetComponent<HUDCharacterComponent>();
-            HUDCharacterComponent hudEnemy = _networkProcessor.GetParentObject()
-                .GetEnemyData.GameObjectModel.GetComponent<HUDCharacterComponent>();
+                if (firstEnemy.IsBot)
+                {
+                    firstEnemy.GameObjectModel = _customerModelView.ModelFinalBuild(
+                        firstEnemy.ObjectContract, showModel: false).ShowModel(updatePosition: true, blockDisableActive: true);
+                }
 
-            _networkProcessor.GetParentObject().GetPlayerData.ObjectTarget = mainTarget;
-            _networkProcessor.GetParentObject().GetPlayerData.ObjectHUD = hudMain;
-            _networkProcessor.GetParentObject().GetEnemyData.ObjectTarget = enemyTarget;
-            _networkProcessor.GetParentObject().GetEnemyData.ObjectHUD = hudEnemy;
+                if (secondEnemy.IsBot)
+                {
+                    secondEnemy.GameObjectModel = _customerModelView.ModelFinalBuild(
+                        secondEnemy.ObjectContract, showModel: false).ShowModel(updatePosition: true, blockDisableActive: true);
+                }
 
-            _networkProcessor.GetParentObject().GetPlayerData.ObjectBaseEffectWhereAttack = _networkProcessor
-                .GetParentObject().GetPlayerData.GameObjectModel.GetComponent<BaseAttackEffect>()
-                    .Init(_networkProcessor.GetParentObject().GetPlayerData.ObjectContract.CharacterBaseClass);
-            _networkProcessor.GetParentObject().GetPlayerData.GameObjectModel
-                .GetComponent<BaseAttackSpawnEffect>().Init(_networkProcessor.GetParentObject()
-                    .GetPlayerData.ObjectContract.CharacterBaseClass, _networkProcessor.GetParentObject().GetEnemyData);
+                CharacterTarget firstEnemyTarget = firstEnemy.GameObjectModel.AddComponent<CharacterTarget>();
+                CharacterTarget secondEnemyTarget = secondEnemy.GameObjectModel.AddComponent<CharacterTarget>();
+                HUDCharacterComponent firstEnemyHud = firstEnemy.GameObjectModel.GetComponent<HUDCharacterComponent>();
+                HUDCharacterComponent secondEnemyHud = secondEnemy.GameObjectModel.GetComponent<HUDCharacterComponent>();
 
-            _networkProcessor.GetParentObject().GetEnemyData.ObjectBaseEffectWhereAttack = _networkProcessor
-                .GetParentObject().GetEnemyData.GameObjectModel.GetComponent<BaseAttackEffect>()
-                    .Init(_networkProcessor.GetParentObject().GetEnemyData.ObjectContract.CharacterBaseClass);
-            _networkProcessor.GetParentObject().GetEnemyData.GameObjectModel
-                .GetComponent<BaseAttackSpawnEffect>().Init(_networkProcessor.GetParentObject()
-                    .GetEnemyData.ObjectContract.CharacterBaseClass, _networkProcessor.GetParentObject().GetPlayerData);
+                firstEnemy.ObjectTarget = firstEnemyTarget;
+                firstEnemy.ObjectHUD = firstEnemyHud;
+                secondEnemy.ObjectTarget = secondEnemyTarget;
+                secondEnemy.ObjectHUD = secondEnemyHud;
 
-            if (!mainTarget.IsTargetHook())
-                mainTarget.SetTarget(_networkProcessor.GetParentObject().GetEnemyData.GameObjectModel.transform);
-            else throw new System.ArgumentException(nameof(mainTarget));
+                firstEnemy.ObjectBaseEffectWhereAttack = firstEnemy.GameObjectModel.
+                    GetComponent<BaseAttackEffect>().Init(firstEnemy.ObjectContract.CharacterBaseClass);
+                firstEnemy.GameObjectModel.GetComponent<BaseAttackSpawnEffect>().
+                    Init(firstEnemy.ObjectContract.CharacterBaseClass, secondEnemy);
 
-            if (!enemyTarget.IsTargetHook())
-                enemyTarget.SetTarget(_networkProcessor.GetParentObject().GetPlayerData.GameObjectModel.transform);
-            else throw new System.ArgumentException(nameof(enemyTarget));
+                secondEnemy.ObjectBaseEffectWhereAttack = secondEnemy.GameObjectModel.
+                    GetComponent<BaseAttackEffect>().Init(secondEnemy.ObjectContract.CharacterBaseClass);
+                secondEnemy.GameObjectModel.GetComponent<BaseAttackSpawnEffect>().
+                    Init(secondEnemy.ObjectContract.CharacterBaseClass, firstEnemy);
+
+                if (!firstEnemyTarget.IsTargetHook())
+                    firstEnemyTarget.SetTarget(secondEnemy.GameObjectModel.transform);
+                if (!secondEnemyTarget.IsTargetHook())
+                    secondEnemyTarget.SetTarget(firstEnemy.GameObjectModel.transform);
+            }
 
             _networkProcessor.SendPacketAsync(LoadSceneFightingSuccess.ToPacket());
         }
 
         private void OnDestroy()
         {
-            _networkProcessor.GetParentObject().GetPlayerData.ObjectIsLoadData = false;
-            _networkProcessor.GetParentObject().GetPlayerData.ObjectTarget = null;
-            _networkProcessor.GetParentObject().GetPlayerData.GameObjectModel = null;
-
-            _networkProcessor.GetParentObject().GetEnemyData.ObjectIsLoadData = false;
-            _networkProcessor.GetParentObject().GetEnemyData.ObjectTarget = null;
-            _networkProcessor.GetParentObject().GetEnemyData.GameObjectModel = null;
+            _networkProcessor.GetParentObject().GetPlayers.RemoveAll(x => x.IsBot);
+            _networkProcessor.GetParentObject().GetNetworkDataLoader.Reset();
         }
     }
 }

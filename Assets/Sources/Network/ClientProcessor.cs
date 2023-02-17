@@ -29,15 +29,15 @@ namespace Assets.Sources.Network
         private IPEndPoint _endPoint;
         private CancellationTokenSource _cancelationTokenSources;
         private ClientCurrentMenu _clientCurrentMenu = ClientCurrentMenu.Login;
-        private ObjectData _playerData;
-        private ObjectData _enemyData;
+        private List<ObjectData> _players = new List<ObjectData>();
+        private NetworkDataLoader _networkLoader = new NetworkDataLoader();
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
 
         public bool IsConnected => _tcpClient.Connected;
-        public ObjectData GetPlayerData { get => _playerData; set => _playerData = value; }
-        public ObjectData GetEnemyData { get => _enemyData; set => _enemyData = value; }
+        public List<ObjectData> GetPlayers { get => _players; }
+        public NetworkDataLoader GetNetworkDataLoader { get => _networkLoader; }
 
         public ClientCurrentMenu ClientMenu
         {
@@ -55,7 +55,7 @@ namespace Assets.Sources.Network
             ClientSession.OnSessionChange += ClientSessionOnSessionChange;
             _cancelationTokenSources = new CancellationTokenSource();
 
-            _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 27017);
+            _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 27018);
             _tcpClient = new TcpClient();
 
             try
@@ -132,9 +132,10 @@ namespace Assets.Sources.Network
 
                 if (packetImplementCodeResult.InnerException != null)
                 {
-                    Debug.LogError($"[CODE: {packetImplementCodeResult.ErrorCode}]\t" +
-                        $"Message: {packetImplementCodeResult.ErrorMessage}\t" +
-                        $"Exception: {packetImplementCodeResult.InnerException.Message}");
+                    Debug.LogError($"[CODE: {packetImplementCodeResult.ErrorCode}] " +
+                        $"Message: {packetImplementCodeResult.ErrorMessage}\n" +
+                        $"Exception: {packetImplementCodeResult.InnerException.Message}\n" +
+                        $"File: {packetImplementCodeResult.FireException}");
                 }
             }
         }
