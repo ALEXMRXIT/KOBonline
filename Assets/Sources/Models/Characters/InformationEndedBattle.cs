@@ -1,0 +1,75 @@
+using UnityEngine;
+using UnityEngine.UI;
+using Assets.Sources.Network;
+using Assets.Sources.Interfaces;
+using Assets.Sources.Models.Base;
+using Assets.Sources.Models.Characters.Tools;
+using Assets.Sources.Network.OutPacket;
+
+namespace Assets.Sources.Models.Characters
+{
+    public sealed class InformationEndedBattle : MonoBehaviour
+    {
+        [SerializeField] private Color _colorWin;
+        [SerializeField] private Color _colorDefeat;
+        [SerializeField] private Text _titleText;
+        [SerializeField] private Text _experienceText;
+        [SerializeField] private Text _copperText;
+        [SerializeField] private Text _silverText;
+        [SerializeField] private Text _goldText;
+        [SerializeField] private GameObject _rankGreen;
+        [SerializeField] private GameObject _rankRed;
+        [SerializeField] private Button _acceptButton;
+
+        public static InformationEndedBattle Instance;
+
+        private INetworkProcessor _networkProcessor;
+
+        private void Awake()
+        {
+            _networkProcessor = ClientProcessor.Instance;
+            _acceptButton.onClick.AddListener(InternalButtonHandler);
+            Instance = this;
+        }
+
+        private void InternalButtonHandler()
+        {
+            _networkProcessor.SendPacketAsync(LoadCharacter.ToPacket());
+        }
+
+        public void ShowResultBattle(BattleResultSources battleResultSources)
+        {
+            gameObject.SetActive(true);
+
+            if (battleResultSources.IsCharacterWin)
+            {
+                _titleText.color = _colorWin;
+                _titleText.text = "Victory!!";
+            }
+            else
+            {
+                _titleText.color = _colorDefeat;
+                _titleText.text = "Defeat!!";
+            }
+
+            _experienceText.text = $"+{battleResultSources.AddExperience}";
+
+            int[] goldSplit = Parser.SplitIntToMoney(battleResultSources.AddGold);
+            _goldText.text = goldSplit[2].ToString();
+            _silverText.text = goldSplit[1].ToString();
+            _copperText.text = goldSplit[0].ToString();
+
+            if (battleResultSources.IsCharacterWin)
+            {
+                _rankGreen.SetActive(true);
+                _rankGreen.GetComponent<Text>().text = $"+{battleResultSources.AddRank}";
+            }
+            else
+            {
+                _rankRed.SetActive(true);
+                _rankRed.GetComponent<Text>().text = battleResultSources.AddRank < 0 ?
+                    ($"{battleResultSources.AddRank}") : ($"-{battleResultSources.AddRank}");
+            }
+        }
+    }
+}

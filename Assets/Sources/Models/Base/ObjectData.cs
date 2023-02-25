@@ -8,8 +8,11 @@ namespace Assets.Sources.Models.Base
     {
         public long ObjId;
         public bool IsBot = true;
+        public bool IsDeath = false;
         public GameObject GameObjectModel;
+        public TextView ClientTextView;
         public PlayerContract ObjectContract;
+        public CharacterState ClientAnimationState;
         public CharacterTarget ObjectTarget;
         public HUDCharacterComponent ObjectHUD;
         public BaseAttackEffect ObjectBaseEffectWhereAttack;

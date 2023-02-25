@@ -31,6 +31,7 @@ namespace Assets.Sources.Network
         private ClientCurrentMenu _clientCurrentMenu = ClientCurrentMenu.Login;
         private List<ObjectData> _players = new List<ObjectData>();
         private NetworkDataLoader _networkLoader = new NetworkDataLoader();
+        private bool _gameFirstRun = false;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
@@ -38,6 +39,7 @@ namespace Assets.Sources.Network
         public bool IsConnected => _tcpClient.Connected;
         public List<ObjectData> GetPlayers { get => _players; }
         public NetworkDataLoader GetNetworkDataLoader { get => _networkLoader; }
+        public bool IsGameFirstRun { get => _gameFirstRun; }
 
         public ClientCurrentMenu ClientMenu
         {
@@ -138,6 +140,11 @@ namespace Assets.Sources.Network
                         $"File: {packetImplementCodeResult.FireException}");
                 }
             }
+        }
+
+        public void SetGameRun()
+        {
+            _gameFirstRun = true;
         }
 
         public async Task SendPacketAsync(NetworkPacket packet, PacketImportance packetImportance = PacketImportance.None)

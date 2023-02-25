@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -129,7 +129,175 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: gcformimgddr_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 150
+        width: 193
+        height: 106
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40746973de9be4dac99ac3f4d870fbab
+      internalID: 2080887880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gcformimgddr_1
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 150
+        width: 35
+        height: 106
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: edc433bd789824f45bd79199a477c677
+      internalID: 819237586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gcformimgddr_2
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 233
+        width: 60
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c0f9c6e37ca574bb19eefd81e72d9217
+      internalID: -1270734776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gcformimgddr_3
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 92
+        width: 6
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da486bca8746e47368b29b14e6cc5566
+      internalID: 166735569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gcformimgddr_4
+      rect:
+        serializedVersion: 2
+        x: 261
+        y: 70
+        width: 22
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2f8afd9fe08846d4b3544775613ae1d
+      internalID: -1611875987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gcformimgddr_5
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 70
+        width: 67
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 02f33964f70c644609308f6a31834cd9
+      internalID: -844724748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gcformimgddr_6
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 70
+        width: 182
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 35bd0d40af96a41038ef0b47c2dde869
+      internalID: -503372594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gcformimgddr_7
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 117
+        width: 6
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1766cc6bd7214411ea81f94a967290c6
+      internalID: -1462374273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -140,7 +308,15 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gcformimgddr_3: 166735569
+      gcformimgddr_1: 819237586
+      gcformimgddr_7: -1462374273
+      gcformimgddr_0: 2080887880
+      gcformimgddr_4: -1611875987
+      gcformimgddr_5: -844724748
+      gcformimgddr_2: -1270734776
+      gcformimgddr_6: -503372594
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

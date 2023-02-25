@@ -13,9 +13,11 @@ namespace Assets.Sources.MechanicUI
         [SerializeField] private Button _chooseModeButton;
         [SerializeField] private Button _pvpOnlyButton;
         [SerializeField] private Button _singleOnlyButton;
+        [SerializeField] private Button _cancelFight;
 
         [Space]
         [SerializeField] private GameObject _panelChooseMode;
+        [SerializeField] private GameObject _panelAll;
 
         public static ModeFightUI Instance;
 
@@ -31,30 +33,38 @@ namespace Assets.Sources.MechanicUI
         private void Start()
         {
             _gameMode = GameMode.PVPMode;
-            _fightButton.onClick.AddListener(FightButtonHandler);
-            _chooseModeButton.onClick.AddListener(ChooseModeButtonHandler);
+            _fightButton.onClick.AddListener(InternalFightButtonHandler);
+            _chooseModeButton.onClick.AddListener(InternalChooseModeButtonHandler);
+            _cancelFight.onClick.AddListener(InternalCancelButtonHandler);
         }
 
-        private void FightButtonHandler()
+        private void InternalFightButtonHandler()
         {
-            _networkProcessor.SendPacketAsync(TryEnterRoom.ToPacket(_gameMode));
+            _networkProcessor.SendPacketAsync(TryEnterRoom.ToPacket(_gameMode, isEnter: true));
         }
 
-        private void ChooseModeButtonHandler()
+        private void InternalChooseModeButtonHandler()
         {
             _panelChooseMode.SetActive(!_panelChooseMode.activeSelf);
         }
 
-        private void PVPOnlyButtonHandler()
+        private void InternalPVPOnlyButtonHandler()
         {
             _gameMode = GameMode.PVPMode;
             _panelChooseMode.SetActive(!_panelChooseMode.activeSelf);
         }
 
-        private void SingleOnlyButtonHandler()
+        private void InternalSingleOnlyButtonHandler()
         {
             _gameMode = GameMode.SingleMode;
             _panelChooseMode.SetActive(!_panelChooseMode.activeSelf);
+        }
+
+        private void InternalCancelButtonHandler()
+        {
+            _networkProcessor.SendPacketAsync(TryEnterRoom.ToPacket(_gameMode, isEnter: false));
+            _panelChooseMode.SetActive(false);
+            _panelAll.SetActive(false);
         }
     }
 }

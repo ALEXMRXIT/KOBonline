@@ -1,8 +1,10 @@
+using System.Linq;
 using UnityEngine;
 using System.Collections;
 using Assets.Sources.Enums;
 using Assets.Sources.Network;
 using Assets.Sources.Interfaces;
+using Assets.Sources.Models.Base;
 
 namespace Assets.Sources.Models.Characters
 {
@@ -56,7 +58,8 @@ namespace Assets.Sources.Models.Characters
 
             if (!nullEffectReference)
                 _effect[0].gameObject.SetActive(true);
-            yield return baseAttackSpawnEffect.SpawnFireBaseAttack(pauseTakeDamage);
+            yield return new WaitForSecondsRealtime(pauseTakeDamage);
+            StartCoroutine(baseAttackSpawnEffect.SpawnFireBaseAttack());
             yield return new WaitForSecondsRealtime(lengthClip - pauseTakeDamage);
             if (!nullEffectReference)
                 _effect[0]?.gameObject.SetActive(false);

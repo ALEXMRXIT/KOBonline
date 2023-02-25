@@ -1,6 +1,5 @@
 ﻿using System;
 using Assets.Sources.Models;
-using Assets.Sources.Interfaces;
 using System.Collections.Generic;
 using Assets.Sources.Network.InPacket;
 
@@ -10,22 +9,25 @@ namespace Assets.Sources.Network
     {
         public PacketImplentation()
         {
-            _packetHandlerServices = new Dictionary<byte, Type>();
-
-            _packetHandlerServices.Add(0x00, typeof(MessageServerReceived));
-            _packetHandlerServices.Add(0x01, typeof(SessionChanged));
-            _packetHandlerServices.Add(0x02, typeof(SelectableCharacter));
-            _packetHandlerServices.Add(0x03, typeof(UpdateWaitBattleArena));
-            _packetHandlerServices.Add(0x04, typeof(CharacterEnemyInfo));
-            _packetHandlerServices.Add(0x05, typeof(SendTimeBuff));
-            _packetHandlerServices.Add(0x06, typeof(UpdateContractPositionInScene));
-            _packetHandlerServices.Add(0x07, typeof(UpdateCharacterMainPosition));
-            _packetHandlerServices.Add(0x08, typeof(AddMovementComponent));
-            _packetHandlerServices.Add(0x09, typeof(UpdateCharacterEnemyPosition));
-            _packetHandlerServices.Add(0x0A, typeof(AddHUDInMainCharacter));
-            _packetHandlerServices.Add(0x0B, typeof(AddHUDInEnemyCharacter));
-            _packetHandlerServices.Add(0x0C, typeof(CharacterAttackCombat));
-            _packetHandlerServices.Add(0x0D, typeof(SetLongDataLoader));
+            _packetHandlerServices = new Dictionary<byte, Type>
+            {
+                { 0x00, typeof(MessageServerReceived) },
+                { 0x01, typeof(SessionChanged) },
+                { 0x02, typeof(SelectableCharacter) },
+                { 0x03, typeof(UpdateWaitBattleArena) },
+                { 0x04, typeof(CharacterEnemyInfo) },
+                { 0x05, typeof(SendTimeBuff) },
+                { 0x06, typeof(UpdateContractPositionInScene) },
+                { 0x07, typeof(UpdateCharacterMainPosition) },
+                { 0x08, typeof(AddMovementComponent) },
+                { 0x09, typeof(UpdateCharacterEnemyPosition) },
+                { 0x0A, typeof(AddHUDInMainCharacter) },
+                { 0x0B, typeof(AddHUDInEnemyCharacter) },
+                { 0x0C, typeof(CharacterAttackCombat) },
+                { 0x0D, typeof(SetLongDataLoader) },
+                { 0x0E, typeof(PlayerDeath) },
+                { 0x0F, typeof(BattleResult) }
+            };
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

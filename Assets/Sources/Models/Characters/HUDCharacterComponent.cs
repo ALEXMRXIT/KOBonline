@@ -14,11 +14,26 @@ namespace Assets.Sources.Models.Characters
         public void SetHUD(PlayerContract playerContract)
         {
             if (!_canvasHud.activeSelf)
-                _canvasHud.SetActive(true);
+                SetHudActiveStatus(true);
 
-            _health.value = Mathf.Clamp01(unchecked(playerContract.MinHealth / playerContract.Health));
-            _mana.value = Mathf.Clamp01(unchecked(playerContract.MinMana / playerContract.Mana));
+            UpdateHealthData(playerContract);
+            UpdateManaData(playerContract);
             _characterNameText.text = playerContract.CharacterName;
+        }
+
+        public void UpdateHealthData(PlayerContract playerContract)
+        {
+            _health.value = Mathf.Clamp(playerContract.MinHealth / (float)playerContract.Health, min: 0, max: 1);
+        }
+
+        public void UpdateManaData(PlayerContract playerContract)
+        {
+            _health.value = Mathf.Clamp(playerContract.MinMana / (float)playerContract.Mana, min: 0, max: 1);
+        }
+
+        public void SetHudActiveStatus(bool status)
+        {
+            _canvasHud.SetActive(status);
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Assets.Sources.Models
         private ObjectData _objectData;
         private StateAnimationRun _animationRun;
         private StateAnimationAttack _animationAttack;
+        private StateAnimationDeath _animationDeath;
+        private StateAnimationIdle _animationIdle;
 
         public void Init(CharacterTarget characterTarget, ObjectData data)
         {
@@ -28,12 +30,26 @@ namespace Assets.Sources.Models
 
             _animationRun = new StateAnimationRun();
             _animationAttack = new StateAnimationAttack();
+            _animationDeath = new StateAnimationDeath();
+            _animationIdle = new StateAnimationIdle();
         }
 
         private void Update()
         {
             if (!_characterTarget.IsTargetHook())
                 return;
+
+            if (_objectData.IsDeath)
+            {
+                _characterState.SetCharacterState(_animationDeath, speed: 1f);
+                return;
+            }
+
+            if (_characterTarget.IsObjectDeath())
+            {
+                _characterState.SetCharacterState(_animationIdle, speed: 1f);
+                return;
+            }
 
             float dist = Vector3.Distance(transform.position,
                 _characterTarget.GetCurrentTarget().position);

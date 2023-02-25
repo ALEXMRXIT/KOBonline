@@ -10,7 +10,6 @@ namespace Assets.Sources.MechanicUI
     public sealed class ButtleUI : MonoBehaviour
     {
         [SerializeField] private Text _description;
-        [SerializeField] private Button _cancelButton;
 
         public static ButtleUI Instance;
 
@@ -24,19 +23,9 @@ namespace Assets.Sources.MechanicUI
             gameObject.SetActive(false);
         }
 
-        private void Start()
-        {
-            _cancelButton.onClick.AddListener(CancelButtonhandler);
-        }
-
         private void OnEnable()
         {
             _coroutine = StartCoroutine(UpdateWaitTextRequest());
-        }
-
-        private void CancelButtonhandler()
-        {
-            gameObject.SetActive(!gameObject.activeSelf);
         }
 
         public void UpdateDescription(int[] values)

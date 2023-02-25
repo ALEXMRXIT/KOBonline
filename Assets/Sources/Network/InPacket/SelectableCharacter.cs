@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using Assets.Sources.Enums;
 using Assets.Sources.Models;
@@ -33,6 +34,7 @@ namespace Assets.Sources.Network.InPacket
             _playerContract.Intelligence = networkPacket.ReadInt();
             _playerContract.Endurance = networkPacket.ReadInt();
             _playerContract.Experience = networkPacket.ReadLong();
+            _playerContract.NextExperience = networkPacket.ReadLong();
             _playerContract.CharacterBaseClass = (BaseClass)networkPacket.ReadInt();
             _playerContract.AttackDistance = networkPacket.ReadInt();
             _playerContract.MoveSpeed = networkPacket.ReadFloat();
@@ -56,12 +58,23 @@ namespace Assets.Sources.Network.InPacket
                 CustomerModelView.Instance.ModelFinalBuild(_playerContract, showModel: true);
                 MainUI.Instance.UpdateUI(_playerContract);
 
-                ObjectData playerData = new ObjectData();
-                playerData.ObjId = _objId;
-                playerData.IsBot = false;
-                playerData.ObjectContract = _playerContract;
+                ObjectData player = _client.GetPlayers.FirstOrDefault(player => player.ObjId == _objId);
+                _client.GetPlayers.RemoveAll(player => player.ObjId != _objId);
 
-                _client.GetPlayers.Add(playerData);
+                if (player == null)
+                {
+                    ObjectData playerData = new ObjectData();
+                    playerData.ObjId = _objId;
+                    playerData.IsBot = false;
+                    playerData.ObjectContract = _playerContract;
+
+                    _client.GetPlayers.Add(playerData);
+                }
+                else
+                {
+                    player.ObjectContract = _playerContract;
+                    player.ObjectIsLoadData = false;
+                }
             }
             catch (Exception exception)
             {

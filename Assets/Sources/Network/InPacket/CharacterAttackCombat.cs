@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using Assets.Sources.Enums;
 using Assets.Sources.Models;
 using Assets.Sources.Network;
 using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI;
+using Assets.Sources.Models.Base;
 using UnityEngine.SceneManagement;
+using Assets.Sources.Models.Characters;
 
 namespace Assets.Sources.Network.InPacket
 {
@@ -14,9 +17,14 @@ namespace Assets.Sources.Network.InPacket
         public CharacterAttackCombat(NetworkPacket networkPacket, ClientProcessor clientProcessor)
         {
             _client = clientProcessor;
+
+            _objId = networkPacket.ReadLong();
+            _damage = networkPacket.ReadInt();
         }
 
         private readonly ClientProcessor _client;
+        private readonly long _objId;
+        private readonly int _damage;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -27,6 +35,12 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
+                ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
+                Damage damage = new Damage(DamageFrom.DamageFromServer, player.IsBot, _damage);
+
+                Debug.Log($"Take damage player id: {player.ObjId} damage: {damage.ClientDamageValue}");
+
+                player.ClientTextView.AddDamage(damage);
             }
             catch (Exception exception)
             {

@@ -19,6 +19,7 @@ namespace Assets.Sources.Contracts
         public int Intelligence { get; set; }
         public int Endurance { get; set; }
         public long Experience { get; set; }
+        public long NextExperience { get; set; }
         public BaseClass CharacterBaseClass { get; set; }
         public float PositionX { get; set; }
         public float PositionY { get; set; }

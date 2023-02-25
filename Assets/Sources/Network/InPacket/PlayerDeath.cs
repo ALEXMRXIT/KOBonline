@@ -1,0 +1,54 @@
+﻿using System;
+using System.Linq;
+using UnityEngine;
+using Assets.Sources.Enums;
+using Assets.Sources.Models;
+using Assets.Sources.Network;
+using Assets.Sources.Interfaces;
+using Assets.Sources.MechanicUI;
+using Assets.Sources.Models.Base;
+using UnityEngine.SceneManagement;
+using Assets.Sources.Models.Characters;
+using Assets.Sources.Models.States.StateAnimations;
+
+namespace Assets.Sources.Network.InPacket
+{
+    public sealed class PlayerDeath : NetworkBasePacket
+    {
+        public PlayerDeath(NetworkPacket networkPacket, ClientProcessor clientProcessor)
+        {
+            _client = clientProcessor;
+
+            _objId = networkPacket.ReadLong();
+        }
+
+        private readonly ClientProcessor _client;
+        private readonly long _objId;
+
+        public override PacketImplementCodeResult RunImpl()
+        {
+#if UNITY_EDITOR
+            Debug.Log($"Execute {nameof(PlayerDeath)}.");
+#endif
+            PacketImplementCodeResult codeError = new PacketImplementCodeResult();
+
+            try
+            {
+                ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
+                player.IsDeath = true;
+                player.ObjectTarget.ClearTarget();
+                player.ObjectHUD.SetHudActiveStatus(status: false);
+                player.ClientAnimationState.SetCharacterState(new StateAnimationDeath());
+            }
+            catch (Exception exception)
+            {
+                codeError.ErrorCode = -1;
+                codeError.ErrorMessage = exception.Message;
+                codeError.InnerException = exception;
+                codeError.FireException = nameof(PlayerDeath);
+            }
+
+            return codeError;
+        }
+    }
+}

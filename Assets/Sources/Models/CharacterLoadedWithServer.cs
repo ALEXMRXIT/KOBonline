@@ -19,7 +19,11 @@ namespace Assets.Sources.Models
             Instance = this;
             _clientProcessor = ClientProcessor.Instance;
 
-            _clientProcessor.SendPacketAsync(LoadCharacter.ToPacket());
+            if (!_clientProcessor.GetParentObject().IsGameFirstRun)
+            {
+                _clientProcessor.SendPacketAsync(LoadCharacter.ToPacket());
+                _clientProcessor.GetParentObject().SetGameRun();
+            }
         }
 
         public void EnableUICreateCharacter()

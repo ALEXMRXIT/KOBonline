@@ -15,6 +15,7 @@ namespace Assets.Sources.Models.Characters
     {
         [SerializeField] private CustomerModelView _customerModelView;
         [SerializeField] private TargetSurveillanceCamera _mainCamera;
+        [SerializeField] private GameObject _panelWinner;
 
         [Space]
         [SerializeField] private Vector3 _positionCamera2;
@@ -26,6 +27,7 @@ namespace Assets.Sources.Models.Characters
         {
             _networkProcessor = ClientProcessor.Instance;
             StartCoroutine(SetBattleSceneForActors());
+            _panelWinner.SetActive(false);
         }
 
         private IEnumerator SetBattleSceneForActors()
@@ -74,6 +76,11 @@ namespace Assets.Sources.Models.Characters
                 CharacterTarget secondEnemyTarget = secondEnemy.GameObjectModel.AddComponent<CharacterTarget>();
                 HUDCharacterComponent firstEnemyHud = firstEnemy.GameObjectModel.GetComponent<HUDCharacterComponent>();
                 HUDCharacterComponent secondEnemyHud = secondEnemy.GameObjectModel.GetComponent<HUDCharacterComponent>();
+                firstEnemy.ClientAnimationState = firstEnemy.GameObjectModel.GetComponent<CharacterState>();
+                secondEnemy.ClientAnimationState = secondEnemy.GameObjectModel.GetComponent<CharacterState>();
+
+                firstEnemy.ClientTextView = firstEnemy.GameObjectModel.GetComponent<TextView>();
+                secondEnemy.ClientTextView = secondEnemy.GameObjectModel.GetComponent<TextView>();
 
                 firstEnemy.ObjectTarget = firstEnemyTarget;
                 firstEnemy.ObjectHUD = firstEnemyHud;
@@ -91,9 +98,9 @@ namespace Assets.Sources.Models.Characters
                     Init(secondEnemy.ObjectContract.CharacterBaseClass, firstEnemy);
 
                 if (!firstEnemyTarget.IsTargetHook())
-                    firstEnemyTarget.SetTarget(secondEnemy.GameObjectModel.transform);
+                    firstEnemyTarget.SetTarget(secondEnemy.GameObjectModel.transform, secondEnemy);
                 if (!secondEnemyTarget.IsTargetHook())
-                    secondEnemyTarget.SetTarget(firstEnemy.GameObjectModel.transform);
+                    secondEnemyTarget.SetTarget(firstEnemy.GameObjectModel.transform, firstEnemy);
             }
 
             _networkProcessor.SendPacketAsync(LoadSceneFightingSuccess.ToPacket());
