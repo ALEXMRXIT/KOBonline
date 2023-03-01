@@ -14,6 +14,7 @@ using Assets.Sources.Models.Base;
 using UnityEngine.SceneManagement;
 using System.Collections.Concurrent;
 using Assets.Sources.Models.Characters;
+using Assets.Sources.Models.Characters.Table;
 
 #pragma warning disable IDE0090
 
@@ -32,6 +33,7 @@ namespace Assets.Sources.Network
         private List<ObjectData> _players = new List<ObjectData>();
         private NetworkDataLoader _networkLoader = new NetworkDataLoader();
         private bool _gameFirstRun = false;
+        private RankTable _characterRankTable;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
@@ -40,6 +42,7 @@ namespace Assets.Sources.Network
         public List<ObjectData> GetPlayers { get => _players; }
         public NetworkDataLoader GetNetworkDataLoader { get => _networkLoader; }
         public bool IsGameFirstRun { get => _gameFirstRun; }
+        public RankTable GetRank { get => _characterRankTable; }
 
         public ClientCurrentMenu ClientMenu
         {
@@ -56,6 +59,7 @@ namespace Assets.Sources.Network
             ClientSession = new GameSession(SessionStatus.SessionAuthorization);
             ClientSession.OnSessionChange += ClientSessionOnSessionChange;
             _cancelationTokenSources = new CancellationTokenSource();
+            _characterRankTable = new RankTable();
 
             _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 27018);
             _tcpClient = new TcpClient();
