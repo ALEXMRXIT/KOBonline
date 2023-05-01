@@ -47,6 +47,7 @@ namespace Assets.Sources.Models.Characters
             if (!_contain.TryDequeue(out Damage strDamage))
             {
                 Debug.LogWarning($"Unable to display damage, buffer container is empty!");
+                return;
             }
 
             GameObject damageView = null;
@@ -58,7 +59,11 @@ namespace Assets.Sources.Models.Characters
             damageView.GetComponent<Text>().text = strDamage.ClientDamageValue.ToString();
             objectData.ObjectContract.MinHealth = Mathf.Clamp(objectData.
                 ObjectContract.MinHealth - strDamage.ClientDamageValue, min: 0, max: objectData.ObjectContract.Health);
-            objectData.ObjectHUD.UpdateHealthData(objectData.ObjectContract);
+
+            if (objectData.IsBot)
+                objectData.ClientHud.UpdateEnemyHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
+            else
+                objectData.ClientHud.UpdateHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
 
             Destroy(damageView, 1.5f);
         }

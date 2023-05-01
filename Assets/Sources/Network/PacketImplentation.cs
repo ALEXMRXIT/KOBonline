@@ -27,7 +27,8 @@ namespace Assets.Sources.Network
                 { 0x0D, typeof(SetLongDataLoader) },
                 { 0x0E, typeof(PlayerDeath) },
                 { 0x0F, typeof(BattleResult) },
-                { 0x10, typeof(GetRankExperience) }
+                { 0x10, typeof(GetRankExperience) },
+                { 0x11, typeof(LoaderSkillsCharacter) }
             };
         }
 

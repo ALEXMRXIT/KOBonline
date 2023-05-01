@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.Sources.Enums;
 using Assets.Sources.Network;
 using Assets.Sources.Interfaces;
 using Assets.Sources.Models.Base;
-using Assets.Sources.Models.Characters.Tools;
 using Assets.Sources.Network.OutPacket;
+using Assets.Sources.Models.Characters.Tools;
 
 namespace Assets.Sources.Models.Characters
 {
@@ -34,7 +35,7 @@ namespace Assets.Sources.Models.Characters
 
         private void InternalButtonHandler()
         {
-            _networkProcessor.SendPacketAsync(LoadCharacter.ToPacket());
+            _networkProcessor.SendPacketAsync(ChangeSession.ToPacket(SessionStatus.SessionGameMenu));
         }
 
         public void ShowResultBattle(BattleResultSources battleResultSources)

@@ -37,6 +37,7 @@ namespace Assets.Sources.MechanicUI
         [SerializeField] private Sprite[] _iconsClass;
 
         private INetworkProcessor _networkProcessor;
+        private GameObject _oldPlayer;
 
         public static CustomerCreateLogic Instance;
 
@@ -61,7 +62,11 @@ namespace Assets.Sources.MechanicUI
             }
 
             _createCharacterButton.onClick.AddListener(ButtonCharacterCreateHandler);
-            _customerModelView.ShowModel();
+        }
+
+        public GameObject ShowModelForCreateVisualPlayer()
+        {
+            return _oldPlayer = _customerModelView.ShowModel();
         }
 
         private void ButtonCharacterCreateHandler()
@@ -144,18 +149,33 @@ namespace Assets.Sources.MechanicUI
                 }
             }
 
+            if (_oldPlayer != null)
+            {
+                Destroy(_oldPlayer);
+                _oldPlayer = null;
+            }
+
             switch (customerType)
             {
                 case CustomerType.Sex:
-                    _customerModelView.ModelSetSex((PlayerSex)editCharacterComponent._currentIndex, showModel: true);
+                    _oldPlayer = _customerModelView.ModelSetSex((PlayerSex)editCharacterComponent._currentIndex, showModel: true);
                     break;
                 case CustomerType.BaseClass:
-                    _customerModelView.ModelSetBaseClass((BaseClass)editCharacterComponent._currentIndex, showModel: true);
+                    _oldPlayer = _customerModelView.ModelSetBaseClass((BaseClass)editCharacterComponent._currentIndex, showModel: true);
                     break;
             }
 
             editCharacterComponent._textView.text = editCharacterComponent.
                 _names[editCharacterComponent._currentIndex];
+        }
+
+        private void OnDisable()
+        {
+            if (_oldPlayer != null)
+            {
+                Destroy(_oldPlayer);
+                _oldPlayer = null;
+            }
         }
 
         private int ClampIndexOutOfRangeValid(int value, int min, int max)

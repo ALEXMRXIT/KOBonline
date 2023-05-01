@@ -42,6 +42,8 @@ namespace Assets.Sources.Models
             if (_objectData.IsDeath)
             {
                 _characterState.SetCharacterState(_animationDeath, speed: 1f);
+                _characterTarget.ClearTarget();
+
                 return;
             }
 

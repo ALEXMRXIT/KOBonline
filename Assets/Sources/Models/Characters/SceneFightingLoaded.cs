@@ -5,6 +5,7 @@ using Assets.Sources.Enums;
 using Assets.Sources.Models;
 using Assets.Sources.Network;
 using Assets.Sources.Interfaces;
+using Assets.Sources.MechanicUI;
 using Assets.Sources.Models.Base;
 using Assets.Sources.Models.Camera;
 using Assets.Sources.Network.OutPacket;
@@ -74,18 +75,16 @@ namespace Assets.Sources.Models.Characters
 
                 CharacterTarget firstEnemyTarget = firstEnemy.GameObjectModel.AddComponent<CharacterTarget>();
                 CharacterTarget secondEnemyTarget = secondEnemy.GameObjectModel.AddComponent<CharacterTarget>();
-                HUDCharacterComponent firstEnemyHud = firstEnemy.GameObjectModel.GetComponent<HUDCharacterComponent>();
-                HUDCharacterComponent secondEnemyHud = secondEnemy.GameObjectModel.GetComponent<HUDCharacterComponent>();
                 firstEnemy.ClientAnimationState = firstEnemy.GameObjectModel.GetComponent<CharacterState>();
                 secondEnemy.ClientAnimationState = secondEnemy.GameObjectModel.GetComponent<CharacterState>();
+                firstEnemy.ClientHud = HudCharacter.Instance;
+                secondEnemy.ClientHud = HudCharacter.Instance;
 
                 firstEnemy.ClientTextView = firstEnemy.GameObjectModel.GetComponent<TextView>();
                 secondEnemy.ClientTextView = secondEnemy.GameObjectModel.GetComponent<TextView>();
 
                 firstEnemy.ObjectTarget = firstEnemyTarget;
-                firstEnemy.ObjectHUD = firstEnemyHud;
                 secondEnemy.ObjectTarget = secondEnemyTarget;
-                secondEnemy.ObjectHUD = secondEnemyHud;
 
                 firstEnemy.ObjectBaseEffectWhereAttack = firstEnemy.GameObjectModel.
                     GetComponent<BaseAttackEffect>().Init(firstEnemy.ObjectContract.CharacterBaseClass);

@@ -1,6 +1,6 @@
 ﻿namespace Assets.Sources.Enums
 {
-    public enum PoolObjecPoolObjectIdentifier : int
+    public enum ObjectPoolIdentifier : int
     {
         EffectSpawnCharacter = 0
     }

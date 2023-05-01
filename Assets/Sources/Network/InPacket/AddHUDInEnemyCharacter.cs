@@ -58,7 +58,7 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                _objectData.ObjectHUD.SetHUD(_objectData.ObjectContract);
+                HudCharacter.Instance.ActivateHudEnemy(_objectData.ObjectContract);
             }
             catch (Exception exception)
             {

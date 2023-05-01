@@ -13,44 +13,34 @@ using Assets.Sources.Models.States.StateAnimations;
 
 namespace Assets.Sources.Network.InPacket
 {
-    public sealed class PlayerDeath : NetworkBasePacket
+    public sealed class LoaderSkillsCharacter : NetworkBasePacket
     {
-        public PlayerDeath(NetworkPacket networkPacket, ClientProcessor clientProcessor)
+        public LoaderSkillsCharacter(NetworkPacket networkPacket, ClientProcessor clientProcessor)
         {
             _client = clientProcessor;
 
-            _objId = networkPacket.ReadLong();
+            Debug.LogWarning($"Loaded {networkPacket.ReadInt()} skills.");
         }
 
         private readonly ClientProcessor _client;
-        private readonly long _objId;
 
         public override PacketImplementCodeResult RunImpl()
         {
 #if UNITY_EDITOR
-            Debug.Log($"Execute {nameof(PlayerDeath)}.");
+            Debug.Log($"Execute {nameof(LoaderSkillsCharacter)}.");
 #endif
             PacketImplementCodeResult codeError = new PacketImplementCodeResult();
 
             try
             {
-                ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
-                player.IsDeath = true;
-
-                if (player.IsBot)
-                    player.ClientHud.UpdateEnemyHealthBar(0, player.ObjectContract.Health);
-                else
-                    player.ClientHud.UpdateHealthBar(0, player.ObjectContract.Health);
-
-                player.ObjectTarget.ClearTarget();
-                player.ClientAnimationState.SetCharacterState(new StateAnimationDeath());
+                
             }
             catch (Exception exception)
             {
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
-                codeError.FireException = nameof(PlayerDeath);
+                codeError.FireException = nameof(LoaderSkillsCharacter);
             }
 
             return codeError;

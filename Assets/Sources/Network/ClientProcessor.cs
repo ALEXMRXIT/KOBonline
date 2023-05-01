@@ -32,7 +32,7 @@ namespace Assets.Sources.Network
         private ClientCurrentMenu _clientCurrentMenu = ClientCurrentMenu.Login;
         private List<ObjectData> _players = new List<ObjectData>();
         private NetworkDataLoader _networkLoader = new NetworkDataLoader();
-        private bool _gameFirstRun = false;
+        private bool _loadedSkillCharacter = false;
         private RankTable _characterRankTable;
 
         private event Action<int> _onReceivedNetworkBuffer;
@@ -41,7 +41,7 @@ namespace Assets.Sources.Network
         public bool IsConnected => _tcpClient.Connected;
         public List<ObjectData> GetPlayers { get => _players; }
         public NetworkDataLoader GetNetworkDataLoader { get => _networkLoader; }
-        public bool IsGameFirstRun { get => _gameFirstRun; }
+        public bool IsLoadedSkillCharacter { get => _loadedSkillCharacter; }
         public RankTable GetRank { get => _characterRankTable; }
 
         public ClientCurrentMenu ClientMenu
@@ -93,9 +93,15 @@ namespace Assets.Sources.Network
             switch (obj)
             {
                 case SessionStatus.SessionGameMenu:
+                    if (SceneManager.GetActiveScene().name == "Main")
+                        return;
+
                     SceneManager.LoadScene("Main");
                     break;
                 case SessionStatus.SessionGameFighting:
+                    if (SceneManager.GetActiveScene().name == "Arena1")
+                        return;
+
                     SceneManager.LoadScene("Arena1");
                     break;
             }
@@ -146,9 +152,9 @@ namespace Assets.Sources.Network
             }
         }
 
-        public void SetGameRun()
+        public void SetLoadedSkillCharacter()
         {
-            _gameFirstRun = true;
+            _loadedSkillCharacter = true;
         }
 
         public async Task SendPacketAsync(NetworkPacket packet, PacketImportance packetImportance = PacketImportance.None)

@@ -1,6 +1,8 @@
 using UnityEngine;
+using System.Collections;
 using Assets.Sources.Network;
 using Assets.Sources.Interfaces;
+using Assets.Sources.MechanicUI;
 using Assets.Sources.Network.OutPacket;
 
 namespace Assets.Sources.Models
@@ -10,7 +12,10 @@ namespace Assets.Sources.Models
         [SerializeField] private GameObject _blockPanel;
         [SerializeField] private GameObject _createCharacterPanel;
         [SerializeField] private GameObject _gameRunPanel;
+        [SerializeField] private GameObject _gameSkillsPanel;
+
         private INetworkProcessor _clientProcessor;
+        private GameObject _tempModelForOnlyCreateScene;
 
         public static CharacterLoadedWithServer Instance;
 
@@ -19,11 +24,7 @@ namespace Assets.Sources.Models
             Instance = this;
             _clientProcessor = ClientProcessor.Instance;
 
-            if (!_clientProcessor.GetParentObject().IsGameFirstRun)
-            {
-                _clientProcessor.SendPacketAsync(LoadCharacter.ToPacket());
-                _clientProcessor.GetParentObject().SetGameRun();
-            }
+            _clientProcessor.SendPacketAsync(LoadCharacter.ToPacket());
         }
 
         public void EnableUICreateCharacter()
@@ -31,16 +32,34 @@ namespace Assets.Sources.Models
             Debug.Log($"{nameof(EnableUICreateCharacter)} enabled ui.");
 
             _blockPanel.SetActive(false);
+            _gameSkillsPanel.SetActive(false);
+            _gameRunPanel.SetActive(false);
+
             _createCharacterPanel.SetActive(true);
+            _tempModelForOnlyCreateScene = CustomerCreateLogic.Instance.ShowModelForCreateVisualPlayer();
         }
 
         public void EnableUIGameRun()
         {
             Debug.Log($"{nameof(EnableUIGameRun)} enable ui.");
 
+            if (_tempModelForOnlyCreateScene != null)
+            {
+                Destroy(_tempModelForOnlyCreateScene);
+                _tempModelForOnlyCreateScene = null;
+            }
+
+            StartCoroutine(InternalStartLoadOtherConfigAsync());
+        }
+
+        private IEnumerator InternalStartLoadOtherConfigAsync()
+        {
+            //_clientProcessor.SendPacketAsync(LoadSkillsCharacter.ToPacket());
+            yield return new WaitUntil(() => !_clientProcessor.GetParentObject().IsLoadedSkillCharacter);
+
             _blockPanel.SetActive(false);
-            if (_createCharacterPanel.activeSelf)
-                _createCharacterPanel.SetActive(false);
+            _gameSkillsPanel.SetActive(false);
+            _createCharacterPanel.SetActive(false);
 
             _gameRunPanel.SetActive(true);
         }

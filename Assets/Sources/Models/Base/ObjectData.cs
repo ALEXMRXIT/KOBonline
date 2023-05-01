@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Sources.Contracts;
+using Assets.Sources.MechanicUI;
 using Assets.Sources.Models.Characters;
 
 namespace Assets.Sources.Models.Base
@@ -13,8 +14,8 @@ namespace Assets.Sources.Models.Base
         public TextView ClientTextView;
         public PlayerContract ObjectContract;
         public CharacterState ClientAnimationState;
+        public HudCharacter ClientHud;
         public CharacterTarget ObjectTarget;
-        public HUDCharacterComponent ObjectHUD;
         public BaseAttackEffect ObjectBaseEffectWhereAttack;
         public Vector3 UpdatePositionInServer;
         public bool ObjectIsLoadData = false;
