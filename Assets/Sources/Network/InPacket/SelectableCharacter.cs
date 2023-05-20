@@ -67,6 +67,7 @@ namespace Assets.Sources.Network.InPacket
                     playerData.ObjId = _objId;
                     playerData.IsBot = false;
                     playerData.ObjectContract = _playerContract;
+                    _client.CharacterContract = _playerContract;
 
                     _client.GetPlayers.Add(playerData);
                 }

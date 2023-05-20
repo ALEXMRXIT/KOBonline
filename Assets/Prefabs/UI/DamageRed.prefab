@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6414737401022291260
+--- !u!1 &8413658682119822818
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,11 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1769508850955122966}
-  - component: {fileID: 2555724116964161343}
-  - component: {fileID: 2649262476430454643}
-  - component: {fileID: 1950804916602123803}
-  - component: {fileID: 178876621954710497}
+  - component: {fileID: 3839431653838322120}
+  - component: {fileID: 1058673397882861537}
+  - component: {fileID: 649356707215060909}
+  - component: {fileID: 3950869565312677573}
+  - component: {fileID: 3440071736035507007}
   m_Layer: 5
   m_Name: DamageRed
   m_TagString: Untagged
@@ -20,16 +20,16 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &1769508850955122966
+--- !u!224 &3839431653838322120
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6414737401022291260}
+  m_GameObject: {fileID: 8413658682119822818}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -37,24 +37,24 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.132, y: -0.587}
+  m_AnchoredPosition: {x: 0, y: -4.5}
   m_SizeDelta: {x: 13.618134, y: 2.530878}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &2555724116964161343
+--- !u!222 &1058673397882861537
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6414737401022291260}
+  m_GameObject: {fileID: 8413658682119822818}
   m_CullTransparentMesh: 1
---- !u!114 &2649262476430454643
+--- !u!114 &649356707215060909
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6414737401022291260}
+  m_GameObject: {fileID: 8413658682119822818}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
@@ -69,7 +69,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: f3b67bda8e6114237970dcc3bfee241a, type: 3}
     m_FontSize: 1
     m_FontStyle: 1
     m_BestFit: 0
@@ -82,13 +82,13 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 
---- !u!114 &1950804916602123803
+--- !u!114 &3950869565312677573
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6414737401022291260}
+  m_GameObject: {fileID: 8413658682119822818}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
@@ -97,17 +97,17 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 0.05, y: -0.05}
   m_UseGraphicAlpha: 0
---- !u!95 &178876621954710497
+--- !u!95 &3440071736035507007
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6414737401022291260}
+  m_GameObject: {fileID: 8413658682119822818}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ab1206922c3bf43b6a286e19a447cc33, type: 2}
+  m_Controller: {fileID: 9100000, guid: 4ca0aef03d97b4c85b8b60452b90a859, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

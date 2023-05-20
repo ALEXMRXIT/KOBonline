@@ -33,7 +33,7 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                
+
             }
             catch (Exception exception)
             {

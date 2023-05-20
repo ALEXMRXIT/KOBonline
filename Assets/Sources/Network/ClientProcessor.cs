@@ -16,7 +16,7 @@ using System.Collections.Concurrent;
 using Assets.Sources.Models.Characters;
 using Assets.Sources.Models.Characters.Table;
 
-#pragma warning disable IDE0090
+#pragma warning disable
 
 namespace Assets.Sources.Network
 {
@@ -34,6 +34,7 @@ namespace Assets.Sources.Network
         private NetworkDataLoader _networkLoader = new NetworkDataLoader();
         private bool _loadedSkillCharacter = false;
         private RankTable _characterRankTable;
+        private bool _chatMessageLoaded = false;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
@@ -43,6 +44,8 @@ namespace Assets.Sources.Network
         public NetworkDataLoader GetNetworkDataLoader { get => _networkLoader; }
         public bool IsLoadedSkillCharacter { get => _loadedSkillCharacter; }
         public RankTable GetRank { get => _characterRankTable; }
+        public bool IsChatMessageLoaded { get => _chatMessageLoaded; }
+        public PlayerContract CharacterContract { get; set; }
 
         public ClientCurrentMenu ClientMenu
         {
@@ -152,10 +155,8 @@ namespace Assets.Sources.Network
             }
         }
 
-        public void SetLoadedSkillCharacter()
-        {
-            _loadedSkillCharacter = true;
-        }
+        public void SetLoadedSkillCharacter() => _loadedSkillCharacter = true;
+        public void SetLoadedChatMessages() => _chatMessageLoaded = true;
 
         public async Task SendPacketAsync(NetworkPacket packet, PacketImportance packetImportance = PacketImportance.None)
         {

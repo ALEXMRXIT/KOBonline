@@ -60,7 +60,7 @@ namespace Assets.Sources.MechanicUI
 
             if (_loginInput.text.Length < 6)
             {
-                ShowErrorMessage($"Login cannot be less than 6 characters long.");
+                ShowErrorMessage($"Login cannot be less than 6 symbols long.");
                 return false;
             }
 
@@ -72,7 +72,7 @@ namespace Assets.Sources.MechanicUI
 
             if (_passwordInput.text.Length < 4)
             {
-                ShowErrorMessage($"Password cannot be less than 4 characters long.");
+                ShowErrorMessage($"Password cannot be less than 4 symbols long.");
                 return false;
             }
 

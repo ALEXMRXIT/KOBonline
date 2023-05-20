@@ -7,7 +7,6 @@ using Assets.Sources.Network;
 using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI;
-using UnityEditor.PackageManager;
 using Assets.Sources.Models.Base;
 using UnityEngine.SceneManagement;
 using Assets.Sources.Models.Characters;
