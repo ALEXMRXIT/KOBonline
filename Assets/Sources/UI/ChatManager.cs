@@ -7,9 +7,11 @@ using System.Collections;
 using Assets.Sources.Enums;
 using Assets.Sources.Network;
 using Assets.Sources.UI.Models;
+using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using System.Collections.Generic;
 using Assets.Sources.Network.OutPacket;
+using Assets.Sources.Models.Characters.Smile;
 
 #pragma warning disable
 
@@ -25,16 +27,22 @@ namespace Assets.Sources.UI
         [SerializeField] private SelectChannel _selectChannel;
         [SerializeField] private TMP_InputField _inputField;
         [SerializeField] private Button _sendButton;
+        [SerializeField] private ScrollRect _scrollRectChat;
+        [SerializeField] private SmileAPI _smileAPI;
+        [SerializeField] private Animator _panelAnimator;
+        [SerializeField] private Scrollbar _scrollbar;
 
         private Animator _chatAnimator;
         private Button _chatButton;
         private bool _stateChat = false;
-        private Stack<GameObject> _chatStack = new Stack<GameObject>();
+        private Queue<RectTransform> _chatStack = new Queue<RectTransform>();
         private INetworkProcessor _networkProcessor;
+        private RectTransform _rectContent;
 
         private readonly string[] _colorChannel =
         {
-            "#FFF583"
+            "#FFF583",
+            "#F80000"
         };
 
         public static ChatManager Instance;
@@ -46,7 +54,11 @@ namespace Assets.Sources.UI
 
             _chatAnimator = GetComponent<Animator>();
             _chatButton = GetComponent<Button>();
+            _rectContent = _spawnContent.gameObject.GetComponent<RectTransform>();
         }
+
+        private void OnEnable() => _smileAPI.OnSmileClickhandler += InternalChatManagerOnSmileClickhandler;
+        private void OnDisable() => _smileAPI.OnSmileClickhandler -= InternalChatManagerOnSmileClickhandler;
 
         private void Start()
         {
@@ -66,28 +78,82 @@ namespace Assets.Sources.UI
             CloseChat();
         }
 
-        public void OpenChat() => _chatAnimator.SetBool(_animationName, false);
-        public void CloseChat() => _chatAnimator.SetBool(_animationName, true);
+        public void OpenChat()
+        {
+            _stateChat = false;
+            _chatAnimator.SetBool(_animationName, true);
+            _panelAnimator.SetBool(_animationName, true);
+            _scrollbar.value = 0f;
+        }
+
+        public void CloseChat()
+        {
+            _stateChat = true;
+            _chatAnimator.SetBool(_animationName, false);
+            _panelAnimator.SetBool(_animationName, false);
+            _scrollbar.value = 0f;
+        }
 
         public void AddMessageWithChat(ChatUserData chatUserData)
         {
             if (_chatStack.Count > 50)
-                Destroy(_chatStack.Pop());
+            {
+                RectTransform rectTransform = _chatStack.Dequeue();
+                float delta = rectTransform.sizeDelta.y;
+
+                foreach (RectTransform rectUpdate in _chatStack)
+                    rectUpdate.gameObject.transform.localPosition = new Vector2(
+                        rectUpdate.gameObject.transform.localPosition.x, rectUpdate.gameObject.transform.localPosition.y + delta);
+
+                Destroy(rectTransform.gameObject);
+            }
 
             StringBuilder stringBuilder = new StringBuilder();
 
+            ClientProcessor clientProcessor = _networkProcessor.GetParentObject();
             string color = InternalGetColorWithChannel(chatUserData.MessageChannel);
-            stringBuilder.Append($"<mark>[{Enum.GetName(typeof(Channel), chatUserData.MessageChannel)}]" +
-                $"</mark><sprite={chatUserData.MessageRankId}</sprite><color={color}>" +
-                $"{chatUserData.MessageCharacterName}: {chatUserData.Message}</color>");
+
+            if (chatUserData.MessageChannel != Channel.Server)
+            {
+                stringBuilder.Append($"<mark>[{Enum.GetName(typeof(Channel), chatUserData.MessageChannel)}]" +
+                    $"</mark><sprite={InternalGetConversionRankId(chatUserData, clientProcessor.GetRank.GetIndexByRankTable(chatUserData.MessageRankId))}" +
+                    $"><color={color}>{chatUserData.MessageCharacterName}: {chatUserData.Message}</color>");
+            }
+            else
+            {
+                stringBuilder.Append($"<color={color}>[{Enum.GetName(typeof(Channel), chatUserData.MessageChannel)}] " +
+                    $"{chatUserData.Message}</color>");
+            }
 
             GameObject messagePanel = Instantiate(_prefabBlockMessage, _spawnContent);
-            _chatStack.Push(messagePanel);
 
-            if (!messagePanel.TryGetComponent(out LinkTmpText linkTmpText))
-                throw new MissingComponentException(nameof(LinkTmpText));
+            if (!messagePanel.TryGetComponent(out TextMeshProUGUI textMeshProUGUI))
+                throw new MissingComponentException(nameof(TextMeshProUGUI));
 
-            linkTmpText.SetText(stringBuilder.ToString());
+            if (!messagePanel.TryGetComponent(out RectTransform rect))
+                throw new MissingComponentException(nameof(RectTransform));
+            _chatStack.Enqueue(rect);
+
+            float sizeDeltaAll = 0;
+            foreach (RectTransform rectTransform in _chatStack)
+                sizeDeltaAll += rectTransform.sizeDelta.y;
+
+            float rectXAxis = rect.gameObject.transform.localPosition.x;
+            float rectYAxis = rect.gameObject.transform.localPosition.y;
+
+            rect.gameObject.transform.localPosition = new Vector2(rectXAxis, rectYAxis - sizeDeltaAll);
+            textMeshProUGUI.text = stringBuilder.ToString();
+            Canvas.ForceUpdateCanvases();
+
+            sizeDeltaAll = 0;
+            foreach (RectTransform rectTransform in _chatStack)
+                sizeDeltaAll += rectTransform.sizeDelta.y;
+
+            if (sizeDeltaAll >= -360)
+                _rectContent.sizeDelta = new Vector2(_rectContent.sizeDelta.x, sizeDeltaAll);
+
+            if (_scrollbar.value < 0.1f)
+                _scrollbar.value = 0f;
         }
 
         private string InternalGetColorWithChannel(Channel channel)
@@ -97,8 +163,6 @@ namespace Assets.Sources.UI
 
         private void InternalButtonOnHandler()
         {
-            _stateChat = !_stateChat;
-
             if (_stateChat) OpenChat();
             else CloseChat();
         }
@@ -110,6 +174,44 @@ namespace Assets.Sources.UI
             string message = _inputField.text;
 
             _networkProcessor.GetParentObject().SendPacketAsync(LoadMessages.ToPacket(channel, characterName, message));
+
+            _inputField.text = string.Empty;
+        }
+
+        private int InternalGetConversionRankId(ChatUserData chatUserData, int id)
+        {
+            int gmId = chatUserData.GameMaster;
+            bool gmStatus = chatUserData.GameMasterStatus;
+
+            if (gmStatus)
+            {
+                switch (gmId)
+                {
+                    case 1: return 155; // chat guard
+                    case 2: return 165; // game master
+                }
+            }
+
+            switch (id)
+            {
+                case 0: return 152; // Commoner
+                case 1: return 153; // Knight
+                case 2: return 154; // Baronet
+                case 3: return 162; // Lord
+                case 4: return 163; // Baron
+                case 5: return 159; // Viscount
+                case 6: return 161; // Comte
+                case 7: return 160; // Marquis
+                case 8: return 158; // Duke
+                case 9: return 156; // Archduke
+                default: return 152; // Commoner
+            }
+        }
+
+        private void InternalChatManagerOnSmileClickhandler(string text)
+        {
+            int positionCaret = _inputField.caretPosition;
+            _inputField.text = _inputField.text.Insert(positionCaret, text);
         }
     }
 }

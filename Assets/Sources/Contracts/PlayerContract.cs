@@ -30,5 +30,7 @@ namespace Assets.Sources.Contracts
         public int AttackDistance { get; set; }
         public float MoveSpeed { get; set; }
         public float AttackSpeed { get; set; }
+        public int GameMaster { get; set; }
+        public bool GameMasterStatus { get; set; }
     }
 }

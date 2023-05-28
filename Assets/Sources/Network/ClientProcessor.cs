@@ -35,6 +35,10 @@ namespace Assets.Sources.Network
         private bool _loadedSkillCharacter = false;
         private RankTable _characterRankTable;
         private bool _chatMessageLoaded = false;
+        private bool _loadedCharacterModel = false;
+        private bool _loadedSkillData = false;
+        private List<SkillContract> _skillContracts;
+        private List<SkillData> _skillDatas;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
@@ -46,6 +50,10 @@ namespace Assets.Sources.Network
         public RankTable GetRank { get => _characterRankTable; }
         public bool IsChatMessageLoaded { get => _chatMessageLoaded; }
         public PlayerContract CharacterContract { get; set; }
+        public bool IsLoadedCharacterModel { get => _loadedCharacterModel; }
+        public bool IsLoadedSkillData { get => _loadedSkillData; }
+        public List<SkillContract> GetSkillContracts { get; set; }
+        public List<SkillData> GetSkillDatas { get; set; }
 
         public ClientCurrentMenu ClientMenu
         {
@@ -105,6 +113,8 @@ namespace Assets.Sources.Network
                     if (SceneManager.GetActiveScene().name == "Arena1")
                         return;
 
+                    ResetLoadedSkillData();
+                    ResetLoadedCharacterModel();
                     SceneManager.LoadScene("Arena1");
                     break;
             }
@@ -157,6 +167,10 @@ namespace Assets.Sources.Network
 
         public void SetLoadedSkillCharacter() => _loadedSkillCharacter = true;
         public void SetLoadedChatMessages() => _chatMessageLoaded = true;
+        public void SetLoadedCharacterModel() => _loadedCharacterModel = true;
+        public void ResetLoadedCharacterModel() => _loadedCharacterModel = false;
+        public void SetLoadedSkillData() => _loadedSkillData = true;
+        public void ResetLoadedSkillData() => _loadedSkillData = false;
 
         public async Task SendPacketAsync(NetworkPacket packet, PacketImportance packetImportance = PacketImportance.None)
         {

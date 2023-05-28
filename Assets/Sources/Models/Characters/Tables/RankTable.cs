@@ -19,7 +19,7 @@ namespace Assets.Sources.Models.Characters.Table
             for (int iterator = 0; iterator < _table.Length; iterator += 2)
             {
                 if (rank >= _table[iterator] && rank <= _table[iterator + 1])
-                    return iterator;
+                    return iterator / 2;
             }
 
             return 0;

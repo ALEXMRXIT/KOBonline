@@ -166,7 +166,7 @@ namespace Assets.Sources.Network
 
         public unsafe void WriteString(string value)
         {
-            byte[] buffer = Encoding.Default.GetBytes(value);
+            byte[] buffer = Encoding.UTF8.GetBytes(value);
 
             WriteInt(buffer.Length);
             WriteByteArray(buffer);
@@ -268,7 +268,7 @@ namespace Assets.Sources.Network
             for (int iterator = 0; iterator < buffer.Length; iterator++)
                 buffer[iterator] = ReadByte();
 
-            return Encoding.Default.GetString(buffer, 0, buffer.Length);
+            return Encoding.UTF8.GetString(buffer, 0, buffer.Length);
         }
 
         public bool InternalReadBool()

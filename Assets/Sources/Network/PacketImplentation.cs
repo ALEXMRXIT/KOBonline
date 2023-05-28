@@ -29,7 +29,9 @@ namespace Assets.Sources.Network
                 { 0x0F, typeof(BattleResult) },
                 { 0x10, typeof(GetRankExperience) },
                 { 0x11, typeof(LoaderSkillsCharacter) },
-                { 0x12, typeof(LoaderChatMessages) }
+                { 0x12, typeof(LoaderChatMessages) },
+                { 0x13, typeof(UpdateCharacterContract) },
+                { 0x14, typeof(GetSkillDataService) }
             };
         }
 

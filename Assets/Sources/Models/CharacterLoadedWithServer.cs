@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Assets.Sources.UI;
 using System.Collections;
@@ -17,6 +18,7 @@ namespace Assets.Sources.Models
         [SerializeField] private GameObject _gameSkillsPanel;
         [SerializeField] private SmileAPI _smileAPI;
         [SerializeField] private ChatManager _chatManager;
+        [SerializeField] private SkillManager _skillManager;
 
         private INetworkProcessor _clientProcessor;
         private GameObject _tempModelForOnlyCreateScene;
@@ -27,6 +29,7 @@ namespace Assets.Sources.Models
         {
             Instance = this;
             _clientProcessor = ClientProcessor.Instance;
+            _smileAPI.Initialized();
             _smileAPI.HideSmile();
 
             _clientProcessor.SendPacketAsync(LoadCharacter.ToPacket());
@@ -59,14 +62,17 @@ namespace Assets.Sources.Models
 
         private IEnumerator InternalStartLoadOtherConfigAsync()
         {
+            yield return new WaitUntil(() => _clientProcessor.GetParentObject().IsLoadedCharacterModel);
             yield return _chatManager.GetMessagesWithChat(_clientProcessor);
-            //_clientProcessor.SendPacketAsync(LoadSkillsCharacter.ToPacket());
-            yield return new WaitUntil(() => !_clientProcessor.GetParentObject().IsLoadedSkillCharacter);
+            _clientProcessor.SendPacketAsync(LoadSkillsCharacter.ToPacket());
+            yield return new WaitUntil(() => _clientProcessor.GetParentObject().IsLoadedSkillCharacter);
+            yield return _skillManager.Initialize();
+
+            yield return new WaitForSecondsRealtime(2f);
 
             _blockPanel.SetActive(false);
-            _gameSkillsPanel.SetActive(false);
+            //_gameSkillsPanel.SetActive(false);
             _createCharacterPanel.SetActive(false);
-
             _gameRunPanel.SetActive(true);
         }
     }
