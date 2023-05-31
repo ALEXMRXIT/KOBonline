@@ -8,7 +8,7 @@ namespace Assets.Sources.Contracts
         public BaseClass Class;
         public string Name;
         public string Description;
-        public SkillType Type;
+        public SkillType TypeSkill;
         public SkillUseType UseType;
         public bool Invoke;
         public long IDInvoke;
@@ -44,5 +44,6 @@ namespace Assets.Sources.Contracts
         public int Recharge;
         public int TimeDelay;
         public int[] Experience;
+        public int[] Mana;
     }
 }

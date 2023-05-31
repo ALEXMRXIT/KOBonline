@@ -25,7 +25,7 @@ namespace Assets.Sources.Network.InPacket
                 _skillContract[iterator].Class = (BaseClass)networkPacket.ReadInt();
                 _skillContract[iterator].Name = networkPacket.ReadString();
                 _skillContract[iterator].Description = networkPacket.ReadString();
-                _skillContract[iterator].Type = (SkillType)networkPacket.ReadByte();
+                _skillContract[iterator].TypeSkill = (SkillType)networkPacket.ReadByte();
                 _skillContract[iterator].UseType = (SkillUseType)networkPacket.ReadByte();
                 _skillContract[iterator].Invoke = networkPacket.InternalReadBool();
                 _skillContract[iterator].IDInvoke = networkPacket.ReadLong();
@@ -60,11 +60,14 @@ namespace Assets.Sources.Network.InPacket
                 _skillContract[iterator].TimeUse = networkPacket.ReadInt();
                 _skillContract[iterator].Recharge = networkPacket.ReadInt();
                 _skillContract[iterator].TimeDelay = networkPacket.ReadInt();
-
                 int countExperience = networkPacket.ReadInt();
                 _skillContract[iterator].Experience = new int[countExperience];
                 for (int iteratorExp = 0; iteratorExp < countExperience; iteratorExp++)
                     _skillContract[iterator].Experience[iteratorExp] = networkPacket.ReadInt();
+                int countMana = networkPacket.ReadInt();
+                _skillContract[iterator].Mana = new int[countMana];
+                for (int iteratorMana = 0; iteratorMana < countMana; iteratorMana++)
+                    _skillContract[iterator].Mana[iteratorMana] = networkPacket.ReadInt();
             }
 
             Debug.LogWarning($"Loaded {count} skills.");

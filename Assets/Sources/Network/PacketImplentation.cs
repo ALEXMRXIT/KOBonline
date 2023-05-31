@@ -9,30 +9,29 @@ namespace Assets.Sources.Network
     {
         public PacketImplentation()
         {
-            _packetHandlerServices = new Dictionary<byte, Type>
-            {
-                { 0x00, typeof(MessageServerReceived) },
-                { 0x01, typeof(SessionChanged) },
-                { 0x02, typeof(SelectableCharacter) },
-                { 0x03, typeof(UpdateWaitBattleArena) },
-                { 0x04, typeof(CharacterEnemyInfo) },
-                { 0x05, typeof(SendTimeBuff) },
-                { 0x06, typeof(UpdateContractPositionInScene) },
-                { 0x07, typeof(UpdateCharacterMainPosition) },
-                { 0x08, typeof(AddMovementComponent) },
-                { 0x09, typeof(UpdateCharacterEnemyPosition) },
-                { 0x0A, typeof(AddHUDInMainCharacter) },
-                { 0x0B, typeof(AddHUDInEnemyCharacter) },
-                { 0x0C, typeof(CharacterAttackCombat) },
-                { 0x0D, typeof(SetLongDataLoader) },
-                { 0x0E, typeof(PlayerDeath) },
-                { 0x0F, typeof(BattleResult) },
-                { 0x10, typeof(GetRankExperience) },
-                { 0x11, typeof(LoaderSkillsCharacter) },
-                { 0x12, typeof(LoaderChatMessages) },
-                { 0x13, typeof(UpdateCharacterContract) },
-                { 0x14, typeof(GetSkillDataService) }
-            };
+            _packetHandlerServices = new Dictionary<byte, Type>();
+
+            _packetHandlerServices.TryAdd(0x00, typeof(MessageServerReceived));
+            _packetHandlerServices.TryAdd(0x01, typeof(SessionChanged));
+            _packetHandlerServices.TryAdd(0x02, typeof(SelectableCharacter));
+            _packetHandlerServices.TryAdd(0x03, typeof(UpdateWaitBattleArena));
+            _packetHandlerServices.TryAdd(0x04, typeof(CharacterEnemyInfo));
+            _packetHandlerServices.TryAdd(0x05, typeof(SendTimeBuff));
+            _packetHandlerServices.TryAdd(0x06, typeof(UpdateContractPositionInScene));
+            _packetHandlerServices.TryAdd(0x07, typeof(UpdateCharacterMainPosition));
+            _packetHandlerServices.TryAdd(0x08, typeof(AddMovementComponent));
+            _packetHandlerServices.TryAdd(0x09, typeof(UpdateCharacterEnemyPosition));
+            _packetHandlerServices.TryAdd(0x0A, typeof(AddHUDInMainCharacter));
+            _packetHandlerServices.TryAdd(0x0B, typeof(AddHUDInEnemyCharacter));
+            _packetHandlerServices.TryAdd(0x0C, typeof(CharacterAttackCombat));
+            _packetHandlerServices.TryAdd(0x0D, typeof(SetLongDataLoader));
+            _packetHandlerServices.TryAdd(0x0E, typeof(PlayerDeath));
+            _packetHandlerServices.TryAdd(0x0F, typeof(BattleResult));
+            _packetHandlerServices.TryAdd(0x10, typeof(GetRankExperience));
+            _packetHandlerServices.TryAdd(0x11, typeof(LoaderSkillsCharacter));
+            _packetHandlerServices.TryAdd(0x12, typeof(LoaderChatMessages));
+            _packetHandlerServices.TryAdd(0x13, typeof(UpdateCharacterContract));
+            _packetHandlerServices.TryAdd(0x14, typeof(GetSkillDataService));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

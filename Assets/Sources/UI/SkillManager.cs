@@ -1,34 +1,49 @@
+using System;
 using UnityEngine;
+using System.Linq;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using System.Collections;
 using Assets.Sources.Network;
 using Assets.Sources.Contracts;
 using Assets.Sources.UI.Models;
 using Assets.Sources.Interfaces;
+using Assets.Sources.UI.Utilites;
 using System.Collections.Generic;
 using Assets.Sources.Network.OutPacket;
 
 namespace Assets.Sources.UI
 {
     [System.Serializable]
-    internal sealed class Skill
+    public sealed class Skill
     {
         public int Id;
         public Sprite SkillSprite;
         public Sprite SkillCloseSprite;
 
-        [HideInInspector] public GameObject SkillObject;
-        [HideInInspector] public Button SkillButton;
+        [HideInInspector] public SkillHandler Handler;
+    }
+
+    public sealed class PanelObject
+    {
+        public ContentSizeFilterCustom contentSizeFilterCustom;
+        public GameObject panelInformationObject;
+        public InformationComponent InformationComponentObject;
     }
 
     public sealed class SkillManager : MonoBehaviour
     {
         [SerializeField] private GameObject _skillObject;
         [SerializeField] private Transform _spawnContentSkills;
+        [SerializeField] private Transform _spawnScrollingParent;
+        [SerializeField] private Transform _spawnCloseButtonForSkill;
+        [SerializeField] private Transform _spawnPanelSkillInformation;
+        [SerializeField] private GameObject _panelInformation;
         [SerializeField] private List<Skill> _skills = new List<Skill>();
 
         private INetworkProcessor _networkProcessor;
         private List<KeyValuePair<int, KeyValuePair<Skill, SkillContract>>> _skillContracts;
+        private SkillHandler _lastUseSkillHandler;
 
         public IEnumerator Initialize()
         {
@@ -58,6 +73,7 @@ namespace Assets.Sources.UI
                     (skillContract.Id, new KeyValuePair<Skill, SkillContract>(tempSkill, skillContract)));
 
                 GameObject skillGameObject = Instantiate(_skillObject, _spawnContentSkills);
+                ClientProcessor clientProcessor = _networkProcessor.GetParentObject();
 
                 if (!skillGameObject.TryGetComponent(out SkillHandler skillHandler))
                     throw new MissingComponentException(nameof(SkillHandler));
@@ -65,27 +81,43 @@ namespace Assets.Sources.UI
                 int experience = 0;
                 int level = 0;
 
-                if (_networkProcessor.GetParentObject().GetSkillDatas.Count > 0)
+                if (clientProcessor.GetSkillDatas.Count > 0)
                 {
-                    if (iterator > _networkProcessor.GetParentObject().GetSkillDatas.Count)
+                    SkillData skillData = clientProcessor.GetSkillDatas.Where(
+                        sk => sk.SkillId == skillContract.Id).FirstOrDefault();
+
+                    if (skillData != null)
                     {
-                        experience = _networkProcessor.GetParentObject().GetSkillDatas[iterator].Experience;
-                        level = _networkProcessor.GetParentObject().GetSkillDatas[iterator].Level;
+                        experience = skillData.Experience;
+                        level = skillData.Level;
                     }
                 }
 
-                tempSkill.SkillObject = skillGameObject;
+                tempSkill.Handler = skillHandler;
+
+                GameObject panelInformation = Instantiate(_panelInformation, _spawnPanelSkillInformation);
+                PanelObject panelObject = new PanelObject();
+
+                if (!panelInformation.TryGetComponent(out ContentSizeFilterCustom contentSizeFilterCustom))
+                    throw new MissingComponentException(nameof(ContentSizeFilterCustom));
+
+                if (!panelInformation.TryGetComponent(out InformationComponent informationComponent))
+                    throw new MissingComponentException(nameof(InformationComponent));
+
+                panelObject.contentSizeFilterCustom = contentSizeFilterCustom;
+                panelObject.panelInformationObject = panelInformation;
+                panelObject.InformationComponentObject = informationComponent;
+
                 skillHandler.SetSpriteToSkill(tempSkill.SkillCloseSprite);
                 skillHandler.SetSkillExperience(skillContract.Experience);
                 skillHandler.SetSkillCurrentExperience(experience);
                 skillHandler.SetSkillLevel(level);
-                skillHandler.ParseSkill();
+                skillHandler.SetInformationObject(panelObject);
+                skillHandler.SetSpawnCloseButtonAnTransform(_spawnCloseButtonForSkill, _spawnScrollingParent);
+                skillHandler.ParseSkill(clientProcessor, tempSkill, skillContract, this);
 
                 if (!skillGameObject.TryGetComponent(out Button button))
                     throw new MissingComponentException(nameof(Button));
-
-                tempSkill.SkillButton = button;
-                tempSkill.SkillButton.onClick.AddListener(() => InternalButtonClickHandler(skillContract.Id));
 
                 Debug.Log($"Added new Skill {skillContract.Name} to list");
                 iterator++;
@@ -94,25 +126,18 @@ namespace Assets.Sources.UI
             yield break;
         }
 
-        private void InternalButtonClickHandler(int id)
+        public void SetLastUseSkillHandler(SkillHandler skillHandler)
         {
-            KeyValuePair<Skill, SkillContract> skill = InternalGetSkillById(id);
-            Debug.Log($"Skill click: {skill.Value.Name}");
+            _lastUseSkillHandler = skillHandler;
         }
 
-        private KeyValuePair<Skill, SkillContract> InternalGetSkillById(int id)
+        public void CloseAllSelectedMenu()
         {
-            KeyValuePair<Skill, SkillContract> skill = default;
-            foreach (KeyValuePair<int, KeyValuePair<Skill, SkillContract>> item in _skillContracts)
+            if (_lastUseSkillHandler != null)
             {
-                if (item.Value.Value.Id == id)
-                {
-                    skill = item.Value;
-                    break;
-                }    
+                _lastUseSkillHandler.CloseButtons();
+                _lastUseSkillHandler = null;
             }
-
-            return skill;
         }
     }
 }
