@@ -64,14 +64,18 @@ namespace Assets.Sources.Models
         {
             yield return new WaitUntil(() => _clientProcessor.GetParentObject().IsLoadedCharacterModel);
             yield return _chatManager.GetMessagesWithChat(_clientProcessor);
-            _clientProcessor.SendPacketAsync(LoadSkillsCharacter.ToPacket());
-            yield return new WaitUntil(() => _clientProcessor.GetParentObject().IsLoadedSkillCharacter);
-            yield return _skillManager.Initialize();
 
+            if (!_clientProcessor.GetParentObject().IsFirstLoadedSkillData)
+            {
+                _clientProcessor.SendPacketAsync(LoadSkillsCharacter.ToPacket());
+                yield return new WaitUntil(() => _clientProcessor.GetParentObject().IsLoadedSkillCharacter);
+            }
+
+            yield return _skillManager.Initialize();
             yield return new WaitForSecondsRealtime(2f);
 
             _blockPanel.SetActive(false);
-            //_gameSkillsPanel.SetActive(false);
+            _gameSkillsPanel.SetActive(false);
             _createCharacterPanel.SetActive(false);
             _gameRunPanel.SetActive(true);
         }

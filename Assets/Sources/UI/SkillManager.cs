@@ -42,18 +42,23 @@ namespace Assets.Sources.UI
         [SerializeField] private List<Skill> _skills = new List<Skill>();
 
         private INetworkProcessor _networkProcessor;
-        private List<KeyValuePair<int, KeyValuePair<Skill, SkillContract>>> _skillContracts;
+        private List<KeyValuePair<long, KeyValuePair<Skill, SkillContract>>> _skillContracts;
         private SkillHandler _lastUseSkillHandler;
+        private bool _statusWindow = false;
 
         public IEnumerator Initialize()
         {
             _networkProcessor = ClientProcessor.Instance;
-            _skillContracts = new List<KeyValuePair<int, KeyValuePair<Skill, SkillContract>>>();
+            _skillContracts = new List<KeyValuePair<long, KeyValuePair<Skill, SkillContract>>>();
 
-            _networkProcessor.SendPacketAsync(GetSkillsData.ToPacket());
-            yield return new WaitUntil(() => _networkProcessor.GetParentObject().IsLoadedSkillData);
+            if (!_networkProcessor.GetParentObject().IsFirstLoadedSkillData)
+            {
+                _networkProcessor.SendPacketAsync(GetSkillsData.ToPacket());
+                yield return new WaitUntil(() => _networkProcessor.GetParentObject().IsLoadedSkillData);
+            }
 
-            int iterator = 0;
+            _networkProcessor.GetParentObject().GetSkills = new List<Skill>();
+
             foreach (SkillContract skillContract in _networkProcessor.GetParentObject().GetSkillContracts)
             {
                 Skill tempSkill = null;
@@ -69,7 +74,7 @@ namespace Assets.Sources.UI
                 if (tempSkill == null)
                     throw new KeyNotFoundException(nameof(Skill));
 
-                _skillContracts.Add(new KeyValuePair<int, KeyValuePair<Skill, SkillContract>>
+                _skillContracts.Add(new KeyValuePair<long, KeyValuePair<Skill, SkillContract>>
                     (skillContract.Id, new KeyValuePair<Skill, SkillContract>(tempSkill, skillContract)));
 
                 GameObject skillGameObject = Instantiate(_skillObject, _spawnContentSkills);
@@ -80,20 +85,19 @@ namespace Assets.Sources.UI
 
                 int experience = 0;
                 int level = 0;
+                SkillData skillData = null;
 
-                if (clientProcessor.GetSkillDatas.Count > 0)
-                {
-                    SkillData skillData = clientProcessor.GetSkillDatas.Where(
+                skillData = clientProcessor.GetSkillDatas.Where(
                         sk => sk.SkillId == skillContract.Id).FirstOrDefault();
 
-                    if (skillData != null)
-                    {
-                        experience = skillData.Experience;
-                        level = skillData.Level;
-                    }
+                if (skillData != null)
+                {
+                    experience = skillData.Experience;
+                    level = skillData.Level;
                 }
 
                 tempSkill.Handler = skillHandler;
+                _networkProcessor.GetParentObject().GetSkills.Add(tempSkill);
 
                 GameObject panelInformation = Instantiate(_panelInformation, _spawnPanelSkillInformation);
                 PanelObject panelObject = new PanelObject();
@@ -116,14 +120,33 @@ namespace Assets.Sources.UI
                 skillHandler.SetSpawnCloseButtonAnTransform(_spawnCloseButtonForSkill, _spawnScrollingParent);
                 skillHandler.ParseSkill(clientProcessor, tempSkill, skillContract, this);
 
-                if (!skillGameObject.TryGetComponent(out Button button))
-                    throw new MissingComponentException(nameof(Button));
+                if (!_networkProcessor.GetParentObject().IsFirstLoadedSkillData)
+                {
+                    if (skillData != null && skillData.SlotId != -1)
+                    {
+                        CustomSlotInstance.Instance.SetObjectBySlotId(
+                            skillData.SlotId - 1, skillHandler.CreateCloneSkill(), tempSkill);
+                    }
+                }
 
                 Debug.Log($"Added new Skill {skillContract.Name} to list");
-                iterator++;
             }
 
-            yield break;
+            if (_networkProcessor.GetParentObject().IsFirstLoadedSkillData)
+            {
+                IEnumerable<SkillData> skillDatas = _networkProcessor.GetParentObject()
+                    .GetSkillDatas.Where(skill => skill.SlotId != -1);
+
+                foreach (SkillData skillData in skillDatas)
+                {
+                    KeyValuePair<Skill, SkillContract> keyValuePair = _skillContracts[(int)skillData.SkillId].Value;
+
+                    CustomSlotInstance.Instance.SetObjectBySlotId(
+                        skillData.SlotId - 1, keyValuePair.Key.Handler.CreateCloneSkill(), keyValuePair.Key);
+                }
+            }
+
+            _networkProcessor.GetParentObject().SetFirstLoadedSkillData();
         }
 
         public void SetLastUseSkillHandler(SkillHandler skillHandler)
@@ -138,6 +161,13 @@ namespace Assets.Sources.UI
                 _lastUseSkillHandler.CloseButtons();
                 _lastUseSkillHandler = null;
             }
+        }
+
+        public void OpenOrClosePanel()
+        {
+            CloseAllSelectedMenu();
+            _statusWindow = !_statusWindow;
+            gameObject.SetActive(_statusWindow);
         }
     }
 }

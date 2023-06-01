@@ -8,5 +8,6 @@ namespace Assets.Sources.Contracts
         public long CharacterId { get; set; }
         public int Experience { get; set; }
         public int Level { get; set; }
+        public int SlotId { get; set; }
     }
 }

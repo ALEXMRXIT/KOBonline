@@ -4,6 +4,8 @@ namespace Assets.Sources.UI.Utilites
 {
     public sealed class CustomSlotInstance : MonoBehaviour
     {
+        [SerializeField] private Slot[] _slots;
+
         private Slot _lastSelectableSlot;
 
         public static CustomSlotInstance Instance;
@@ -22,6 +24,11 @@ namespace Assets.Sources.UI.Utilites
                 _lastSelectableSlot.CloseButton();
 
             _lastSelectableSlot = newSlot;
+        }
+
+        public void SetObjectBySlotId(int slotId, GameObject item, Skill skill)
+        {
+            _slots[slotId].EnterToSlotObject(item, skill);
         }
 
         public void UpdateLastSelectableSlot()

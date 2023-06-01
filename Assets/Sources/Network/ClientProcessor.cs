@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using UnityEngine;
 using System.Threading;
+using Assets.Sources.UI;
 using System.Net.Sockets;
 using Assets.Sources.Enums;
 using Assets.Sources.Tools;
@@ -37,8 +38,10 @@ namespace Assets.Sources.Network
         private bool _chatMessageLoaded = false;
         private bool _loadedCharacterModel = false;
         private bool _loadedSkillData = false;
+        private bool _isFirstSkillLoaded = false;
         private List<SkillContract> _skillContracts;
         private List<SkillData> _skillDatas;
+        private List<Skill> _skills;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
@@ -52,8 +55,10 @@ namespace Assets.Sources.Network
         public PlayerContract CharacterContract { get; set; }
         public bool IsLoadedCharacterModel { get => _loadedCharacterModel; }
         public bool IsLoadedSkillData { get => _loadedSkillData; }
+        public bool IsFirstLoadedSkillData { get => _isFirstSkillLoaded; }
         public List<SkillContract> GetSkillContracts { get; set; }
         public List<SkillData> GetSkillDatas { get; set; }
+        public List<Skill> GetSkills { get; set; }
 
         public ClientCurrentMenu ClientMenu
         {
@@ -171,6 +176,7 @@ namespace Assets.Sources.Network
         public void ResetLoadedCharacterModel() => _loadedCharacterModel = false;
         public void SetLoadedSkillData() => _loadedSkillData = true;
         public void ResetLoadedSkillData() => _loadedSkillData = false;
+        public void SetFirstLoadedSkillData() => _isFirstSkillLoaded = true;
 
         public async Task SendPacketAsync(NetworkPacket packet, PacketImportance packetImportance = PacketImportance.None)
         {

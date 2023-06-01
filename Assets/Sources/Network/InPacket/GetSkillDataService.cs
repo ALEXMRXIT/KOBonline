@@ -30,6 +30,7 @@ namespace Assets.Sources.Network.InPacket
                 _skillData[iterator].SkillId = networkPacket.ReadLong();
                 _skillData[iterator].Experience = networkPacket.ReadInt();
                 _skillData[iterator].Level = networkPacket.ReadInt();
+                _skillData[iterator].SlotId = networkPacket.ReadInt();
             }
         }
 

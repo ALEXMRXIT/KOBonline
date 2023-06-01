@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 96c5b3fb2b5e149c999c42acc23bc80b
+guid: ac53abdd4fde14a6a8328b111267b856
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -131,13 +131,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gcnumhotkey_0
+      name: 86BD12B58BB7366C_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 20
-        width: 367
-        height: 44
+        y: 48
+        width: 80
+        height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,8 +145,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 69b6d36933bd4419eaa3a17f089ea007
-      internalID: 1342257595
+      spriteID: 43ce3a6374b8e4663adf9db8fd53cdc1
+      internalID: -888178293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 86BD12B58BB7366C_1
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 48
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa2ecade988db4c30bc60d4b8062e38e
+      internalID: 1010497819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 86BD12B58BB7366C_2
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 48
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96d0781cc969543adae0fb40291165dd
+      internalID: 108932650
       vertices: []
       indices: 
       edges: []
@@ -154,7 +196,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: cd51351b349b8465e8ccd123e187713c
     internalID: 0
     vertices: []
     indices: 
@@ -162,7 +204,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      gcnumhotkey_0: 1342257595
+      86BD12B58BB7366C_0: -888178293
+      86BD12B58BB7366C_1: 1010497819
+      86BD12B58BB7366C_2: 108932650
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

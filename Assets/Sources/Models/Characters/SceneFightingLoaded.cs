@@ -1,12 +1,19 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using Assets.Sources.UI;
 using System.Collections;
 using Assets.Sources.Enums;
 using Assets.Sources.Models;
 using Assets.Sources.Network;
+using Assets.Sources.Contracts;
+using Assets.Sources.UI.Models;
 using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI;
 using Assets.Sources.Models.Base;
+using System.Collections.Generic;
+using Assets.Sources.UI.Utilites;
 using Assets.Sources.Models.Camera;
 using Assets.Sources.Network.OutPacket;
 
@@ -21,6 +28,11 @@ namespace Assets.Sources.Models.Characters
         [Space]
         [SerializeField] private Vector3 _positionCamera2;
         [SerializeField] private Vector3 _rotationCamera2;
+
+        [Space]
+        [SerializeField] private GameObject _skillObject;
+        [SerializeField] private Transform _spawnContentSkills;
+        [SerializeField] private List<GameObject> _slots = new List<GameObject>();
 
         private INetworkProcessor _networkProcessor;
 
@@ -100,8 +112,31 @@ namespace Assets.Sources.Models.Characters
                     firstEnemyTarget.SetTarget(secondEnemy.GameObjectModel.transform, secondEnemy);
                 if (!secondEnemyTarget.IsTargetHook())
                     secondEnemyTarget.SetTarget(firstEnemy.GameObjectModel.transform, firstEnemy);
-            }
 
+                foreach (SkillData skillData in _networkProcessor.GetParentObject().GetSkillDatas)
+                {
+                    if (skillData.SlotId == -1)
+                        continue;
+
+                    Skill skill = _networkProcessor.GetParentObject()
+                        .GetSkills.Where(x => x.Id == skillData.SkillId).FirstOrDefault();
+
+                    if (skill == null)
+                        throw new NullReferenceException(nameof(Skill));
+
+                    GameObject item = Instantiate(_skillObject, _spawnContentSkills);
+
+                    item.transform.SetParent(_slots[skillData.SlotId - 1].transform);
+                    RectTransform rectTransform = item.GetComponent<RectTransform>();
+                    rectTransform.localPosition = new Vector3(0f, 0f, rectTransform.localPosition.z);
+
+                    if (!item.TryGetComponent(out Image image))
+                        throw new MissingComponentException(nameof(Image));
+
+                    image.sprite = skill.SkillSprite;
+                }
+            }
+            
             _networkProcessor.SendPacketAsync(LoadSceneFightingSuccess.ToPacket());
         }
 
