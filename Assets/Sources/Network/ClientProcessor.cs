@@ -8,6 +8,7 @@ using Assets.Sources.Enums;
 using Assets.Sources.Tools;
 using Assets.Sources.Models;
 using System.Threading.Tasks;
+using Assets.Sources.GameCrypt;
 using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace Assets.Sources.Network
         private List<SkillContract> _skillContracts;
         private List<SkillData> _skillDatas;
         private List<Skill> _skills;
+        private GameCryptProtection _gameCrypt;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
@@ -75,6 +77,7 @@ namespace Assets.Sources.Network
             ClientSession = new GameSession(SessionStatus.SessionAuthorization);
             ClientSession.OnSessionChange += ClientSessionOnSessionChange;
             _cancelationTokenSources = new CancellationTokenSource();
+            _gameCrypt = new GameCryptProtection();
             _characterRankTable = new RankTable();
 
             _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 27018);
@@ -182,6 +185,8 @@ namespace Assets.Sources.Network
         {
             byte[] buffer = packet.GetBuffer();
 
+            _gameCrypt.EncryptBuffer(GameCryptProtection.KEY_CRYPT, buffer);
+
             int lengthPacket = sizeof(short);
             int sizeAllPacket = buffer.Length + lengthPacket + sizeof(byte);
 
@@ -235,7 +240,7 @@ namespace Assets.Sources.Network
 #if UNITY_EDITOR
                     _onReceivedNetworkBuffer?.Invoke(buffer.Length);
 #endif
-
+                    _gameCrypt.DecryptBuffer(GameCryptProtection.KEY_CRYPT, buffer);
                     _queueBufferFromServer.Enqueue(buffer);
                 }
                 catch (OperationCanceledException canceledException)
