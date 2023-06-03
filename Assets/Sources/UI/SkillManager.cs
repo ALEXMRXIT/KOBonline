@@ -42,14 +42,14 @@ namespace Assets.Sources.UI
         [SerializeField] private List<Skill> _skills = new List<Skill>();
 
         private INetworkProcessor _networkProcessor;
-        private List<KeyValuePair<long, KeyValuePair<Skill, SkillContract>>> _skillContracts;
+        private Dictionary<long, KeyValuePair<Skill, SkillContract>> _skillContracts;
         private SkillHandler _lastUseSkillHandler;
         private bool _statusWindow = false;
 
         public IEnumerator Initialize()
         {
             _networkProcessor = ClientProcessor.Instance;
-            _skillContracts = new List<KeyValuePair<long, KeyValuePair<Skill, SkillContract>>>();
+            _skillContracts = new Dictionary<long, KeyValuePair<Skill, SkillContract>>();
 
             if (!_networkProcessor.GetParentObject().IsFirstLoadedSkillData)
             {
@@ -74,8 +74,7 @@ namespace Assets.Sources.UI
                 if (tempSkill == null)
                     throw new KeyNotFoundException(nameof(Skill));
 
-                _skillContracts.Add(new KeyValuePair<long, KeyValuePair<Skill, SkillContract>>
-                    (skillContract.Id, new KeyValuePair<Skill, SkillContract>(tempSkill, skillContract)));
+                _skillContracts.TryAdd(tempSkill.Id, new KeyValuePair<Skill, SkillContract>(tempSkill, skillContract));
 
                 GameObject skillGameObject = Instantiate(_skillObject, _spawnContentSkills);
                 ClientProcessor clientProcessor = _networkProcessor.GetParentObject();
@@ -139,10 +138,10 @@ namespace Assets.Sources.UI
 
                 foreach (SkillData skillData in skillDatas)
                 {
-                    KeyValuePair<Skill, SkillContract> keyValuePair = _skillContracts[(int)skillData.SkillId].Value;
-
+                    Skill skill = _skillContracts[skillData.SkillId].Key;
+                    
                     CustomSlotInstance.Instance.SetObjectBySlotId(
-                        skillData.SlotId - 1, keyValuePair.Key.Handler.CreateCloneSkill(), keyValuePair.Key);
+                        skillData.SlotId - 1, skill.Handler.CreateCloneSkill(), skill);
                 }
             }
 

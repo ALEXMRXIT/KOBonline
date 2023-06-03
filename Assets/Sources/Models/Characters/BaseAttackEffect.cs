@@ -6,6 +6,8 @@ using Assets.Sources.Network;
 using Assets.Sources.Interfaces;
 using Assets.Sources.Models.Base;
 
+#pragma warning disable
+
 namespace Assets.Sources.Models.Characters
 {
     public sealed class BaseAttackEffect : MonoBehaviour
@@ -25,6 +27,7 @@ namespace Assets.Sources.Models.Characters
 
         public IEnumerator PlayEffectLoop(float duration, BaseAttackSpawnEffect baseAttackSpawnEffect)
         {
+            int damageIndex = 1;
             bool nullEffectReference = false;
             if (_effect.Length > 0)
             {
@@ -43,26 +46,31 @@ namespace Assets.Sources.Models.Characters
                 }
             }
 
-            float lengthClip = 0f;
-            float pauseTakeDamage = 0f;
-            if (_currentBaseClass == BaseClass.Mage)
+            while (true)
             {
-                lengthClip = 2.283334f / duration;
-                pauseTakeDamage = (lengthClip * 40f) / 100f;
-            }
-            else if (_currentBaseClass == BaseClass.Warrior)
-            {
-                lengthClip = 1.500f / duration;
-                pauseTakeDamage = (lengthClip * 50f) / 100f;
-            }
+                float lengthClip = 0f;
+                float pauseTakeDamage = 0f;
+                if (_currentBaseClass == BaseClass.Mage)
+                {
+                    lengthClip = 2.283334f / duration;
+                    pauseTakeDamage = (lengthClip * 40f) / 100f;
+                }
+                else if (_currentBaseClass == BaseClass.Warrior)
+                {
+                    lengthClip = 1.500f / duration;
+                    pauseTakeDamage = (lengthClip * 50f) / 100f;
+                }
 
-            if (!nullEffectReference)
-                _effect[0].gameObject.SetActive(true);
-            yield return new WaitForSecondsRealtime(pauseTakeDamage);
-            StartCoroutine(baseAttackSpawnEffect.SpawnFireBaseAttack());
-            yield return new WaitForSecondsRealtime(lengthClip - pauseTakeDamage);
-            if (!nullEffectReference)
-                _effect[0]?.gameObject.SetActive(false);
+                if (!nullEffectReference)
+                    _effect[0]?.gameObject.SetActive(true);
+                yield return new WaitForSecondsRealtime(pauseTakeDamage);
+                baseAttackSpawnEffect.SpawnFireBaseAttack(damageIndex);
+                yield return new WaitForSecondsRealtime(lengthClip - pauseTakeDamage);
+                if (!nullEffectReference)
+                    _effect[0]?.gameObject.SetActive(false);
+
+                damageIndex++;
+            }
         }
     }
 }

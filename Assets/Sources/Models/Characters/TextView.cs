@@ -15,16 +15,21 @@ namespace Assets.Sources.Models.Characters
 
     public readonly struct Damage
     {
-        public Damage(DamageFrom damageFrom, bool isBot, int value)
+        public Damage(DamageFrom damageFrom, bool isBot, int value,
+            int damageIndex, bool create = false)
         {
             ClientDamageFrom = damageFrom;
             ClientDamageIsBot = isBot;
             ClientDamageValue = value;
+            DamageIndex = damageIndex;
+            AutoCreate = create;
         }
 
         public readonly DamageFrom ClientDamageFrom;
         public readonly bool ClientDamageIsBot;
         public readonly int ClientDamageValue;
+        public readonly int DamageIndex;
+        public readonly bool AutoCreate;
     }
 
     public sealed class TextView : MonoBehaviour
@@ -35,20 +40,20 @@ namespace Assets.Sources.Models.Characters
         [SerializeField] private GameObject _baseDamageYellowCrit;
         [SerializeField] private GameObject _baseDamageRedCrit;
 
-        private Queue<Damage> _contain = new Queue<Damage>();
+        private Dictionary<int, Damage> _contain = new Dictionary<int, Damage>();
 
         public void AddDamage(Damage damage)
         {
-            _contain.Enqueue(damage);
+            _contain.TryAdd(damage.DamageIndex, damage);
         }
 
-        public void ShowDamage(ObjectData objectData)
+        public bool ShowDamage(ObjectData objectData, int damageIndex)
         {
-            if (!_contain.TryDequeue(out Damage strDamage))
-            {
-                Debug.LogWarning($"Unable to display damage, buffer container is empty!");
-                return;
-            }
+            Damage strDamage;
+            if (_contain.ContainsKey(damageIndex))
+                _contain.Remove(damageIndex, out strDamage);
+            else
+                return false;
 
             GameObject damageView = null;
             if (strDamage.ClientDamageIsBot)
@@ -58,19 +63,19 @@ namespace Assets.Sources.Models.Characters
 
             damageView.GetComponent<Text>().text = strDamage.ClientDamageValue.ToString();
             objectData.ObjectContract.MinHealth = Mathf.Clamp(objectData.
-                ObjectContract.MinHealth - strDamage.ClientDamageValue, min: 0, max: objectData.ObjectContract.Health);
+                ObjectContract.MinHealth - strDamage.ClientDamageValue,
+                    min: 0, max: objectData.ObjectContract.Health);
 
             if (objectData.IsBot)
                 objectData.ClientHud.UpdateEnemyHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
             else
                 objectData.ClientHud.UpdateHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
 
-            Destroy(damageView, 1.5f);
-        }
+            if (objectData.ObjectContract.MinHealth <= 0)
+                objectData.ClientAnimationState.SetCharacterState(new StateAnimationIdle());
 
-        public bool PeekStack()
-        {
-            return _contain.TryPeek(out _);
+            Destroy(damageView, 1.5f);
+            return true;
         }
     }
 }

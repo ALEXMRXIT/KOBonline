@@ -7,6 +7,8 @@ using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI;
 using UnityEngine.SceneManagement;
+using Assets.Sources.Models.Base;
+using System.Linq;
 
 namespace Assets.Sources.Network.InPacket
 {
@@ -16,6 +18,8 @@ namespace Assets.Sources.Network.InPacket
         {
             _playerContract = new PlayerContract();
             _client = clientProcessor;
+
+            _objId = networkPacket.ReadLong();
 
             _playerContract.AccountName = networkPacket.ReadString();
             _playerContract.ObjId = networkPacket.ReadLong();
@@ -42,6 +46,7 @@ namespace Assets.Sources.Network.InPacket
         }
 
         private readonly PlayerContract _playerContract;
+        private readonly long _objId;
         private readonly ClientProcessor _client;
 
         public override PacketImplementCodeResult RunImpl()
@@ -53,6 +58,9 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
+                ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
+
+                player.ObjectContract = _playerContract;
                 _client.CharacterContract = _playerContract;
             }
             catch (Exception exception)

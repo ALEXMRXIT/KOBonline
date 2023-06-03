@@ -17,7 +17,6 @@ namespace Assets.Sources.Models
         private CharacterTarget _characterTarget;
         private ObjectData _objectData;
         private StateAnimationRun _animationRun;
-        private StateAnimationAttack _animationAttack;
         private StateAnimationDeath _animationDeath;
         private StateAnimationIdle _animationIdle;
 
@@ -29,7 +28,6 @@ namespace Assets.Sources.Models
             _objectData = data;
 
             _animationRun = new StateAnimationRun();
-            _animationAttack = new StateAnimationAttack();
             _animationDeath = new StateAnimationDeath();
             _animationIdle = new StateAnimationIdle();
         }
@@ -47,17 +45,12 @@ namespace Assets.Sources.Models
                 return;
             }
 
-            if (_characterTarget.IsObjectDeath())
-            {
-                _characterState.SetCharacterState(_animationIdle, speed: 1f);
-                return;
-            }
-
             float dist = Vector3.Distance(transform.position,
                 _characterTarget.GetCurrentTarget().position);
-            if (dist < _objectData.ObjectContract.AttackDistance)
+
+            if (_characterTarget.IsObjectDeath() || dist < _objectData.ObjectContract.AttackDistance)
             {
-                _characterState.SetCharacterState(_animationAttack, _objectData.ObjectContract.AttackSpeed);
+                _characterState.SetCharacterState(_animationIdle, speed: 1f);
                 return;
             }
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections;
 using Assets.Sources.Models.Base;
+using Assets.Sources.Models.Characters;
 
 namespace Assets.Sources.Models.Effects
 {
@@ -8,33 +10,39 @@ namespace Assets.Sources.Models.Effects
     {
         private Transform _target;
         private GameObject _effectTrigger;
-        private Action<ObjectData> _call;
         private ObjectData _objectData;
+        private bool _moving = true;
+        private int _damageIndex;
 
-        public GameObject Init(Transform target, GameObject effectTrigger,
-            ObjectData objectData, Action<ObjectData> call)
+        public GameObject Init(Transform target,
+            GameObject effectTrigger, ObjectData objectData, int damageIndex)
         {
             _target = target;
             _effectTrigger = effectTrigger;
             _objectData = objectData;
-            _call = call;
+            _damageIndex = damageIndex;
 
             return gameObject;
         }
-
+        
         private void Update()
         {
+            if (!_moving)
+                return;
+
             transform.position = Vector3.MoveTowards(transform.position, _target.position, Time.deltaTime * 10f);
-            float dist = Vector3.Distance(_target.position, transform.position);
-            if (dist < 1f)
+            if (_objectData.ClientTextView.ShowDamage(_objectData, _damageIndex))
             {
-                _call?.Invoke(_objectData);
+                _moving = false;
                 Destroy(gameObject);
             }
         }
 
         private void OnDestroy()
         {
+            if (_target == null)
+                return;
+
             GameObject gameObject = Instantiate(_effectTrigger, null);
             gameObject.transform.position = new Vector3(_target.position.x, -3.86f, _target.position.z);
 

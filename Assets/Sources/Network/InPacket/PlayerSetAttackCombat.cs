@@ -13,9 +13,9 @@ using Assets.Sources.Models.States.StateAnimations;
 
 namespace Assets.Sources.Network.InPacket
 {
-    public sealed class PlayerDeath : NetworkBasePacket
+    public sealed class PlayerSetAttackCombat : NetworkBasePacket
     {
-        public PlayerDeath(NetworkPacket networkPacket, ClientProcessor clientProcessor)
+        public PlayerSetAttackCombat(NetworkPacket networkPacket, ClientProcessor clientProcessor)
         {
             _client = clientProcessor;
 
@@ -28,32 +28,25 @@ namespace Assets.Sources.Network.InPacket
         public override PacketImplementCodeResult RunImpl()
         {
 #if UNITY_EDITOR
-            Debug.Log($"Execute {nameof(PlayerDeath)}.");
+            Debug.Log($"Execute {nameof(PlayerSetAttackCombat)}.");
 #endif
             PacketImplementCodeResult codeError = new PacketImplementCodeResult();
 
             try
             {
                 ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
-                player.IsDeath = true;
 
-                if (player.IsBot)
-                    player.ClientHud.UpdateEnemyHealthBar(0, player.ObjectContract.Health);
-                else
-                    player.ClientHud.UpdateHealthBar(0, player.ObjectContract.Health);
+                if (player.GameObjectModel.TryGetComponent(out CharacterMovement characterMovement))
+                    GameObject.Destroy(characterMovement);
 
-                player.ObjectTarget.ClearTarget();
-                player.ClientAnimationState.SetCharacterState(new StateAnimationDeath());
-
-                _client.GetPlayers.Where(x => x.ObjId != _objId).ToList()
-                    .ForEach(client => client.ClientAnimationState.SetCharacterState(new StateAnimationIdle()));
+                player.ClientAnimationState.SetCharacterState(new StateAnimationAttack(), player.ObjectContract.AttackSpeed);
             }
             catch (Exception exception)
             {
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
-                codeError.FireException = nameof(PlayerDeath);
+                codeError.FireException = nameof(PlayerSetAttackCombat);
             }
 
             return codeError;

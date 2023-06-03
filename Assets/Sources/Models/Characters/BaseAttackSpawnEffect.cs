@@ -22,13 +22,11 @@ namespace Assets.Sources.Models.Characters
             _data = data;
         }
 
-        public IEnumerator SpawnFireBaseAttack()
+        public void SpawnFireBaseAttack(int damageIndex)
         {
-            yield return new WaitUntil(() => _data.ClientTextView.PeekStack());
             GameObject obj = Instantiate(_fire.gameObject, null).
                 GetComponent<FireBallLogic>().Init(_data.GameObjectModel.transform,
-                    _effectTrigger, _data, _data.ClientTextView.ShowDamage);
-
+                    _effectTrigger, _data, damageIndex);
             obj.transform.position = _hand.transform.position;
         }
     }

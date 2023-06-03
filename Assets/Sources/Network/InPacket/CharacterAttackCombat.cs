@@ -20,11 +20,13 @@ namespace Assets.Sources.Network.InPacket
 
             _objId = networkPacket.ReadLong();
             _damage = networkPacket.ReadInt();
+            _damageIndex = networkPacket.ReadInt();
         }
 
         private readonly ClientProcessor _client;
         private readonly long _objId;
         private readonly int _damage;
+        private readonly int _damageIndex;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -36,8 +38,8 @@ namespace Assets.Sources.Network.InPacket
             try
             {
                 ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
-                Damage damage = new Damage(DamageFrom.DamageFromServer, player.IsBot, _damage);
-
+                Damage damage = new Damage(DamageFrom.DamageFromServer, player.IsBot, _damage, _damageIndex, create: true);
+                
                 Debug.Log($"Take damage player id: {player.ObjId} damage: {damage.ClientDamageValue}");
 
                 player.ClientTextView.AddDamage(damage);

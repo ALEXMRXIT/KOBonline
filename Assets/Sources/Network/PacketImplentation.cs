@@ -32,6 +32,7 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x12, typeof(LoaderChatMessages));
             _packetHandlerServices.TryAdd(0x13, typeof(UpdateCharacterContract));
             _packetHandlerServices.TryAdd(0x14, typeof(GetSkillDataService));
+            _packetHandlerServices.TryAdd(0x15, typeof(PlayerSetAttackCombat));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;
