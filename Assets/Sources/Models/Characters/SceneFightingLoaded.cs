@@ -35,6 +35,19 @@ namespace Assets.Sources.Models.Characters
         [SerializeField] private List<GameObject> _slots = new List<GameObject>();
 
         private INetworkProcessor _networkProcessor;
+        private List<SlotBattle> _slotBattles;
+
+        private void Awake()
+        {
+            _slotBattles = new List<SlotBattle>(capacity: _slots.Count);
+            for (int iterator = 0; iterator < _slots.Count; iterator++)
+            {
+                if (!_slots[iterator].TryGetComponent(out SlotBattle slotBattle))
+                    throw new MissingComponentException(nameof(SlotBattle));
+
+                _slotBattles.Add(slotBattle);
+            }
+        }
 
         private void Start()
         {
@@ -121,6 +134,9 @@ namespace Assets.Sources.Models.Characters
                     Skill skill = _networkProcessor.GetParentObject()
                         .GetSkills.Where(x => x.Id == skillData.SkillId).FirstOrDefault();
 
+                    SkillContract skillContract = _networkProcessor.GetParentObject()
+                        .GetSkillContracts.Where(x => x.Id == skillData.SkillId).FirstOrDefault();
+
                     if (skill == null)
                         throw new NullReferenceException(nameof(Skill));
 
@@ -134,6 +150,15 @@ namespace Assets.Sources.Models.Characters
                         throw new MissingComponentException(nameof(Image));
 
                     image.sprite = skill.SkillSprite;
+
+                    if (!item.TryGetComponent(out SkillBattle skillBattle))
+                        throw new MissingComponentException(nameof(SkillBattle));
+
+                    skillBattle.SetProcessor(_networkProcessor.GetParentObject());
+                    skillBattle.SetSkill(skillContract);
+                    skillBattle.SetRefSlots(_slotBattles);
+
+                    _slotBattles[skillData.SlotId - 1].SetSkill(skillBattle);
                 }
             }
             

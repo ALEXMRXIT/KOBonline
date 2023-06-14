@@ -286,6 +286,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &838699896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -879,7 +880,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.007, y: 0.277}
+  m_AnchoredPosition: {x: 0, y: 0.277}
   m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &6362799633263939898
@@ -899,6 +900,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -2657,6 +2659,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 421574318048938686}
     m_Modifications:
+    - target: {fileID: 2242046325262569984, guid: af6309ddb0b264e709512849871ee792,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2586067734318901939, guid: af6309ddb0b264e709512849871ee792,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2617057218356809088, guid: af6309ddb0b264e709512849871ee792,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6275151009718324907, guid: af6309ddb0b264e709512849871ee792,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7048994535929440829, guid: af6309ddb0b264e709512849871ee792,
         type: 3}
       propertyPath: m_Name
@@ -2720,6 +2742,11 @@ PrefabInstance:
     - target: {fileID: 7211787068695495421, guid: af6309ddb0b264e709512849871ee792,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7881755400539341616, guid: af6309ddb0b264e709512849871ee792,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

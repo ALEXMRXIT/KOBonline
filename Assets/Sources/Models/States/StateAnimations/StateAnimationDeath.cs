@@ -7,11 +7,10 @@ namespace Assets.Sources.Models.States.StateAnimations
     public sealed class StateAnimationDeath : IStateAnimation
     {
         public StateAnimationIndex AnimationIndex => StateAnimationIndex.AnimationDeath;
-        public bool KnocksDownOtherAnimation => true;
 
         public void ExecuteAnimation(Animator animator, float speed = 1f)
         {
-            animator.SetInteger("Index", (int)AnimationIndex);
+            animator.Play("Death");
         }
     }
 }

@@ -8,6 +8,7 @@ using Assets.Sources.Enums;
 using Assets.Sources.Tools;
 using Assets.Sources.Models;
 using System.Threading.Tasks;
+using UnityEngine.EventSystems;
 using Assets.Sources.GameCrypt;
 using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;

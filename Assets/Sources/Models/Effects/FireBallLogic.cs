@@ -34,19 +34,13 @@ namespace Assets.Sources.Models.Effects
             if (_objectData.ClientTextView.ShowDamage(_objectData, _damageIndex))
             {
                 _moving = false;
+
+                GameObject gameObjectD = Instantiate(_effectTrigger, null);
+                gameObjectD.transform.position = new Vector3(_target.position.x, -3.86f, _target.position.z);
+
+                Destroy(gameObjectD, 1f);
                 Destroy(gameObject);
             }
-        }
-
-        private void OnDestroy()
-        {
-            if (_target == null)
-                return;
-
-            GameObject gameObject = Instantiate(_effectTrigger, null);
-            gameObject.transform.position = new Vector3(_target.position.x, -3.86f, _target.position.z);
-
-            Destroy(gameObject, 2f);
         }
     }
 }

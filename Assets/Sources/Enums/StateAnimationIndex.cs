@@ -5,10 +5,8 @@
         AnimationIdle,
         AnimationRun,
         AnimationCastSpell1,
-        AnimationCastSpell2,
         AnimationDeath,
         AnimationBaseAttack,
-        AnimationMagicAttack1,
-        AnimationMagicAttack2
+        AnimationAttackMagic
     }
 }

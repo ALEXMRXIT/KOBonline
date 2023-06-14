@@ -33,6 +33,7 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x13, typeof(UpdateCharacterContract));
             _packetHandlerServices.TryAdd(0x14, typeof(GetSkillDataService));
             _packetHandlerServices.TryAdd(0x15, typeof(PlayerSetAttackCombat));
+            _packetHandlerServices.TryAdd(0x16, typeof(InterruptExecutionAnimation));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

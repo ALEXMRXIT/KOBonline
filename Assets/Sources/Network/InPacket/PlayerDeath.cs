@@ -43,10 +43,10 @@ namespace Assets.Sources.Network.InPacket
                     player.ClientHud.UpdateHealthBar(0, player.ObjectContract.Health);
 
                 player.ObjectTarget.ClearTarget();
-                player.ClientAnimationState.SetCharacterState(new StateAnimationDeath());
+                player.ClientAnimationState.SetCharacterState(player._stateAnimationDeath);
 
                 _client.GetPlayers.Where(x => x.ObjId != _objId).ToList()
-                    .ForEach(client => client.ClientAnimationState.SetCharacterState(new StateAnimationIdle()));
+                    .ForEach(client => client.ClientAnimationState.SetCharacterState(client._stateAnimationIdle));
             }
             catch (Exception exception)
             {

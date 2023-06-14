@@ -10,6 +10,7 @@ using Assets.Sources.MechanicUI;
 using Assets.Sources.Models.Base;
 using UnityEngine.SceneManagement;
 using Assets.Sources.Models.Characters;
+using Assets.Sources.Models.States.StateAnimations;
 
 namespace Assets.Sources.Network.InPacket
 {
@@ -71,6 +72,13 @@ namespace Assets.Sources.Network.InPacket
                     playerData.ObjId = _objId;
                     playerData.IsBot = false;
                     playerData.ObjectContract = _playerContract;
+
+                    playerData._stateAnimationAttackMagic = new StateAnimationAttackMagic();
+                    playerData._stateAnimationAttack = new StateAnimationAttack();
+                    playerData._stateAnimationCastSpell1 = new StateAnimationCastSpell1();
+                    playerData._stateAnimationDeath = new StateAnimationDeath();
+                    playerData._stateAnimationIdle = new StateAnimationIdle();
+                    playerData._stateAnimationRun = new StateAnimationRun();
 
                     _client.GetPlayers.Add(playerData);
                 }

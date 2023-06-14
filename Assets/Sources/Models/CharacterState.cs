@@ -14,8 +14,7 @@ namespace Assets.Sources.Models
         private StateMachineAnimation _stateMachineAnimation;
         private BaseAttackEffect _baseAttackEffect;
         private BaseAttackSpawnEffect _baseAttackSpawnEffect;
-        private bool _isAttacked = false;
-        private Coroutine _coroutineEffectBaseAttack = null;
+        private Coroutine _coroutine;
 
         private void Start()
         {
@@ -34,39 +33,15 @@ namespace Assets.Sources.Models
 
         public void SetCharacterState(IStateAnimation stateAnimation, float speed = 1f)
         {
-            if (stateAnimation is StateAnimationAttack || _isAttacked)
-            {
-                if (stateAnimation.KnocksDownOtherAnimation)
-                {
-                    if (_isAttacked)
-                        StopCoroutine(_coroutineEffectBaseAttack);
+            if (stateAnimation is StateAnimationAttack || stateAnimation is StateAnimationAttackMagic)
+                _coroutine = StartCoroutine(PlayOneEffect(speed));
 
-                    _isAttacked = false;
-                }
-                else
-                {
-                    _stateMachineAnimation.SetAnimation(stateAnimation, speed);
-                    if (!_isAttacked)
-                        _coroutineEffectBaseAttack = StartCoroutine(PlayEffect(speed));
-
-                    _isAttacked = true;
-
-                    return;
-                }
-            }
-
-            if (_isAttacked)
-                StopCoroutine(_coroutineEffectBaseAttack);
             _stateMachineAnimation.SetAnimation(stateAnimation, speed);
         }
 
-        private IEnumerator PlayEffect(float speedAttack)
+        private IEnumerator PlayOneEffect(float speedAttack)
         {
-            while (true)
-            {
-                yield return _baseAttackEffect.PlayEffectLoop(
-                    speedAttack, _baseAttackSpawnEffect);
-            }
+            yield return _baseAttackEffect.PlayOneEffect(speedAttack, _baseAttackSpawnEffect);
         }
     }
 }

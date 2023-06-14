@@ -11,7 +11,7 @@ namespace Assets.Sources.Models.States.StateAnimations
 
         public void ExecuteAnimation(Animator animator, float speed = 1f)
         {
-            animator.SetInteger("Index", (int)AnimationIndex);
+            animator.Play("Run");
             animator.SetFloat("MoveSpeed", speed);
         }
     }

@@ -6,8 +6,6 @@ namespace Assets.Sources.Interfaces
     public interface IStateAnimation
     {
         public StateAnimationIndex AnimationIndex { get; }
-        public bool KnocksDownOtherAnimation { get; }
-
         public void ExecuteAnimation(Animator animator, float speed = 1f);
     }
 }

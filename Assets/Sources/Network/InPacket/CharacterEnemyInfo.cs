@@ -9,6 +9,7 @@ using Assets.Sources.MechanicUI;
 using Assets.Sources.Models.Base;
 using UnityEngine.SceneManagement;
 using Assets.Sources.Models.Characters;
+using Assets.Sources.Models.States.StateAnimations;
 
 namespace Assets.Sources.Network.InPacket
 {
@@ -57,6 +58,13 @@ namespace Assets.Sources.Network.InPacket
                 ObjectData enemyData = new ObjectData();
                 enemyData.ObjectContract = _playerContract;
                 enemyData.ObjId = _objId;
+
+                enemyData._stateAnimationAttackMagic = new StateAnimationAttackMagic();
+                enemyData._stateAnimationAttack = new StateAnimationAttack();
+                enemyData._stateAnimationCastSpell1 = new StateAnimationCastSpell1();
+                enemyData._stateAnimationDeath = new StateAnimationDeath();
+                enemyData._stateAnimationIdle = new StateAnimationIdle();
+                enemyData._stateAnimationRun = new StateAnimationRun();
 
                 enemyData.UpdatePositionInServer = new Vector3(
                     _playerContract.PositionX, _playerContract.PositionY, _playerContract.PositionZ);
