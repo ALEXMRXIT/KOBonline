@@ -1,5 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 using System.Collections;
+using Assets.Sources.Enums;
+using Assets.Sources.Network;
 using Assets.Sources.Interfaces;
 using Assets.Sources.Models.States;
 using Assets.Sources.Models.Characters;
@@ -7,20 +11,30 @@ using Assets.Sources.Models.States.StateAnimations;
 
 namespace Assets.Sources.Models
 {
-    [RequireComponent(typeof(BaseAttackEffect))]
     [RequireComponent(typeof(StateMachineAnimation))]
     public sealed class CharacterState : MonoBehaviour
     {
         private StateMachineAnimation _stateMachineAnimation;
-        private BaseAttackEffect _baseAttackEffect;
-        private BaseAttackSpawnEffect _baseAttackSpawnEffect;
         private Coroutine _coroutine;
+        private DateTime _lastStartMagicAttack;
+        private INetworkProcessor _networkProcessor;
+        private float _lengthAnimationClip;
 
         private void Start()
         {
+            _networkProcessor = ClientProcessor.Instance;
+
+            if (_networkProcessor.GetParentObject().GetPlayers.FirstOrDefault(
+                x => !x.IsBot).ObjectContract.CharacterBaseClass == BaseClass.Warrior)
+            {
+                _lengthAnimationClip = 1.5f;
+            }
+            else
+            {
+                _lengthAnimationClip = 2.283334f;
+            }
+
             _stateMachineAnimation = GetComponent<StateMachineAnimation>();
-            _baseAttackEffect = GetComponent<BaseAttackEffect>();
-            _baseAttackSpawnEffect = GetComponent<BaseAttackSpawnEffect>();
         }
 
         public void CheckGettingComponent()
@@ -31,17 +45,25 @@ namespace Assets.Sources.Models
             _stateMachineAnimation.CheckGettingComponent();
         }
 
-        public void SetCharacterState(IStateAnimation stateAnimation, float speed = 1f)
+        public IStateAnimation GetCurrentPlayingAnimationState()
         {
-            if (stateAnimation is StateAnimationAttack || stateAnimation is StateAnimationAttackMagic)
-                _coroutine = StartCoroutine(PlayOneEffect(speed));
+            if (_stateMachineAnimation.GetCurrentStateAnimationClip() is StateAnimationAttackMagic)
+            {
+                if (_lastStartMagicAttack.CompareTo(DateTime.UtcNow) == 1)
+                    return _stateMachineAnimation.GetCurrentStateAnimationClip();
 
-            _stateMachineAnimation.SetAnimation(stateAnimation, speed);
+                return null;
+            }
+
+            return null;
         }
 
-        private IEnumerator PlayOneEffect(float speedAttack)
+        public void SetCharacterState(IStateAnimation stateAnimation, float speed = 1f)
         {
-            yield return _baseAttackEffect.PlayOneEffect(speedAttack, _baseAttackSpawnEffect);
+            if (stateAnimation is StateAnimationAttackMagic)
+                _lastStartMagicAttack = DateTime.UtcNow.AddSeconds(_lengthAnimationClip / speed);
+
+            _stateMachineAnimation.SetAnimation(stateAnimation, speed);
         }
     }
 }

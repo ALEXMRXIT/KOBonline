@@ -34,6 +34,10 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x14, typeof(GetSkillDataService));
             _packetHandlerServices.TryAdd(0x15, typeof(PlayerSetAttackCombat));
             _packetHandlerServices.TryAdd(0x16, typeof(InterruptExecutionAnimation));
+            _packetHandlerServices.TryAdd(0x17, typeof(UpdateAttributes));
+            _packetHandlerServices.TryAdd(0x18, typeof(UseAbilityForReload));
+            _packetHandlerServices.TryAdd(0x19, typeof(CreateAbilityRegistration));
+            _packetHandlerServices.TryAdd(0x1A, typeof(UpdateAbility));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

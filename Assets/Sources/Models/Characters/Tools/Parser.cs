@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace Assets.Sources.Models.Characters.Tools
 {
@@ -20,6 +21,23 @@ namespace Assets.Sources.Models.Characters.Tools
             }
 
             return buffer;
+        }
+
+        public static string ConvertTimeInt32ToTimeString(int value)
+        {
+            StringBuilder stringBuilder = new StringBuilder(capacity: 8);
+            int time = 0;
+
+            if ((value / 60) >= 1)
+            {
+                if ((time = (value / (60 * 60))) >= 1)
+                    return stringBuilder.AppendFormat("{0} h", time).ToString();
+
+                time = (value / 60);
+                return stringBuilder.AppendFormat("{0} m", time).ToString();
+            }
+
+            return stringBuilder.AppendFormat("{0} s", value).ToString();
         }
     }
 }

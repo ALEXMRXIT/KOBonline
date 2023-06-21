@@ -1,5 +1,6 @@
 using TMPro;
 using System;
+using System.Linq;
 using UnityEngine;
 using System.Text;
 using UnityEngine.UI;
@@ -10,6 +11,8 @@ using Assets.Sources.UI.Models;
 using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using System.Collections.Generic;
+using Assets.Sources.Models.Base;
+using UnityEditor.PackageManager;
 using Assets.Sources.Network.OutPacket;
 using Assets.Sources.Models.Characters.Smile;
 
@@ -73,7 +76,8 @@ namespace Assets.Sources.UI
             if (clientProcessor == null)
                 throw new NullReferenceException(nameof(ClientProcessor));
 
-            clientProcessor.SendPacketAsync(LoadMessages.ToPacket(clientProcessor.CharacterContract.CharacterName));
+            ObjectData player = clientProcessor.GetParentObject().GetPlayers.FirstOrDefault(x => !x.IsBot);
+            clientProcessor.SendPacketAsync(LoadMessages.ToPacket(player.ObjectContract.CharacterName));
             yield return new WaitUntil(() => clientProcessor.IsChatMessageLoaded);
             CloseChat();
         }
@@ -170,7 +174,9 @@ namespace Assets.Sources.UI
         private void InternalButtonOnSendhandler()
         {
             Channel channel = _selectChannel.GetSelectedChannel();
-            string characterName = _networkProcessor.GetParentObject().CharacterContract.CharacterName;
+
+            ObjectData player = _networkProcessor.GetParentObject().GetPlayers.FirstOrDefault(x => !x.IsBot);
+            string characterName = player.ObjectContract.CharacterName;
             string message = _inputField.text;
 
             _networkProcessor.GetParentObject().SendPacketAsync(LoadMessages.ToPacket(channel, characterName, message));

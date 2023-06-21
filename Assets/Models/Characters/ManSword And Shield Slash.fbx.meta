@@ -56,7 +56,15 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.42118573
+        functionName: SpawnFireBaseAttack
+        data: 
+        objectReferenceParameter: {fileID: 1201755765893416999, guid: d418d1be9d3dd4b7193d7370642adec2,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

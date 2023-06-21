@@ -18,27 +18,31 @@ namespace Assets.Sources.UI.Models
         private Coroutine _coroutine;
         private float _currentTime;
         private bool _isUse = false;
+        private float _originalTime = 0f;
 
         public async void OnPointerClick(PointerEventData eventData)
         {
+            if (AbilityUtilite.BlockSkill)
+                return;
+
             if (_isUse)
                 return;
 
             await _clientProcessor.SendPacketAsync(UseSkill.ToPacket(_skillContract.Id));
-
-            foreach (SlotBattle slotBattle in _slotBattles)
-            {
-                if (slotBattle.GetSkillSlot() == null)
-                    continue;
-
-                if (slotBattle.GetSkillSlot().GetSkillId() == _skillContract.Id)
-                    slotBattle.GetSkillSlot().PlayerCooldown();
-            }
+            AbilityUtilite.BlockSkill = true;
         }
 
         public void PlayerCooldown()
         {
             _currentTime = _skillContract.Recharge;
+            _originalTime = _skillContract.Recharge;
+            _isUse = true;
+        }
+
+        public void CooldownWithFixedTime(float time)
+        {
+            _currentTime = time;
+            _originalTime = time;
             _isUse = true;
         }
 
@@ -48,10 +52,13 @@ namespace Assets.Sources.UI.Models
                 return;
 
             _currentTime -= Time.deltaTime;
-            _imageCooldownSkill.fillAmount = 1f - ((_skillContract.Recharge - _currentTime) / _skillContract.Recharge);
+            _imageCooldownSkill.fillAmount = 1f - ((_originalTime - _currentTime) / _originalTime);
 
             if (_currentTime <= 0f)
+            {
                 _isUse = false;
+                AbilityUtilite.BlockSkill = false;
+            }
         }
 
         public void SetProcessor(ClientProcessor clientProcessor)
@@ -66,6 +73,7 @@ namespace Assets.Sources.UI.Models
         }
 
         public long GetSkillId() => _skillContract.Id;
+        public bool IsSkillReloaded() => _isUse;
 
         public void SetRefSlots(List<SlotBattle> slotBattles)
         {

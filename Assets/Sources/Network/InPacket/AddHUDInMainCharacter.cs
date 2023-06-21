@@ -59,7 +59,6 @@ namespace Assets.Sources.Network.InPacket
             try
             {
                 HudCharacter.Instance.SetHud(_objectData.ObjectContract);
-                _client.CharacterContract = _objectData.ObjectContract;
             }
             catch (Exception exception)
             {

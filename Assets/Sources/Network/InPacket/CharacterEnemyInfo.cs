@@ -58,6 +58,7 @@ namespace Assets.Sources.Network.InPacket
                 ObjectData enemyData = new ObjectData();
                 enemyData.ObjectContract = _playerContract;
                 enemyData.ObjId = _objId;
+                enemyData.IsBot = true;
 
                 enemyData._stateAnimationAttackMagic = new StateAnimationAttackMagic();
                 enemyData._stateAnimationAttack = new StateAnimationAttack();

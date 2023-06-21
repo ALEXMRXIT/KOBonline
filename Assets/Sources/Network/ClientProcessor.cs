@@ -45,6 +45,7 @@ namespace Assets.Sources.Network
         private List<SkillData> _skillDatas;
         private List<Skill> _skills;
         private GameCryptProtection _gameCrypt;
+        private List<SlotBattle> _slotsAbilityInBattleMode;
 
         private event Action<int> _onReceivedNetworkBuffer;
         private event Action<int> _onSendingNetworkBuffer;
@@ -55,13 +56,13 @@ namespace Assets.Sources.Network
         public bool IsLoadedSkillCharacter { get => _loadedSkillCharacter; }
         public RankTable GetRank { get => _characterRankTable; }
         public bool IsChatMessageLoaded { get => _chatMessageLoaded; }
-        public PlayerContract CharacterContract { get; set; }
         public bool IsLoadedCharacterModel { get => _loadedCharacterModel; }
         public bool IsLoadedSkillData { get => _loadedSkillData; }
         public bool IsFirstLoadedSkillData { get => _isFirstSkillLoaded; }
-        public List<SkillContract> GetSkillContracts { get; set; }
-        public List<SkillData> GetSkillDatas { get; set; }
-        public List<Skill> GetSkills { get; set; }
+        public List<SkillContract> GetSkillContracts { get => _skillContracts; set => _skillContracts = value; }
+        public List<SkillData> GetSkillDatas { get => _skillDatas; set => _skillDatas = value; }
+        public List<Skill> GetSkills { get => _skills; set => _skills = value; }
+        public IEnumerable<SlotBattle> GetBattleSlots { get => _slotsAbilityInBattleMode; }
 
         public ClientCurrentMenu ClientMenu
         {
@@ -181,6 +182,7 @@ namespace Assets.Sources.Network
         public void SetLoadedSkillData() => _loadedSkillData = true;
         public void ResetLoadedSkillData() => _loadedSkillData = false;
         public void SetFirstLoadedSkillData() => _isFirstSkillLoaded = true;
+        public void SetAbilityIwthBattleMode(List<SlotBattle> slotBattles) => _slotsAbilityInBattleMode = slotBattles;
 
         public async Task SendPacketAsync(NetworkPacket packet, PacketImportance packetImportance = PacketImportance.None)
         {

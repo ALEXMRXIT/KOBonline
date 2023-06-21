@@ -17,7 +17,7 @@ namespace Assets.Sources.Models.Base
         public CharacterState ClientAnimationState;
         public HudCharacter ClientHud;
         public CharacterTarget ObjectTarget;
-        public BaseAttackEffect ObjectBaseEffectWhereAttack;
+        public SoundLink SoundCharacterLink;
         public Vector3 UpdatePositionInServer;
         public bool ObjectIsLoadData = false;
         public StateAnimationAttackMagic _stateAnimationAttackMagic;
@@ -26,5 +26,6 @@ namespace Assets.Sources.Models.Base
         public StateAnimationDeath _stateAnimationDeath;
         public StateAnimationIdle _stateAnimationIdle;
         public StateAnimationRun _stateAnimationRun;
+        public VisualModelOfAbilityExecution ClientVisualModelOfAbilityExecution;
     }
 }

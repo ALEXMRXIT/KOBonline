@@ -59,9 +59,7 @@ namespace Assets.Sources.Network.InPacket
             try
             {
                 ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
-
                 player.ObjectContract = _playerContract;
-                _client.CharacterContract = _playerContract;
             }
             catch (Exception exception)
             {

@@ -39,6 +39,10 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
+                ObjectData player = _client.GetPlayers.FirstOrDefault(x => !x.IsBot);
+                player.SoundCharacterLink.StopBackgroundSound();
+                player.SoundCharacterLink.PlaySoundIfWinOrLosse(_isWin);
+
                 BattleResultSources battleResult = new
                     BattleResultSources(_isWin, _experience, _gold, _rank);
                 InformationEndedBattle.Instance.ShowResultBattle(battleResult);

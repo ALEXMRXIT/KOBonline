@@ -20,13 +20,13 @@ namespace Assets.Sources.Network.InPacket
 
             _objId = networkPacket.ReadLong();
             _damage = networkPacket.ReadInt();
-            _damageIndex = networkPacket.ReadInt();
+            _willSkillUse = networkPacket.InternalReadBool();
         }
 
         private readonly ClientProcessor _client;
         private readonly long _objId;
         private readonly int _damage;
-        private readonly int _damageIndex;
+        private readonly bool _willSkillUse;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -38,9 +38,11 @@ namespace Assets.Sources.Network.InPacket
             try
             {
                 ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
-                Damage damage = new Damage(DamageFrom.DamageFromServer, player.IsBot, _damage, _damageIndex, create: true);
-                
-                Debug.Log($"Take damage player id: {player.ObjId} damage: {damage.ClientDamageValue}");
+
+                if (!_willSkillUse && player.ClientAnimationState.GetCurrentPlayingAnimationState() != player._stateAnimationAttackMagic)
+                    player.ClientAnimationState.SetCharacterState(player._stateAnimationAttack, player.ObjectContract.AttackSpeed);
+
+                Damage damage = new Damage(player.IsBot, _damage);
 
                 player.ClientTextView.AddDamage(damage);
             }

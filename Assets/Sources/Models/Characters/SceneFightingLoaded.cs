@@ -19,6 +19,7 @@ using Assets.Sources.Network.OutPacket;
 
 namespace Assets.Sources.Models.Characters
 {
+    [RequireComponent(typeof(VisualModelOfAbilityExecution))]
     public sealed class SceneFightingLoaded : MonoBehaviour
     {
         [SerializeField] private CustomerModelView _customerModelView;
@@ -34,8 +35,14 @@ namespace Assets.Sources.Models.Characters
         [SerializeField] private Transform _spawnContentSkills;
         [SerializeField] private List<GameObject> _slots = new List<GameObject>();
 
+        [Space]
+        [SerializeField] private AudioSource _backgroundMusic;
+        [SerializeField] private AudioSource _winSound;
+        [SerializeField] private AudioSource _loseSound;
+
         private INetworkProcessor _networkProcessor;
         private List<SlotBattle> _slotBattles;
+        private VisualModelOfAbilityExecution _visualModelOfAbilityExecution;
 
         private void Awake()
         {
@@ -47,6 +54,8 @@ namespace Assets.Sources.Models.Characters
 
                 _slotBattles.Add(slotBattle);
             }
+
+            _visualModelOfAbilityExecution = GetComponent<VisualModelOfAbilityExecution>();
         }
 
         private void Start()
@@ -54,6 +63,7 @@ namespace Assets.Sources.Models.Characters
             _networkProcessor = ClientProcessor.Instance;
             StartCoroutine(SetBattleSceneForActors());
             _panelWinner.SetActive(false);
+            _visualModelOfAbilityExecution.Init(_networkProcessor.GetParentObject());
         }
 
         private IEnumerator SetBattleSceneForActors()
@@ -108,66 +118,82 @@ namespace Assets.Sources.Models.Characters
                 firstEnemy.ClientTextView = firstEnemy.GameObjectModel.GetComponent<TextView>();
                 secondEnemy.ClientTextView = secondEnemy.GameObjectModel.GetComponent<TextView>();
 
+                firstEnemy.ClientTextView.SetTargetTransformForSpawnDamage(secondEnemy.ClientTextView.GetTargetTransformParent());
+                firstEnemy.ClientTextView.SetMeTransformForSpawnDamage(firstEnemy.ClientTextView.GetTargetTransformParent());
+                secondEnemy.ClientTextView.SetTargetTransformForSpawnDamage(firstEnemy.ClientTextView.GetTargetTransformParent());
+                secondEnemy.ClientTextView.SetMeTransformForSpawnDamage(secondEnemy.ClientTextView.GetTargetTransformParent());
+
                 firstEnemy.ObjectTarget = firstEnemyTarget;
                 secondEnemy.ObjectTarget = secondEnemyTarget;
 
-                firstEnemy.ObjectBaseEffectWhereAttack = firstEnemy.GameObjectModel.
-                    GetComponent<BaseAttackEffect>().Init(firstEnemy.ObjectContract.CharacterBaseClass);
-                firstEnemy.GameObjectModel.GetComponent<BaseAttackSpawnEffect>().
-                    Init(firstEnemy.ObjectContract.CharacterBaseClass, secondEnemy);
+                firstEnemy.SoundCharacterLink = firstEnemy.GameObjectModel.GetComponent<SoundLink>();
+                firstEnemy.SoundCharacterLink.SetBackgroundSound(_backgroundMusic);
+                firstEnemy.SoundCharacterLink.SetRoundSound(_winSound, _loseSound);
+                secondEnemy.SoundCharacterLink = secondEnemy.GameObjectModel.GetComponent<SoundLink>();
+                secondEnemy.SoundCharacterLink.SetBackgroundSound(_backgroundMusic);
+                secondEnemy.SoundCharacterLink.SetRoundSound(_winSound, _loseSound);
 
-                secondEnemy.ObjectBaseEffectWhereAttack = secondEnemy.GameObjectModel.
-                    GetComponent<BaseAttackEffect>().Init(secondEnemy.ObjectContract.CharacterBaseClass);
+                firstEnemy.ClientVisualModelOfAbilityExecution = _visualModelOfAbilityExecution;
+                secondEnemy.ClientVisualModelOfAbilityExecution = _visualModelOfAbilityExecution;
+                _visualModelOfAbilityExecution.Init(_networkProcessor.GetParentObject());
+                _visualModelOfAbilityExecution.StartHandler();
+
+                firstEnemy.GameObjectModel.GetComponent<BaseAttackSpawnEffect>().
+                    Init(firstEnemy.ObjectContract.CharacterBaseClass, firstEnemy, secondEnemy);
                 secondEnemy.GameObjectModel.GetComponent<BaseAttackSpawnEffect>().
-                    Init(secondEnemy.ObjectContract.CharacterBaseClass, firstEnemy);
+                    Init(secondEnemy.ObjectContract.CharacterBaseClass, secondEnemy, firstEnemy);
 
                 if (!firstEnemyTarget.IsTargetHook())
                     firstEnemyTarget.SetTarget(secondEnemy.GameObjectModel.transform, secondEnemy);
                 if (!secondEnemyTarget.IsTargetHook())
                     secondEnemyTarget.SetTarget(firstEnemy.GameObjectModel.transform, firstEnemy);
-
-                foreach (SkillData skillData in _networkProcessor.GetParentObject().GetSkillDatas)
-                {
-                    if (skillData.SlotId == -1)
-                        continue;
-
-                    Skill skill = _networkProcessor.GetParentObject()
-                        .GetSkills.Where(x => x.Id == skillData.SkillId).FirstOrDefault();
-
-                    SkillContract skillContract = _networkProcessor.GetParentObject()
-                        .GetSkillContracts.Where(x => x.Id == skillData.SkillId).FirstOrDefault();
-
-                    if (skill == null)
-                        throw new NullReferenceException(nameof(Skill));
-
-                    GameObject item = Instantiate(_skillObject, _spawnContentSkills);
-
-                    item.transform.SetParent(_slots[skillData.SlotId - 1].transform);
-                    RectTransform rectTransform = item.GetComponent<RectTransform>();
-                    rectTransform.localPosition = new Vector3(0f, 0f, rectTransform.localPosition.z);
-
-                    if (!item.TryGetComponent(out Image image))
-                        throw new MissingComponentException(nameof(Image));
-
-                    image.sprite = skill.SkillSprite;
-
-                    if (!item.TryGetComponent(out SkillBattle skillBattle))
-                        throw new MissingComponentException(nameof(SkillBattle));
-
-                    skillBattle.SetProcessor(_networkProcessor.GetParentObject());
-                    skillBattle.SetSkill(skillContract);
-                    skillBattle.SetRefSlots(_slotBattles);
-
-                    _slotBattles[skillData.SlotId - 1].SetSkill(skillBattle);
-                }
             }
-            
+
+            foreach (SkillData skillData in _networkProcessor.GetParentObject().GetSkillDatas)
+            {
+                if (skillData.SlotId == -1)
+                    continue;
+
+                Skill skill = _networkProcessor.GetParentObject()
+                    .GetSkills.Where(x => x.Id == skillData.SkillId).FirstOrDefault();
+
+                SkillContract skillContract = _networkProcessor.GetParentObject()
+                    .GetSkillContracts.Where(x => x.Id == skillData.SkillId).FirstOrDefault();
+
+                if (skill == null)
+                    throw new NullReferenceException(nameof(Skill));
+
+                GameObject item = Instantiate(_skillObject, _spawnContentSkills);
+
+                item.transform.SetParent(_slots[skillData.SlotId - 1].transform);
+                RectTransform rectTransform = item.GetComponent<RectTransform>();
+                rectTransform.localPosition = new Vector3(0f, 0f, rectTransform.localPosition.z);
+
+                if (!item.TryGetComponent(out Image image))
+                    throw new MissingComponentException(nameof(Image));
+
+                image.sprite = skill.SkillSprite;
+
+                if (!item.TryGetComponent(out SkillBattle skillBattle))
+                    throw new MissingComponentException(nameof(SkillBattle));
+
+                skillBattle.SetProcessor(_networkProcessor.GetParentObject());
+                skillBattle.SetSkill(skillContract);
+                skillBattle.SetRefSlots(_slotBattles);
+
+                _slotBattles[skillData.SlotId - 1].SetSkill(skillBattle);
+            }
+
+            _networkProcessor.GetParentObject().SetAbilityIwthBattleMode(_slotBattles);
+            AbilityUtilite.BlockSkill = false;
             _networkProcessor.SendPacketAsync(LoadSceneFightingSuccess.ToPacket());
         }
 
         private void OnDestroy()
         {
             _networkProcessor.GetParentObject().GetPlayers.RemoveAll(x => x.IsBot);
+            AbilityUtilite.BlockSkill = false;
+            _networkProcessor.GetParentObject().SetAbilityIwthBattleMode(null);
             _networkProcessor.GetParentObject().GetNetworkDataLoader.Reset();
         }
     }

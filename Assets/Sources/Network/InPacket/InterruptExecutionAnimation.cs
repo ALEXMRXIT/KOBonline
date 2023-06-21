@@ -41,7 +41,8 @@ namespace Assets.Sources.Network.InPacket
                 switch (_index)
                 {
                     case 0: player.ClientAnimationState.SetCharacterState(player._stateAnimationAttack, player.ObjectContract.AttackSpeed); break;
-                    case 1: player.ClientAnimationState.SetCharacterState(player._stateAnimationCastSpell1); break;
+                    case 1: player.ClientAnimationState.SetCharacterState(player._stateAnimationAttackMagic); break;
+                    case 2: player.ClientAnimationState.SetCharacterState(player._stateAnimationCastSpell1); break;
                 }
             }
             catch (Exception exception)

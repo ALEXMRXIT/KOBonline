@@ -36,6 +36,7 @@ namespace Assets.Sources.Network.InPacket
             {
                 ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
                 player.IsDeath = true;
+                player.SoundCharacterLink.CallDeathSoundEffect();
 
                 if (player.IsBot)
                     player.ClientHud.UpdateEnemyHealthBar(0, player.ObjectContract.Health);

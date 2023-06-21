@@ -91,7 +91,6 @@ namespace Assets.Sources.Network.InPacket
                         player.IsDeath = false;
                 }
 
-                _client.CharacterContract = _playerContract;
                 _client.SetLoadedCharacterModel();
             }
             catch (Exception exception)

@@ -29,8 +29,10 @@ namespace Assets.Sources.Network.InPacket
             try
             {
                 foreach (ObjectData objectData in _client.GetPlayers)
-                    objectData.GameObjectModel.AddComponent<CharacterMovement>().
-                        Init(objectData.ObjectTarget, objectData);
+                {
+                    if (!objectData.GameObjectModel.TryGetComponent<CharacterMovement>(out _))
+                        objectData.GameObjectModel.AddComponent<CharacterMovement>().Init(objectData.ObjectTarget, objectData);
+                }
             }
             catch (Exception exception)
             {

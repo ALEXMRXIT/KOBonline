@@ -1,35 +1,26 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using Assets.Sources.Network;
 using System.Collections.Generic;
 using Assets.Sources.Models.Base;
+using Assets.Sources.Network.OutPacket;
 using Assets.Sources.Models.States.StateAnimations;
 
 namespace Assets.Sources.Models.Characters
 {
-    public enum DamageFrom : byte
-    {
-        DamageFromServer,
-        DamageFromClient
-    }
-
     public readonly struct Damage
     {
-        public Damage(DamageFrom damageFrom, bool isBot, int value,
-            int damageIndex, bool create = false)
+        public Damage(bool isBot, int value)
         {
-            ClientDamageFrom = damageFrom;
             ClientDamageIsBot = isBot;
             ClientDamageValue = value;
-            DamageIndex = damageIndex;
-            AutoCreate = create;
         }
 
-        public readonly DamageFrom ClientDamageFrom;
         public readonly bool ClientDamageIsBot;
         public readonly int ClientDamageValue;
-        public readonly int DamageIndex;
-        public readonly bool AutoCreate;
     }
 
     public sealed class TextView : MonoBehaviour
@@ -39,43 +30,72 @@ namespace Assets.Sources.Models.Characters
         [SerializeField] private GameObject _baseDamageRed;
         [SerializeField] private GameObject _baseDamageYellowCrit;
         [SerializeField] private GameObject _baseDamageRedCrit;
+        [SerializeField] private GameObject _baseHealth;
 
-        private Dictionary<int, Damage> _contain = new Dictionary<int, Damage>();
+        private List<Damage> _contain = new List<Damage>();
+        private Transform _spawnTargetDamage;
+        private Transform _spawnMeDamage;
+
+        public void SetTargetTransformForSpawnDamage(Transform target) => _spawnTargetDamage = target;
+        public void SetMeTransformForSpawnDamage(Transform target) => _spawnMeDamage = target;
+
+        public Transform GetTargetTransformParent()
+        {
+            return _damagePointSpawn;
+        }
 
         public void AddDamage(Damage damage)
         {
-            _contain.TryAdd(damage.DamageIndex, damage);
+            _contain.Add(damage);
         }
 
-        public bool ShowDamage(ObjectData objectData, int damageIndex)
+        public bool ShowDamage(ObjectData player, ObjectData objectData)
         {
-            Damage strDamage;
-            if (_contain.ContainsKey(damageIndex))
-                _contain.Remove(damageIndex, out strDamage);
-            else
-                return false;
+            lock(_contain)
+            {
+                for (int iterator = 0; iterator < _contain.Count; iterator++)
+                {
+                    GameObject damageView;
+                    if (objectData.IsBot)
+                        damageView = Instantiate(_baseDamageYellow, _spawnTargetDamage);
+                    else
+                        damageView = Instantiate(_baseDamageRed, _spawnTargetDamage);
 
-            GameObject damageView = null;
-            if (strDamage.ClientDamageIsBot)
-                damageView = Instantiate(_baseDamageYellow, _damagePointSpawn);
-            else
-                damageView = Instantiate(_baseDamageRed, _damagePointSpawn);
+                    objectData.SoundCharacterLink.CallTakeDamageSoundEffect();
 
-            damageView.GetComponent<Text>().text = strDamage.ClientDamageValue.ToString();
+                    damageView.GetComponent<Text>().text = _contain[iterator].ClientDamageValue.ToString();
+                    objectData.ObjectContract.MinHealth = Mathf.Clamp(objectData.
+                        ObjectContract.MinHealth - _contain[iterator].ClientDamageValue,
+                            min: 0, max: objectData.ObjectContract.Health);
+
+                    if (objectData.IsBot)
+                        objectData.ClientHud.UpdateEnemyHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
+                    else
+                        objectData.ClientHud.UpdateHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
+
+                    Destroy(damageView, 1.5f);
+                }
+
+                _contain.Clear();
+            }
+
+            return true;
+        }
+
+        public void HealTarget(ObjectData objectData, int health)
+        {
+            GameObject damageView = Instantiate(_baseHealth, _spawnMeDamage);
+
+            damageView.GetComponent<Text>().text = health.ToString();
             objectData.ObjectContract.MinHealth = Mathf.Clamp(objectData.
-                ObjectContract.MinHealth - strDamage.ClientDamageValue,
-                    min: 0, max: objectData.ObjectContract.Health);
+                ObjectContract.MinHealth + health, min: 0, max: objectData.ObjectContract.Health);
 
             if (objectData.IsBot)
                 objectData.ClientHud.UpdateEnemyHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
             else
                 objectData.ClientHud.UpdateHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
 
-            if (objectData.ObjectContract.MinHealth <= 0)
-                objectData.ClientAnimationState.SetCharacterState(new StateAnimationIdle());
-
             Destroy(damageView, 1.5f);
-            return true;
         }
     }
 }

@@ -10,36 +10,57 @@ namespace Assets.Sources.Models.Effects
     {
         private Transform _target;
         private GameObject _effectTrigger;
+        private ObjectData _enemyData;
         private ObjectData _objectData;
         private bool _moving = true;
-        private int _damageIndex;
+        private bool _checkingDistance;
 
-        public GameObject Init(Transform target,
-            GameObject effectTrigger, ObjectData objectData, int damageIndex)
+        public GameObject Init(Transform target, ObjectData enemyData,
+            GameObject effectTrigger, ObjectData objectData, bool checkDistance)
         {
             _target = target;
+            _enemyData = enemyData;
             _effectTrigger = effectTrigger;
             _objectData = objectData;
-            _damageIndex = damageIndex;
+            _checkingDistance = checkDistance;
 
             return gameObject;
         }
-        
+
         private void Update()
         {
             if (!_moving)
                 return;
 
-            transform.position = Vector3.MoveTowards(transform.position, _target.position, Time.deltaTime * 10f);
-            if (_objectData.ClientTextView.ShowDamage(_objectData, _damageIndex))
+            if (_checkingDistance)
             {
-                _moving = false;
+                transform.position = Vector3.MoveTowards(transform.position, _target.position, Time.deltaTime * 10f);
+                float distance = Vector3.Distance(transform.position, _target.position);
 
-                GameObject gameObjectD = Instantiate(_effectTrigger, null);
-                gameObjectD.transform.position = new Vector3(_target.position.x, -3.86f, _target.position.z);
+                if (distance < 0.1f)
+                {
+                    if (_objectData.ClientTextView.ShowDamage(_objectData, _enemyData))
+                    {
+                        _moving = false;
 
-                Destroy(gameObjectD, 1f);
-                Destroy(gameObject);
+                        GameObject gameObjectD = Instantiate(_effectTrigger, null);
+                        gameObjectD.transform.position = new Vector3(_target.position.x, -3.86f, _target.position.z);
+
+                        Destroy(gameObject);
+                    }
+                }
+            }
+            else
+            {
+                if (_objectData.ClientTextView.ShowDamage(_objectData, _enemyData))
+                {
+                    _moving = false;
+
+                    GameObject gameObjectD = Instantiate(_effectTrigger, null);
+                    gameObjectD.transform.position = new Vector3(_target.position.x, -3.86f, _target.position.z);
+
+                    Destroy(gameObject);
+                }
             }
         }
     }

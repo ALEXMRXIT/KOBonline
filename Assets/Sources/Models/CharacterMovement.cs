@@ -48,9 +48,9 @@ namespace Assets.Sources.Models
             float dist = Vector3.Distance(transform.position,
                 _characterTarget.GetCurrentTarget().position);
 
-            if (_characterTarget.IsObjectDeath() || dist < _objectData.ObjectContract.AttackDistance)
+            if (dist < _objectData.ObjectContract.AttackDistance)
             {
-                _characterState.SetCharacterState(_animationIdle, speed: 1f);
+                _characterState.SetCharacterState(_animationIdle);
                 return;
             }
 
