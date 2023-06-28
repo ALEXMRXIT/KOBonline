@@ -55,6 +55,7 @@ namespace Assets.Sources.Network.InPacket
 
                 switch (_skillId)
                 {
+                    case 2: player.ClientTextView.ReduceNumberOfHealth(player, _health); break;
                     case 5: player.ClientTextView.HealTarget(player, _health); break;
                 }
             }

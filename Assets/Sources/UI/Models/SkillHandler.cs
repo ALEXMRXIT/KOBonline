@@ -10,6 +10,7 @@ using UnityEngine.EventSystems;
 using Assets.Sources.Contracts;
 using Assets.Sources.Network.OutPacket;
 using Assets.Sources.UI.Utilites;
+using Assets.Sources.Models.Characters.Tools;
 
 #pragma warning disable
 
@@ -39,6 +40,8 @@ namespace Assets.Sources.UI.Models
         [SerializeField] private RectTransform _effectSelectableEffect;
         [SerializeField] private GameObject _upgradeEffectSpawn;
 
+        private AudioSource _skillTakeSoundEffect;
+        private AudioSource _skillDropSoundEffect;
         private Transform _spawnCloseButton;
         private int[] _experience;
         private int _currentexperience;
@@ -57,6 +60,12 @@ namespace Assets.Sources.UI.Models
         public void SetSpriteToSkill(Sprite sprite)
         {
             _image.sprite = sprite;
+        }
+
+        public void SetsSoundEffects(AudioSource take, AudioSource drop)
+        {
+            _skillTakeSoundEffect = take;
+            _skillDropSoundEffect = drop;
         }
 
         public void SetCloentObject()
@@ -239,7 +248,7 @@ namespace Assets.Sources.UI.Models
                     else return new object[] { _skillContract.AddPhysDef[_level > 0 ? _level - 1 : 0], _skillContract.TimeUse };
                 case 2:
                     if (nextLevel) return new object[] { _skillContract.BaseDamage[_level], _skillContract.AttackSpeed[_level] * 100f };
-                    else return new object[] { _skillContract.BaseDamage[_level > 0 ? _level - 1 : 0], _skillContract.AttackSpeed[_level > 0 ? _level - 1 : 0] * 100f };
+                    else return new object[] { _skillContract.BaseDamage[_level > 0 ? _level - 1 : 0], _skillContract.AttackSpeed[_level > 0 ? _level - 1 : 0] * 100f, _skillContract.HealthRegeneration[_level > 0 ? _level - 1 : 0], Parser.ConvertTimeInt32ToTimeString(_skillContract.TimeBuffUse[_level > 0 ? _level - 1 : 0]) };
                 case 3:
                     if (nextLevel) return new object[] { _skillContract.BaseDamage[_level] };
                     else return new object[] { _skillContract.BaseDamage[_level > 0 ? _level - 1 : 0] };
@@ -339,6 +348,7 @@ namespace Assets.Sources.UI.Models
             {
                 _offsetPositionInDragged = transform.position - Input.mousePosition;
                 eventData.pointerDrag = CreateCloneSkill();
+                _skillTakeSoundEffect.Play();
 
                 return;
             }
@@ -380,6 +390,7 @@ namespace Assets.Sources.UI.Models
 
                     _clientProcessor.SendPacketAsync(SendUpgradeSkill.ToPacket(skillHandler.GetSkill().Id, true, slot.GetSlotId()));
                     skillHandler.GetOriginalCavasGroup().blocksRaycasts = true;
+                    _skillDropSoundEffect.Play();
                 }
                 else
                     Destroy(eventData.pointerDrag);
@@ -395,6 +406,7 @@ namespace Assets.Sources.UI.Models
             skillHandler.SetCloentObject();
             Destroy(skillHandler.GetButtonClickHandlerAnimator().gameObject);
             skillHandler.SetSkillExperience(_experience);
+            skillHandler.SetsSoundEffects(_skillTakeSoundEffect, _skillDropSoundEffect);
             skillHandler.SetSkillCurrentExperience(_currentexperience);
             skillHandler.SetSkillLevel(_level);
             skillHandler.SetInformationObject(_informationSkillPanel);

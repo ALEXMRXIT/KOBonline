@@ -22,14 +22,10 @@ namespace Assets.Sources.UI.Models
 
         public async void OnPointerClick(PointerEventData eventData)
         {
-            if (AbilityUtilite.BlockSkill)
-                return;
-
             if (_isUse)
                 return;
 
             await _clientProcessor.SendPacketAsync(UseSkill.ToPacket(_skillContract.Id));
-            AbilityUtilite.BlockSkill = true;
         }
 
         public void PlayerCooldown()
@@ -55,10 +51,7 @@ namespace Assets.Sources.UI.Models
             _imageCooldownSkill.fillAmount = 1f - ((_originalTime - _currentTime) / _originalTime);
 
             if (_currentTime <= 0f)
-            {
                 _isUse = false;
-                AbilityUtilite.BlockSkill = false;
-            }
         }
 
         public void SetProcessor(ClientProcessor clientProcessor)
@@ -78,6 +71,11 @@ namespace Assets.Sources.UI.Models
         public void SetRefSlots(List<SlotBattle> slotBattles)
         {
             _slotBattles = slotBattles;
+        }
+
+        public void ResetFlags()
+        {
+            _isUse = false;
         }
     }
 }

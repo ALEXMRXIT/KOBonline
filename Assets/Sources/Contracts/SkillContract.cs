@@ -18,6 +18,7 @@ namespace Assets.Sources.Contracts
         public float[] MultiplyDamage;
         public bool Buff;
         public bool DeBuff;
+        public int[] TimeBuffUse;
         public float[] PrecentPhysAtk;
         public float[] PrecentMagAtk;
         public int[] AddPhysAtk;

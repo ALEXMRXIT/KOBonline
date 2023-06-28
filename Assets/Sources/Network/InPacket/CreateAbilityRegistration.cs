@@ -24,11 +24,13 @@ namespace Assets.Sources.Network.InPacket
 
             _charId = networkPacket.ReadLong();
             _skillId = networkPacket.ReadLong();
+            _level = networkPacket.ReadInt();
         }
 
         private readonly ClientProcessor _client;
         private readonly long _charId;
         private readonly long _skillId;
+        private readonly int _level;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -40,13 +42,22 @@ namespace Assets.Sources.Network.InPacket
             try
             {
                 ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _charId);
-                player.ClientVisualModelOfAbilityExecution.AddVisualAbility(_skillId, player.IsBot);
+                player.ClientVisualModelOfAbilityExecution.AddVisualAbility(_skillId, _level);
 
                 switch (_skillId)
                 {
-                    case 1: player.SoundCharacterLink.CallMageShieldSoundEffect(); break; // mage shield
-                    case 4: player.SoundCharacterLink.CallStrongBodySoundEffect(); break; // strong body
-                    case 5: player.SoundCharacterLink.CallHeroesPowerSoundEffect(); break; // heroes power
+                    case 1:
+                        player.ClientAbilityEffectLink.MagicShieldEffectPlay();
+                        player.SoundCharacterLink.CallMageShieldSoundEffect();
+                        break; // mage shield
+                    case 4:
+                        player.ClientAbilityEffectLink.StrongBodyEffectPlay();
+                        player.SoundCharacterLink.CallStrongBodySoundEffect();
+                        break; // strong body
+                    case 5:
+                        player.ClientAbilityEffectLink.HeroesPowerEffectPlay();
+                        player.SoundCharacterLink.CallHeroesPowerSoundEffect();
+                        break; // heroes power
                 }
             }
             catch (Exception exception)

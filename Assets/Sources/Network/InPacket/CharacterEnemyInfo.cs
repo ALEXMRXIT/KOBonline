@@ -63,6 +63,7 @@ namespace Assets.Sources.Network.InPacket
                 enemyData._stateAnimationAttackMagic = new StateAnimationAttackMagic();
                 enemyData._stateAnimationAttack = new StateAnimationAttack();
                 enemyData._stateAnimationCastSpell1 = new StateAnimationCastSpell1();
+                enemyData._stateAnimationCastSpell2 = new StateAnimationCastSpell2();
                 enemyData._stateAnimationDeath = new StateAnimationDeath();
                 enemyData._stateAnimationIdle = new StateAnimationIdle();
                 enemyData._stateAnimationRun = new StateAnimationRun();

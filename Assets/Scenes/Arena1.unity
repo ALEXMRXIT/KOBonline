@@ -3973,6 +3973,10 @@ MonoBehaviour:
   _customerModelView: {fileID: 798678689}
   _mainCamera: {fileID: 1147667069}
   _panelWinner: {fileID: 498725700}
+  _visualAbility: {fileID: 1160320443085256753, guid: 5175b101e97d24551ba584db23d2de1c,
+    type: 3}
+  _canvasPlayer: {fileID: 17746618}
+  _canvasEnemy: {fileID: 1899646975}
   _positionCamera2: {x: -6, y: 1, z: -21}
   _rotationCamera2: {x: 45, y: -330, z: 0}
   _skillObject: {fileID: 2644980154711133966, guid: 9f60ab1bb192d4730af5df6347881108,
@@ -4004,10 +4008,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 197090e4cb9004ac09827c07b3cc1a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ability: {fileID: 1160320443085256753, guid: 5175b101e97d24551ba584db23d2de1c,
-    type: 3}
-  _player: {fileID: 17746618}
-  _enemy: {fileID: 1899646975}
 --- !u!1 &805111904
 GameObject:
   m_ObjectHideFlags: 0

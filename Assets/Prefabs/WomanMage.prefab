@@ -5056,6 +5056,7 @@ GameObject:
   - component: {fileID: 790822648549350609}
   - component: {fileID: 790822648534145425}
   - component: {fileID: 790822648534245427}
+  - component: {fileID: 3672411937307104029}
   m_Layer: 0
   m_Name: BaseAttack
   m_TagString: Untagged
@@ -10075,6 +10076,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &3672411937307104029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 790822648549048563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc3689f01e53c46d8999bb18444d8f85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _time: 1
 --- !u!1 &790822648549048569
 GameObject:
   m_ObjectHideFlags: 0
@@ -30206,6 +30220,135 @@ Transform:
   m_Father: {fileID: 5130694073892307634}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2334458811201153231
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1878172095027510322}
+  - component: {fileID: 5336132021596462291}
+  m_Layer: 0
+  m_Name: FlamesAttackSound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1878172095027510322
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2334458811201153231}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.045299996, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2769179426759564192}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &5336132021596462291
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2334458811201153231}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 752072259395928182, guid: 2026f83813104444cb7c80793023b391,
+    type: 2}
+  m_audioClip: {fileID: 8300000, guid: c3e9e5c07f5b14261b7cc46fe947a635, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2344396796672878273
 GameObject:
   m_ObjectHideFlags: 0
@@ -30433,6 +30576,7 @@ GameObject:
   - component: {fileID: 3833059048841765870}
   - component: {fileID: 4489446629688329262}
   - component: {fileID: 4477442096624254442}
+  - component: {fileID: 8791784591156685508}
   m_Layer: 0
   m_Name: WomanMage
   m_TagString: Untagged
@@ -30458,6 +30602,7 @@ Transform:
   - {fileID: 2800046607396087324}
   - {fileID: 3378160296800768573}
   - {fileID: 2117068011175109089}
+  - {fileID: 1878172095027510322}
   - {fileID: 7655636444309666612}
   - {fileID: 3431075942076010748}
   - {fileID: 4175691525347740225}
@@ -30527,10 +30672,18 @@ MonoBehaviour:
   _swordEffects: {fileID: 0}
   _fire: {fileID: 6359675861744004763, guid: 964b8ac0a9b6247ef861d15ad13a0ff2, type: 3}
   _spawnEffectStrongSkill: {fileID: 0}
+  _spawnEffectFireBallSkill: {fileID: 2335019128714850171, guid: c8b451a7cb22442d5b4584823b5a9cfa,
+    type: 3}
+  _spawnEffectFlamesSkill: {fileID: 2335019128714850171, guid: c8b451a7cb22442d5b4584823b5a9cfa,
+    type: 3}
   _effectTrigger: {fileID: 6240011344849456690, guid: 5c6be6a3b7f8f4b1094b4daf1e15267b,
     type: 3}
-  _strongHitTrigger: {fileID: 0}
+  _effectMagicHitTrigger: {fileID: 4838077007768783110, guid: 6df00cacfb05d493389f3b1ca736514f,
+    type: 3}
+  _effectFlamesHitTrigger: {fileID: 2565572588792685280, guid: 745a0d1c422844d058fdcc95327e81a9,
+    type: 3}
   _baseAttackSound: {fileID: 4489446629688329262}
+  _flamesAttackSound: {fileID: 5336132021596462291}
   _magicAttackSound: {fileID: 1359539001635736546}
   _hand: {fileID: 4058042002397479811}
 --- !u!114 &3833059048841765870
@@ -30555,6 +30708,8 @@ MonoBehaviour:
   _baseDamageRedCrit: {fileID: 7275831088294848593, guid: ab4103538abf84161bc2d36497aeedf0,
     type: 3}
   _baseHealth: {fileID: 1044158484471258458, guid: d043a662edf3b47d88f828bdfff59cb3,
+    type: 3}
+  _effectHeal: {fileID: 4677039818687791794, guid: e133a7ad54dcb49c48106eb7b1c95b20,
     type: 3}
 --- !u!82 &4489446629688329262
 AudioSource:
@@ -30670,6 +30825,36 @@ MonoBehaviour:
   _mageShieldSoundEffect: {fileID: 3281738784848692474}
   _strongBodySoundEffect: {fileID: 1516437376866848054}
   _heroesPowerSoundEffects: {fileID: 1208112745817019481}
+--- !u!114 &8791784591156685508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3253229132135432474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bfcdaea250784f7e8a38784b63b27a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _strongBodyEffectStart: {fileID: 4388895199697520632, guid: d241aca55e7c447a5a40abab5eeb9b4d,
+    type: 3}
+  _strongBodyEffectEnd: {fileID: 5477076238425196087, guid: 09ff0d23d66374bbfbed7cba4d31bc11,
+    type: 3}
+  _heroesPowerEffectStart: {fileID: 3453254393852289704, guid: 23864eb10799a41b987ede536cf80d5c,
+    type: 3}
+  _heroesPowerEffectEnd: {fileID: 6620028759410942518, guid: 459f208ae42184af19783d159336fea9,
+    type: 3}
+  _mageShieldEffectStart: {fileID: 4570184078939573611, guid: 0b96967d6de0a4f81baf7c54436b1ae4,
+    type: 3}
+  _mageShieldEffectEnd: {fileID: 9022295107881063824, guid: a5195adfb0a0e4a5597f641919198ffe,
+    type: 3}
+  _strongBodyPermanentEffect: {fileID: 6141900895923639852, guid: 0c2a653f9dc724eecb8353fef0d9e451,
+    type: 3}
+  _heroesPowerPermanentEffect: {fileID: 2650181705167260223, guid: 98d5fefff4e4c41fd94b74c6c7e32296,
+    type: 3}
+  _mageShieldPermanentEffect: {fileID: 7559165005674287788, guid: 48c58887798824697a7fcf9a8dd41bf1,
+    type: 3}
 --- !u!1 &3378161401955836481
 GameObject:
   m_ObjectHideFlags: 0

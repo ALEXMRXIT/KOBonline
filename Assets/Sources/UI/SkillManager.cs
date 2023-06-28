@@ -39,7 +39,9 @@ namespace Assets.Sources.UI
         [SerializeField] private Transform _spawnCloseButtonForSkill;
         [SerializeField] private Transform _spawnPanelSkillInformation;
         [SerializeField] private GameObject _panelInformation;
-        [SerializeField] private List<Skill> _skills = new List<Skill>();
+        [Space, SerializeField] private AudioSource _skillTakeSoundEffect;
+        [SerializeField] private AudioSource _skillDropSoundEffect;
+        [Space, SerializeField] private List<Skill> _skills = new List<Skill>();
 
         private INetworkProcessor _networkProcessor;
         private Dictionary<long, KeyValuePair<Skill, SkillContract>> _skillContracts;
@@ -96,7 +98,6 @@ namespace Assets.Sources.UI
                 }
 
                 tempSkill.Handler = skillHandler;
-                _networkProcessor.GetParentObject().GetSkills.Add(tempSkill);
 
                 GameObject panelInformation = Instantiate(_panelInformation, _spawnPanelSkillInformation);
                 PanelObject panelObject = new PanelObject();
@@ -111,6 +112,7 @@ namespace Assets.Sources.UI
                 panelObject.panelInformationObject = panelInformation;
                 panelObject.InformationComponentObject = informationComponent;
 
+                skillHandler.SetsSoundEffects(_skillTakeSoundEffect, _skillDropSoundEffect);
                 skillHandler.SetSpriteToSkill(tempSkill.SkillCloseSprite);
                 skillHandler.SetSkillExperience(skillContract.Experience);
                 skillHandler.SetSkillCurrentExperience(experience);
@@ -130,6 +132,8 @@ namespace Assets.Sources.UI
 
                 Debug.Log($"Added new Skill {skillContract.Name} to list");
             }
+
+            _networkProcessor.GetParentObject().GetSkills.AddRange(_skills);
 
             if (_networkProcessor.GetParentObject().IsFirstLoadedSkillData)
             {

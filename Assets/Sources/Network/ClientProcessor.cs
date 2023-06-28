@@ -47,9 +47,6 @@ namespace Assets.Sources.Network
         private GameCryptProtection _gameCrypt;
         private List<SlotBattle> _slotsAbilityInBattleMode;
 
-        private event Action<int> _onReceivedNetworkBuffer;
-        private event Action<int> _onSendingNetworkBuffer;
-
         public bool IsConnected => _tcpClient.Connected;
         public List<ObjectData> GetPlayers { get => _players; }
         public NetworkDataLoader GetNetworkDataLoader { get => _networkLoader; }
@@ -130,34 +127,6 @@ namespace Assets.Sources.Network
             }
         }
 
-        private void OnEnable()
-        {
-#if UNITY_EDITOR
-            _onReceivedNetworkBuffer += ClientProcessorPrivateHandlerReceivedNetworkBuffer;
-            _onSendingNetworkBuffer += ClientProcessorPrivateHandlerSendingNetworkBuffer;
-#endif
-        }
-
-        private void OnDisable()
-        {
-#if UNITY_EDITOR
-            _onReceivedNetworkBuffer -= ClientProcessorPrivateHandlerReceivedNetworkBuffer;
-            _onSendingNetworkBuffer -= ClientProcessorPrivateHandlerSendingNetworkBuffer;
-#endif
-        }
-
-#if UNITY_EDITOR
-        private void ClientProcessorPrivateHandlerSendingNetworkBuffer(int obj)
-        {
-            Debug.Log($"[{nameof(ClientProcessorPrivateHandlerSendingNetworkBuffer)}]: size packet - {obj}");
-        }
-
-        private void ClientProcessorPrivateHandlerReceivedNetworkBuffer(int obj)
-        {
-            Debug.Log($"[{nameof(ClientProcessorPrivateHandlerReceivedNetworkBuffer)}]: size packet - {obj}");
-        }
-#endif
-
         private void FixedUpdate()
         {
             if (_queueBufferFromServer.TryDequeue(out byte[] buffer))
@@ -198,10 +167,6 @@ namespace Assets.Sources.Network
             MemoryBuffer.Copy(BitConverter.GetBytes((short)sizeAllPacket), srcOffset: 0, data, sizeof(byte), sizeof(short));
             MemoryBuffer.Copy(buffer, srcOffset: 0, data, sizeAllPacket - buffer.Length, sizeAllPacket);
 
-#if UNITY_EDITOR
-            _onSendingNetworkBuffer?.Invoke(data.Length);
-#endif
-
             try
             {
                 await _networkStream.WriteAsync(data, offset: 0, data.Length);
@@ -240,9 +205,6 @@ namespace Assets.Sources.Network
                     if (countPackets != packetLenght - sizeof(short))
                         throw null;
 
-#if UNITY_EDITOR
-                    _onReceivedNetworkBuffer?.Invoke(buffer.Length);
-#endif
                     _gameCrypt.DecryptBuffer(GameCryptProtection.KEY_CRYPT, buffer);
                     _queueBufferFromServer.Enqueue(buffer);
                 }

@@ -16,15 +16,18 @@ using System.Collections.Generic;
 using Assets.Sources.UI.Utilites;
 using Assets.Sources.Models.Camera;
 using Assets.Sources.Network.OutPacket;
+using Assets.Sources.Models.Characters.Skills;
 
 namespace Assets.Sources.Models.Characters
 {
-    [RequireComponent(typeof(VisualModelOfAbilityExecution))]
     public sealed class SceneFightingLoaded : MonoBehaviour
     {
         [SerializeField] private CustomerModelView _customerModelView;
         [SerializeField] private TargetSurveillanceCamera _mainCamera;
         [SerializeField] private GameObject _panelWinner;
+        [SerializeField] private VisualAbility _visualAbility;
+        [SerializeField] private Transform _canvasPlayer;
+        [SerializeField] private Transform _canvasEnemy;
 
         [Space]
         [SerializeField] private Vector3 _positionCamera2;
@@ -42,7 +45,6 @@ namespace Assets.Sources.Models.Characters
 
         private INetworkProcessor _networkProcessor;
         private List<SlotBattle> _slotBattles;
-        private VisualModelOfAbilityExecution _visualModelOfAbilityExecution;
 
         private void Awake()
         {
@@ -54,8 +56,6 @@ namespace Assets.Sources.Models.Characters
 
                 _slotBattles.Add(slotBattle);
             }
-
-            _visualModelOfAbilityExecution = GetComponent<VisualModelOfAbilityExecution>();
         }
 
         private void Start()
@@ -63,7 +63,6 @@ namespace Assets.Sources.Models.Characters
             _networkProcessor = ClientProcessor.Instance;
             StartCoroutine(SetBattleSceneForActors());
             _panelWinner.SetActive(false);
-            _visualModelOfAbilityExecution.Init(_networkProcessor.GetParentObject());
         }
 
         private IEnumerator SetBattleSceneForActors()
@@ -133,10 +132,28 @@ namespace Assets.Sources.Models.Characters
                 secondEnemy.SoundCharacterLink.SetBackgroundSound(_backgroundMusic);
                 secondEnemy.SoundCharacterLink.SetRoundSound(_winSound, _loseSound);
 
-                firstEnemy.ClientVisualModelOfAbilityExecution = _visualModelOfAbilityExecution;
-                secondEnemy.ClientVisualModelOfAbilityExecution = _visualModelOfAbilityExecution;
-                _visualModelOfAbilityExecution.Init(_networkProcessor.GetParentObject());
-                _visualModelOfAbilityExecution.StartHandler();
+                AbilityEffectLink abilityEffectLinkFirstEnemy = firstEnemy.GameObjectModel.GetComponent<AbilityEffectLink>();
+                AbilityEffectLink abilityEffectLinkSecondEnemy = secondEnemy.GameObjectModel.GetComponent<AbilityEffectLink>();
+                firstEnemy.ClientAbilityEffectLink = abilityEffectLinkFirstEnemy;
+                secondEnemy.ClientAbilityEffectLink = abilityEffectLinkSecondEnemy;
+
+                if (!firstEnemy.GameObjectModel.TryGetComponent(out VisualModelOfAbilityExecution visualModelOfAbilityExecution))
+                    visualModelOfAbilityExecution = firstEnemy.GameObjectModel.AddComponent<VisualModelOfAbilityExecution>();
+                firstEnemy.ClientVisualModelOfAbilityExecution = visualModelOfAbilityExecution;
+                firstEnemy.ClientVisualModelOfAbilityExecution.Init(_networkProcessor.GetParentObject());
+                firstEnemy.ClientVisualModelOfAbilityExecution.SetAblilityEffect(firstEnemy.ClientAbilityEffectLink);
+                firstEnemy.ClientVisualModelOfAbilityExecution.SetPlayerTransformWithCanvas(_canvasPlayer);
+                firstEnemy.ClientVisualModelOfAbilityExecution.SetAbilityPrefab(_visualAbility);
+                firstEnemy.ClientVisualModelOfAbilityExecution.StartHandler();
+
+                if (!secondEnemy.GameObjectModel.TryGetComponent(out VisualModelOfAbilityExecution visualModelOfAbilityExecution1))
+                    visualModelOfAbilityExecution1 = secondEnemy.GameObjectModel.AddComponent<VisualModelOfAbilityExecution>();
+                secondEnemy.ClientVisualModelOfAbilityExecution = visualModelOfAbilityExecution1;
+                secondEnemy.ClientVisualModelOfAbilityExecution.Init(_networkProcessor.GetParentObject());
+                secondEnemy.ClientVisualModelOfAbilityExecution.SetAblilityEffect(secondEnemy.ClientAbilityEffectLink);
+                secondEnemy.ClientVisualModelOfAbilityExecution.SetPlayerTransformWithCanvas(_canvasEnemy);
+                secondEnemy.ClientVisualModelOfAbilityExecution.SetAbilityPrefab(_visualAbility);
+                secondEnemy.ClientVisualModelOfAbilityExecution.StartHandler();
 
                 firstEnemy.GameObjectModel.GetComponent<BaseAttackSpawnEffect>().
                     Init(firstEnemy.ObjectContract.CharacterBaseClass, firstEnemy, secondEnemy);
@@ -180,19 +197,18 @@ namespace Assets.Sources.Models.Characters
                 skillBattle.SetProcessor(_networkProcessor.GetParentObject());
                 skillBattle.SetSkill(skillContract);
                 skillBattle.SetRefSlots(_slotBattles);
+                skillBattle.ResetFlags();
 
                 _slotBattles[skillData.SlotId - 1].SetSkill(skillBattle);
             }
 
             _networkProcessor.GetParentObject().SetAbilityIwthBattleMode(_slotBattles);
-            AbilityUtilite.BlockSkill = false;
             _networkProcessor.SendPacketAsync(LoadSceneFightingSuccess.ToPacket());
         }
 
         private void OnDestroy()
         {
             _networkProcessor.GetParentObject().GetPlayers.RemoveAll(x => x.IsBot);
-            AbilityUtilite.BlockSkill = false;
             _networkProcessor.GetParentObject().SetAbilityIwthBattleMode(null);
             _networkProcessor.GetParentObject().GetNetworkDataLoader.Reset();
         }

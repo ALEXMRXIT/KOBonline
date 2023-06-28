@@ -43,6 +43,10 @@ namespace Assets.Sources.Network.InPacket
                 _skillContract[iterator].Buff = networkPacket.InternalReadBool();
                 _skillContract[iterator].DeBuff = networkPacket.InternalReadBool();
                 length = networkPacket.ReadInt();
+                _skillContract[iterator].TimeBuffUse = new int[length];
+                for (iteratorOther = 0; iteratorOther < length; iteratorOther++)
+                    _skillContract[iterator].TimeBuffUse[iteratorOther] = networkPacket.ReadInt();
+                length = networkPacket.ReadInt();
                 _skillContract[iterator].PrecentPhysAtk = new float[length];
                 for (iteratorOther = 0; iteratorOther < length; iteratorOther++)
                     _skillContract[iterator].PrecentPhysAtk[iteratorOther] = networkPacket.ReadFloat();

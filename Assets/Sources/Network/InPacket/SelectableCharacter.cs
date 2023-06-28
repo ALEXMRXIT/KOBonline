@@ -26,10 +26,10 @@ namespace Assets.Sources.Network.InPacket
             _objId = _playerContract.ObjId;
             _playerContract.CharacterName = networkPacket.ReadString();
             _playerContract.Level = networkPacket.ReadInt();
+            _playerContract.MinHealth = networkPacket.ReadInt();
             _playerContract.Health = networkPacket.ReadInt();
-            _playerContract.MinHealth = _playerContract.Health;
+            _playerContract.MinMana = networkPacket.ReadInt();
             _playerContract.Mana = networkPacket.ReadInt();
-            _playerContract.MinMana = _playerContract.Mana;
             _playerContract.Sex = (PlayerSex)networkPacket.ReadInt();
             _playerContract.PlayerRank = networkPacket.ReadInt();
             _playerContract.Strength = networkPacket.ReadInt();
@@ -76,6 +76,7 @@ namespace Assets.Sources.Network.InPacket
                     playerData._stateAnimationAttackMagic = new StateAnimationAttackMagic();
                     playerData._stateAnimationAttack = new StateAnimationAttack();
                     playerData._stateAnimationCastSpell1 = new StateAnimationCastSpell1();
+                    playerData._stateAnimationCastSpell2 = new StateAnimationCastSpell2();
                     playerData._stateAnimationDeath = new StateAnimationDeath();
                     playerData._stateAnimationIdle = new StateAnimationIdle();
                     playerData._stateAnimationRun = new StateAnimationRun();

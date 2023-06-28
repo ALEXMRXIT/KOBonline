@@ -10,6 +10,9 @@ namespace Assets.Sources.Models.Characters.Skills
 
         private int _originalTimeUse;
         private bool _status;
+        private GameObject _effectAbility;
+
+        public void SetEffectForAbility(GameObject obj) => _effectAbility = obj;
 
         public void SetAbilityIcon(Sprite sprite) => _iconAbility.sprite = sprite;
 
@@ -22,5 +25,11 @@ namespace Assets.Sources.Models.Characters.Skills
         public int RemainingRunningTime() => _originalTimeUse;
 
         public bool AbilitiIfNotDeactivate() => _status;
+
+        public void DestroyEffectForAbility()
+        {
+            if (_effectAbility != null)
+                Destroy(_effectAbility);
+        }
     }
 }
