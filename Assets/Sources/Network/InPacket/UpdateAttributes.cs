@@ -26,6 +26,7 @@ namespace Assets.Sources.Network.InPacket
             for (int iterator = 0; iterator < count; iterator++)
             {
                 byte code = networkPacket.ReadByte();
+                bool int32OrFloat = networkPacket.InternalReadBool();
 
                 switch (code)
                 {
@@ -41,6 +42,7 @@ namespace Assets.Sources.Network.InPacket
                     case StatsCode.Endurance: _objectData.ObjectContract.Endurance = networkPacket.ReadInt(); break;
                     case StatsCode.Experience: _objectData.ObjectContract.Experience = networkPacket.ReadInt(); break;
                     case StatsCode.MoveSpeed: _objectData.ObjectContract.MoveSpeed = networkPacket.ReadInt(); break;
+                    case StatsCode.AttackSpeed: _objectData.ObjectContract.AttackSpeed = networkPacket.ReadFloat(); break;
                 }
             }
         }

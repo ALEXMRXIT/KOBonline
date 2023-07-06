@@ -14,5 +14,6 @@
         public const byte Endurance = 0x09;
         public const byte Experience = 0x0A;
         public const byte MoveSpeed = 0x0B;
+        public const byte AttackSpeed = 0x0C;
     }
 }

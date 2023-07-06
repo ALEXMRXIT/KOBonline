@@ -44,6 +44,8 @@ namespace Assets.Sources.Network.InPacket
             _playerContract.AttackSpeed = networkPacket.ReadFloat();
             _playerContract.GameMaster = networkPacket.ReadInt();
             _playerContract.GameMasterStatus = networkPacket.InternalReadBool();
+            _playerContract.PhysAttack = networkPacket.ReadInt();
+            _playerContract.MagicAttack = networkPacket.ReadInt();
         }
 
         private readonly PlayerContract _playerContract;

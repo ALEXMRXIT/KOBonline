@@ -8,8 +8,8 @@ using Assets.Sources.Enums;
 using Assets.Sources.Network;
 using UnityEngine.EventSystems;
 using Assets.Sources.Contracts;
-using Assets.Sources.Network.OutPacket;
 using Assets.Sources.UI.Utilites;
+using Assets.Sources.Network.OutPacket;
 using Assets.Sources.Models.Characters.Tools;
 
 #pragma warning disable
@@ -137,7 +137,7 @@ namespace Assets.Sources.UI.Models
             _closeButton2.onClick.AddListener(InternalClickHandlerCloseSkillPanel);
 
             _informationSkillPanel.contentSizeFilterCustom.Initialized();
-            InternalParseText();
+            InternalParseText(_clientProcessor.GetPlayers[0].ObjectContract ?? null);
             _informationSkillPanel.panelInformationObject.SetActive(false);
         }
 
@@ -172,20 +172,23 @@ namespace Assets.Sources.UI.Models
             _effectSelectableEffect.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         }
 
-        private void InternalParseText()
+        private void InternalParseText(PlayerContract playerContract)
         {
+            if (playerContract == null)
+                throw new NullReferenceException(nameof(playerContract));
+
             StringBuilder stringBuilder = new StringBuilder(capacity: 512);
 
-            bool distance = _skillContract.Distance > 10;
-            string melee = distance ? "(Melee)" : string.Empty;
+            bool distance = _skillContract.Distance > 5;
+            string melee = !distance ? "(Melee)" : string.Empty;
             string requestWeaponString = !distance ? "Requeres a melee weapon" : "Requeres a ranged weapon";
-            string appendLine = "\n";
+            string newLine = "\n";
             string appendLineNextLevel = string.Empty;
 
             if (_skillContract.TypeSkill == SkillType.Passive && !distance)
             {
                 requestWeaponString = string.Empty;
-                appendLine = string.Empty;
+                newLine = string.Empty;
             }
 
             if (_level > 0)
@@ -193,16 +196,16 @@ namespace Assets.Sources.UI.Models
                 stringBuilder.AppendFormat("<color={0}>{1}</color> (Level {2}/{3})\n" +
                     "<color={4}>{5}</color> mana {6}\n{7}<color={8}>{9}</color>\n{10}",
                     _skillNameColor, _skillContract.Name, _level, _experience.Length,
-                    _costManaColor, _skillContract.Mana[_level > 0 ? _level - 1 : 0], melee, appendLine,
-                    _requereWeaponSkillColor, requestWeaponString, ParseArgs(_skillContract.Description, true, SetArgsWithSkillId(_skillContract.Id, false)));
-                appendLineNextLevel = "\n\n\n";
+                    _costManaColor, _skillContract.Mana[_level - 1], melee, newLine,
+                    _requereWeaponSkillColor, requestWeaponString, ParseArgs(_skillContract.Description, true, SetArgsWithSkillId(_skillContract.Id, false, playerContract)));
+                appendLineNextLevel = "\n\n";
             }
-
+            
             if (_level < _experience.Length)
             {
                 stringBuilder.AppendFormat("{0}<color=#C3C3C3>{1} (Level {2}/{3})\n{4} mana {5}\n{6}{7}\n{8}</color>", appendLineNextLevel,
-                    _skillContract.Name, _level + 1, _experience.Length, _skillContract.Mana[_level >= _experience.Length - 1 ? _level : _level + 1],
-                    melee, appendLine, requestWeaponString, ParseArgs(_skillContract.Description, false, SetArgsWithSkillId(_skillContract.Id, true)));
+                    _skillContract.Name, _level + 1, _experience.Length, _skillContract.Mana[_level + 1 == _experience.Length ? (_level == _experience.Length - 1 ? _level : _level - 1) : _level],
+                    melee, newLine, requestWeaponString, ParseArgs(_skillContract.Description, false, SetArgsWithSkillId(_skillContract.Id, true, playerContract)));
             }
 
             _informationSkillPanel.InformationComponentObject.SetText(stringBuilder.ToString());
@@ -213,6 +216,9 @@ namespace Assets.Sources.UI.Models
         private string ParseArgs(string description, bool isParseColor, object[] args)
         {
             string temp = description;
+
+            if (args == null || args.Length == 0)
+                return string.Empty;
 
             int lastIndex = 0;
             for (int iterator = 0; iterator < args.Length; iterator++)
@@ -228,38 +234,38 @@ namespace Assets.Sources.UI.Models
 
                 if (isParseColor)
                 {
+                    int countLitter = arg.Where(s => char.IsLetter(s)).Count();
+
                     temp = temp.Insert(lastIndex, _damageColor);
-                    temp = temp.Insert(lastIndex + arg.Length + _damageColor.Length, "</color>");
+                    temp = temp.Insert(lastIndex + arg.Length + _damageColor.Length - countLitter, "</color>");
                 }
             }
 
             return temp;
         }
 
-        private object[] SetArgsWithSkillId(long skillId, bool nextLevel)
+        private object[] SetArgsWithSkillId(long skillId, bool nextLevel, PlayerContract playerContract)
         {
+            int level = 0;
+
+            if (nextLevel) level = _level == _experience.Length ? _level - 1 : _level;
+            else level = _level - 1;
+
             switch (skillId)
             {
-                case 0:
-                    if (nextLevel) return new object[] { _skillContract.BaseDamage[_level] };
-                    else return new object[] { _skillContract.BaseDamage[_level > 0 ? _level - 1 : 0] };
-                case 1:
-                    if (nextLevel) return new object[] { _skillContract.AddPhysDef[_level], _skillContract.TimeUse };
-                    else return new object[] { _skillContract.AddPhysDef[_level > 0 ? _level - 1 : 0], _skillContract.TimeUse };
-                case 2:
-                    if (nextLevel) return new object[] { _skillContract.BaseDamage[_level], _skillContract.AttackSpeed[_level] * 100f };
-                    else return new object[] { _skillContract.BaseDamage[_level > 0 ? _level - 1 : 0], _skillContract.AttackSpeed[_level > 0 ? _level - 1 : 0] * 100f, _skillContract.HealthRegeneration[_level > 0 ? _level - 1 : 0], Parser.ConvertTimeInt32ToTimeString(_skillContract.TimeBuffUse[_level > 0 ? _level - 1 : 0]) };
-                case 3:
-                    if (nextLevel) return new object[] { _skillContract.BaseDamage[_level] };
-                    else return new object[] { _skillContract.BaseDamage[_level > 0 ? _level - 1 : 0] };
-                case 4:
-                    if (nextLevel) return new object[] { _skillContract.AddPhysDef[_level], _skillContract.TimeUse };
-                    else return new object[] { _skillContract.AddPhysDef[_level > 0 ? _level - 1 : 0], _skillContract.TimeUse };
-                case 5:
-                    if (nextLevel) return new object[] { _skillContract.AddHealth[_level], _skillContract.HealthRegeneration[_level], _skillContract.TimeUse };
-                    else return new object[] { _skillContract.AddHealth[_level > 0 ? _level - 1 : 0], _skillContract.HealthRegeneration[_level > 0 ? _level - 1 : 0], _skillContract.TimeUse };
+                case 0: return new object[] { _skillContract.BaseDamage[level] + playerContract.MagicAttack + InternalMultyplay(_skillContract.BaseDamage[level], _skillContract.MultiplyDamage[level]) };
+                case 1: return new object[] { _skillContract.AddPhysDef[level] + playerContract.Intelligence + InternalMultyplay(_skillContract.AddPhysDef[level], _skillContract.PrecentPhysDef[level]), _skillContract.TimeUse };
+                case 2: return new object[] { _skillContract.BaseDamage[level] + playerContract.MagicAttack + InternalMultyplay(_skillContract.BaseDamage[level], _skillContract.MultiplyDamage[level]), _skillContract.AttackSpeed[level] * 100f, _skillContract.HealthRegeneration[level] + ((playerContract.MagicAttack / 100) * 10), _skillContract.TimeBuffUse[level] };
+                case 3: return new object[] { _skillContract.BaseDamage[level] + playerContract.PhysAttack + InternalMultyplay(_skillContract.BaseDamage[level], _skillContract.MultiplyDamage[level]) };
+                case 4: return new object[] { _skillContract.AddPhysDef[level] + playerContract.Strength + InternalMultyplay(_skillContract.AddPhysDef[level], _skillContract.PrecentPhysDef[level]), _skillContract.TimeUse };
+                case 5: return new object[] { _skillContract.AddHealth[level] + playerContract.Strength + playerContract.Endurance, _skillContract.HealthRegeneration[level] + ((playerContract.PhysAttack / 100) * 10), _skillContract.TimeUse };
                 default: return null;
             }
+        }
+
+        private int InternalMultyplay(int first, float second)
+        {
+            return checked((int)(first + ((first / 100) * (second * 100f))));
         }
 
         private void InternalUpdateText()
@@ -316,7 +322,7 @@ namespace Assets.Sources.UI.Models
             InternalUpdateText();
 
             if (_informationSkillPanel.panelInformationObject.activeSelf)
-                InternalParseText();
+                InternalParseText(_clientProcessor.GetPlayers[0].ObjectContract ?? null);
 
             _clientProcessor.SendPacketAsync(SendUpgradeSkill.ToPacket(_skillContract.Id));
             GameObject obj = Instantiate(_upgradeEffectSpawn, gameObject.transform);
@@ -328,7 +334,7 @@ namespace Assets.Sources.UI.Models
         private void InternalClickHandlerInformationSkill()
         {
             _informationSkillPanel.panelInformationObject.SetActive(true);
-            InternalParseText();
+            InternalParseText(_clientProcessor.GetPlayers[0].ObjectContract ?? null);
         }
 
         private void InternalClickHandlerCloseSkillPanel()
