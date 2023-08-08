@@ -2,14 +2,16 @@
 {
     public readonly struct BattleResultSources
     {
-        public BattleResultSources(bool isWin, long experience, int gold, int rank)
+        public BattleResultSources(bool isRoundTimeOut, bool isWin, long experience, int gold, int rank)
         {
+            IsRoundTimeOut = isRoundTimeOut;
             IsCharacterWin = isWin;
             AddExperience = experience;
             AddGold = gold;
             AddRank = rank;
         }
 
+        public readonly bool IsRoundTimeOut;
         public readonly bool IsCharacterWin;
         public readonly long AddExperience;
         public readonly int AddGold;

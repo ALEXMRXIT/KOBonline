@@ -26,21 +26,32 @@ namespace Assets.Sources.Network.InPacket
             for (int iterator = 0; iterator < count; iterator++)
             {
                 byte code = networkPacket.ReadByte();
+                bool int32OrFloat = networkPacket.InternalReadBool();
 
-                switch (code)
+                if (int32OrFloat)
                 {
-                    case StatsCode.Level: _objectData.ObjectContract.Level = networkPacket.ReadInt(); break;
-                    case StatsCode.MinHealth: _objectData.ObjectContract.MinHealth = networkPacket.ReadInt(); break;
-                    case StatsCode.MaxHealth: _objectData.ObjectContract.Health = networkPacket.ReadInt(); break;
-                    case StatsCode.MinMana: _objectData.ObjectContract.MinMana = networkPacket.ReadInt(); break;
-                    case StatsCode.MaxMana: _objectData.ObjectContract.Mana = networkPacket.ReadInt(); break;
-                    case StatsCode.PlayerRank: _objectData.ObjectContract.PlayerRank = networkPacket.ReadInt(); break;
-                    case StatsCode.Strength: _objectData.ObjectContract.Strength = networkPacket.ReadInt(); break;
-                    case StatsCode.Agility: _objectData.ObjectContract.Agility = networkPacket.ReadInt(); break;
-                    case StatsCode.Intelligence: _objectData.ObjectContract.Intelligence = networkPacket.ReadInt(); break;
-                    case StatsCode.Endurance: _objectData.ObjectContract.Endurance = networkPacket.ReadInt(); break;
-                    case StatsCode.Experience: _objectData.ObjectContract.Experience = networkPacket.ReadInt(); break;
-                    case StatsCode.MoveSpeed: _objectData.ObjectContract.MoveSpeed = networkPacket.ReadInt(); break;
+                    switch (code)
+                    {
+                        case StatsCode.Level: _objectData.ObjectContract.Level = networkPacket.ReadInt(); break;
+                        case StatsCode.MinHealth: _objectData.ObjectContract.MinHealth = networkPacket.ReadInt(); break;
+                        case StatsCode.MaxHealth: _objectData.ObjectContract.Health = networkPacket.ReadInt(); break;
+                        case StatsCode.MinMana: _objectData.ObjectContract.MinMana = networkPacket.ReadInt(); break;
+                        case StatsCode.MaxMana: _objectData.ObjectContract.Mana = networkPacket.ReadInt(); break;
+                        case StatsCode.PlayerRank: _objectData.ObjectContract.PlayerRank = networkPacket.ReadInt(); break;
+                        case StatsCode.Strength: _objectData.ObjectContract.Strength = networkPacket.ReadInt(); break;
+                        case StatsCode.Agility: _objectData.ObjectContract.Agility = networkPacket.ReadInt(); break;
+                        case StatsCode.Intelligence: _objectData.ObjectContract.Intelligence = networkPacket.ReadInt(); break;
+                        case StatsCode.Endurance: _objectData.ObjectContract.Endurance = networkPacket.ReadInt(); break;
+                        case StatsCode.Experience: _objectData.ObjectContract.Experience = networkPacket.ReadInt(); break;
+                    }
+                }
+                else
+                {
+                    switch (code)
+                    {
+                        case StatsCode.MoveSpeed: _objectData.ObjectContract.MoveSpeed = networkPacket.ReadFloat(); break;
+                        case StatsCode.AttackSpeed: _objectData.ObjectContract.AttackSpeed = networkPacket.ReadFloat(); break;
+                    }
                 }
             }
         }

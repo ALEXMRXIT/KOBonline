@@ -13,6 +13,7 @@ namespace Assets.Sources.Models.Characters
     {
         [SerializeField] private Color _colorWin;
         [SerializeField] private Color _colorDefeat;
+        [SerializeField] private Color _colorTimeOut;
         [SerializeField] private Text _titleText;
         [SerializeField] private Text _experienceText;
         [SerializeField] private Text _copperText;
@@ -42,15 +43,23 @@ namespace Assets.Sources.Models.Characters
         {
             gameObject.SetActive(true);
 
-            if (battleResultSources.IsCharacterWin)
+            if (!battleResultSources.IsRoundTimeOut)
             {
-                _titleText.color = _colorWin;
-                _titleText.text = "Victory!!";
+                if (battleResultSources.IsCharacterWin)
+                {
+                    _titleText.color = _colorWin;
+                    _titleText.text = "Victory!!";
+                }
+                else
+                {
+                    _titleText.color = _colorDefeat;
+                    _titleText.text = "Defeat!!";
+                }
             }
             else
             {
-                _titleText.color = _colorDefeat;
-                _titleText.text = "Defeat!!";
+                _titleText.color = _colorTimeOut;
+                _titleText.text = "Time out!!";
             }
 
             _experienceText.text = $"+{battleResultSources.AddExperience}";
@@ -60,7 +69,7 @@ namespace Assets.Sources.Models.Characters
             _silverText.text = goldSplit[1].ToString();
             _copperText.text = goldSplit[0].ToString();
 
-            if (battleResultSources.IsCharacterWin)
+            if (battleResultSources.IsCharacterWin && !battleResultSources.IsRoundTimeOut)
             {
                 _rankGreen.SetActive(true);
                 _rankGreen.GetComponent<Text>().text = $"+{battleResultSources.AddRank}";

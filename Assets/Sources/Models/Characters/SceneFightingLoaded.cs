@@ -20,6 +20,7 @@ using Assets.Sources.Models.Characters.Skills;
 
 namespace Assets.Sources.Models.Characters
 {
+    [RequireComponent(typeof(TimeRound))]
     public sealed class SceneFightingLoaded : MonoBehaviour
     {
         [SerializeField] private CustomerModelView _customerModelView;
@@ -45,9 +46,11 @@ namespace Assets.Sources.Models.Characters
 
         private INetworkProcessor _networkProcessor;
         private List<SlotBattle> _slotBattles;
+        private TimeRound _timeRound;
 
         private void Awake()
         {
+            _timeRound = GetComponent<TimeRound>();
             _slotBattles = new List<SlotBattle>(capacity: _slots.Count);
             for (int iterator = 0; iterator < _slots.Count; iterator++)
             {
@@ -61,6 +64,7 @@ namespace Assets.Sources.Models.Characters
         private void Start()
         {
             _networkProcessor = ClientProcessor.Instance;
+            _networkProcessor.GetParentObject().GetTimeRound = _timeRound;
             StartCoroutine(SetBattleSceneForActors());
             _panelWinner.SetActive(false);
         }
@@ -202,14 +206,15 @@ namespace Assets.Sources.Models.Characters
                 _slotBattles[skillData.SlotId - 1].SetSkill(skillBattle);
             }
 
-            _networkProcessor.GetParentObject().SetAbilityIwthBattleMode(_slotBattles);
+            _networkProcessor.GetParentObject().SetAbilityWithBattleMode(_slotBattles);
             _networkProcessor.SendPacketAsync(LoadSceneFightingSuccess.ToPacket());
         }
 
         private void OnDestroy()
         {
+            _networkProcessor.GetParentObject().GetTimeRound = null;
             _networkProcessor.GetParentObject().GetPlayers.RemoveAll(x => x.IsBot);
-            _networkProcessor.GetParentObject().SetAbilityIwthBattleMode(null);
+            _networkProcessor.GetParentObject().SetAbilityWithBattleMode(null);
             _networkProcessor.GetParentObject().GetNetworkDataLoader.Reset();
         }
     }

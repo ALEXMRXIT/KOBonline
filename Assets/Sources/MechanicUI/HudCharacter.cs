@@ -16,6 +16,7 @@ namespace Assets.Sources.MechanicUI
         [SerializeField] private Image _iconMainImage;
         [SerializeField] private Sprite _wariorrIcon;
         [SerializeField] private Sprite _mageOcon;
+        [SerializeField] private Image _playerImageRank;
 
         [Space]
         [SerializeField] private GameObject _panelEnemyBar;
@@ -23,12 +24,22 @@ namespace Assets.Sources.MechanicUI
         [SerializeField] private Image _manaBarEnemy;
         [SerializeField] private Text _characterNameEnemy;
         [SerializeField] private Image _iconMainImageEnemy;
+        [SerializeField] private Image _enemyImageRank;
+
+        [Space]
+        [SerializeField] private Sprite[] _ranksSprite;
 
         public static HudCharacter Instance;
+        private INetworkProcessor _networkProcessor;
 
         private void Awake()
         {
             Instance = this;
+        }
+
+        private void Start()
+        {
+            _networkProcessor = ClientProcessor.Instance;
         }
 
         public void SetHud(PlayerContract playerContract)
@@ -41,6 +52,8 @@ namespace Assets.Sources.MechanicUI
             _characterName.text = playerContract.CharacterName;
             UpdateHealthBar(playerContract.MinHealth, playerContract.Health);
             UpdateManaBar(playerContract.MinMana, playerContract.Mana);
+
+            _playerImageRank.sprite = _ranksSprite[_networkProcessor.GetParentObject().GetRank.GetIndexByRankTable(playerContract.PlayerRank)];
         }
 
         public void ActivateHudEnemy(PlayerContract playerContract)
@@ -54,6 +67,8 @@ namespace Assets.Sources.MechanicUI
             _panelEnemyBar.SetActive(true);
             UpdateEnemyHealthBar(playerContract.MinHealth, playerContract.Health);
             UpdateEnemyManaBar(playerContract.MinMana, playerContract.Mana);
+
+            _enemyImageRank.sprite = _ranksSprite[_networkProcessor.GetParentObject().GetRank.GetIndexByRankTable(playerContract.PlayerRank)];
         }
 
         public void UpdateHealthBar(float health, float maxHealth)

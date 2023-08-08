@@ -46,6 +46,7 @@ namespace Assets.Sources.Network
         private List<Skill> _skills;
         private GameCryptProtection _gameCrypt;
         private List<SlotBattle> _slotsAbilityInBattleMode;
+        private TimeRound _timeRound;
 
         public bool IsConnected => _tcpClient.Connected;
         public List<ObjectData> GetPlayers { get => _players; }
@@ -60,6 +61,7 @@ namespace Assets.Sources.Network
         public List<SkillData> GetSkillDatas { get => _skillDatas; set => _skillDatas = value; }
         public List<Skill> GetSkills { get => _skills; set => _skills = value; }
         public IEnumerable<SlotBattle> GetBattleSlots { get => _slotsAbilityInBattleMode; }
+        public TimeRound GetTimeRound { get => _timeRound; set => _timeRound = value; }
 
         public ClientCurrentMenu ClientMenu
         {
@@ -151,7 +153,7 @@ namespace Assets.Sources.Network
         public void SetLoadedSkillData() => _loadedSkillData = true;
         public void ResetLoadedSkillData() => _loadedSkillData = false;
         public void SetFirstLoadedSkillData() => _isFirstSkillLoaded = true;
-        public void SetAbilityIwthBattleMode(List<SlotBattle> slotBattles) => _slotsAbilityInBattleMode = slotBattles;
+        public void SetAbilityWithBattleMode(List<SlotBattle> slotBattles) => _slotsAbilityInBattleMode = slotBattles;
 
         public async Task SendPacketAsync(NetworkPacket packet, PacketImportance packetImportance = PacketImportance.None)
         {

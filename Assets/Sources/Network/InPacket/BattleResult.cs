@@ -18,6 +18,7 @@ namespace Assets.Sources.Network.InPacket
         {
             _client = clientProcessor;
 
+            _isRoundTimeOut = networkPacket.InternalReadBool();
             _isWin = networkPacket.InternalReadBool();
             _experience = networkPacket.ReadLong();
             _gold = networkPacket.ReadInt();
@@ -25,6 +26,7 @@ namespace Assets.Sources.Network.InPacket
         }
 
         private readonly ClientProcessor _client;
+        private readonly bool _isRoundTimeOut;
         private readonly bool _isWin;
         private readonly long _experience;
         private readonly int _gold;
@@ -44,7 +46,7 @@ namespace Assets.Sources.Network.InPacket
                 player.SoundCharacterLink.PlaySoundIfWinOrLosse(_isWin);
 
                 BattleResultSources battleResult = new
-                    BattleResultSources(_isWin, _experience, _gold, _rank);
+                    BattleResultSources(_isRoundTimeOut, _isWin, _experience, _gold, _rank);
                 InformationEndedBattle.Instance.ShowResultBattle(battleResult);
             }
             catch (Exception exception)

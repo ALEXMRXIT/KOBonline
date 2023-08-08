@@ -38,6 +38,7 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x18, typeof(UseAbilityForReload));
             _packetHandlerServices.TryAdd(0x19, typeof(CreateAbilityRegistration));
             _packetHandlerServices.TryAdd(0x1A, typeof(UpdateAbility));
+            _packetHandlerServices.TryAdd(0x1B, typeof(TimerServices));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

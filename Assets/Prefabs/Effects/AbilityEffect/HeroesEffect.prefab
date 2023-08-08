@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7454088262560765221}
   - component: {fileID: 4635094527896207078}
   - component: {fileID: 9050768003180860139}
-  - component: {fileID: -3775786133558318979}
   m_Layer: 0
   m_Name: HeroesEffect
   m_TagString: Untagged
@@ -4830,19 +4829,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &-3775786133558318979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2650181705167260223}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4481d6854ebab42cc9199034eab3de26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _time: 1.5
 --- !u!1 &6437331290909092791
 GameObject:
   m_ObjectHideFlags: 0

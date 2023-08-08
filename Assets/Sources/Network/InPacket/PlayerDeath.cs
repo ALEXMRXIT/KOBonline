@@ -38,16 +38,8 @@ namespace Assets.Sources.Network.InPacket
                 player.IsDeath = true;
                 player.SoundCharacterLink.CallDeathSoundEffect();
 
-                if (player.IsBot)
-                    player.ClientHud.UpdateEnemyHealthBar(0, player.ObjectContract.Health);
-                else
-                    player.ClientHud.UpdateHealthBar(0, player.ObjectContract.Health);
-
                 player.ObjectTarget.ClearTarget();
                 player.ClientAnimationState.SetCharacterState(player._stateAnimationDeath);
-
-                _client.GetPlayers.Where(x => x.ObjId != _objId).ToList()
-                    .ForEach(client => client.ClientAnimationState.SetCharacterState(client._stateAnimationIdle));
             }
             catch (Exception exception)
             {
