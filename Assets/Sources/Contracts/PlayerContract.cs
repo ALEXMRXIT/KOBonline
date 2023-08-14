@@ -14,6 +14,7 @@ namespace Assets.Sources.Contracts
         public int Mana { get; set; }
         public PlayerSex Sex { get; set; }
         public int PlayerRank { get; set; }
+        public int ScoreSpecification { get; set; }
         public int Strength { get; set; }
         public int Agility { get; set; }
         public int Intelligence { get; set; }
@@ -34,5 +35,15 @@ namespace Assets.Sources.Contracts
         public bool GameMasterStatus { get; set; }
         public int PhysAttack { get; set; }
         public int MagicAttack { get; set; }
+        public int PhysDefence { get; set; }
+        public int MagicDefence { get; set; }
+        public float CritChance { get; set; }
+        public float CritDamageMultiply { get; set; }
+        public float DodgeChance { get; set; }
+        public float HitChance { get; set; }
+        public int WinRate { get; set; }
+        public int NumberOfFights { get; set; }
+        public int NumberWinners { get; set; }
+        public int NumberLosses { get; set; }
     }
 }

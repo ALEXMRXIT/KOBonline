@@ -109,7 +109,7 @@ namespace Assets.Sources.UI.Models
             _level = level;
         }
 
-        public CanvasGroup GetOriginalCavasGroup()
+        public CanvasGroup GetOriginalCanvasGroup()
         {
             return _canvasGroup;
         }
@@ -253,17 +253,17 @@ namespace Assets.Sources.UI.Models
 
             switch (skillId)
             {
-                case 0: return new object[] { _skillContract.BaseDamage[level] + playerContract.MagicAttack + InternalMultyplay(_skillContract.BaseDamage[level], _skillContract.MultiplyDamage[level]) };
-                case 1: return new object[] { _skillContract.AddPhysDef[level] + playerContract.Intelligence + InternalMultyplay(_skillContract.AddPhysDef[level], _skillContract.PrecentPhysDef[level]), _skillContract.TimeUse };
-                case 2: return new object[] { _skillContract.BaseDamage[level] + playerContract.MagicAttack + InternalMultyplay(_skillContract.BaseDamage[level], _skillContract.MultiplyDamage[level]), _skillContract.AttackSpeed[level] * 100f, _skillContract.HealthRegeneration[level] + ((playerContract.MagicAttack / 100) * 10), _skillContract.TimeBuffUse[level] };
-                case 3: return new object[] { _skillContract.BaseDamage[level] + playerContract.PhysAttack + InternalMultyplay(_skillContract.BaseDamage[level], _skillContract.MultiplyDamage[level]) };
-                case 4: return new object[] { _skillContract.AddPhysDef[level] + playerContract.Strength + InternalMultyplay(_skillContract.AddPhysDef[level], _skillContract.PrecentPhysDef[level]), _skillContract.TimeUse };
+                case 0: return new object[] { _skillContract.BaseDamage[level] + playerContract.MagicAttack + InternalMultiplay(_skillContract.BaseDamage[level], _skillContract.MultiplyDamage[level]) };
+                case 1: return new object[] { _skillContract.AddPhysDef[level] + playerContract.Intelligence + InternalMultiplay(_skillContract.AddPhysDef[level], _skillContract.PrecentPhysDef[level]), _skillContract.TimeUse };
+                case 2: return new object[] { _skillContract.BaseDamage[level] + playerContract.MagicAttack + InternalMultiplay(_skillContract.BaseDamage[level], _skillContract.MultiplyDamage[level]), _skillContract.AttackSpeed[level] * 100f, _skillContract.HealthRegeneration[level] + ((playerContract.MagicAttack / 100) * 10), _skillContract.TimeBuffUse[level] };
+                case 3: return new object[] { _skillContract.BaseDamage[level] + playerContract.PhysAttack + InternalMultiplay(_skillContract.BaseDamage[level], _skillContract.MultiplyDamage[level]) };
+                case 4: return new object[] { _skillContract.AddPhysDef[level] + playerContract.Strength + InternalMultiplay(_skillContract.AddPhysDef[level], _skillContract.PrecentPhysDef[level]), _skillContract.TimeUse };
                 case 5: return new object[] { _skillContract.AddHealth[level] + playerContract.Strength + playerContract.Endurance, _skillContract.HealthRegeneration[level] + ((playerContract.PhysAttack / 100) * 10), _skillContract.TimeUse };
                 default: return null;
             }
         }
 
-        private int InternalMultyplay(int first, float second)
+        private int InternalMultiplay(int first, float second)
         {
             return checked((int)(first + ((first / 100) * (second * 100f))));
         }
@@ -359,7 +359,7 @@ namespace Assets.Sources.UI.Models
                 return;
             }
 
-            GetOriginalCavasGroup().blocksRaycasts = false;
+            GetOriginalCanvasGroup().blocksRaycasts = false;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -395,7 +395,7 @@ namespace Assets.Sources.UI.Models
                         skill => skill.SkillId == _skill.Id).FirstOrDefault().SlotId = slot.GetSlotId();
 
                     _clientProcessor.SendPacketAsync(SendUpgradeSkill.ToPacket(skillHandler.GetSkill().Id, true, slot.GetSlotId()));
-                    skillHandler.GetOriginalCavasGroup().blocksRaycasts = true;
+                    skillHandler.GetOriginalCanvasGroup().blocksRaycasts = true;
                     _skillDropSoundEffect.Play();
                 }
                 else
@@ -421,7 +421,7 @@ namespace Assets.Sources.UI.Models
             skillHandler.ParseSkill(_clientProcessor, _skill, _skillContract, _skillManager);
             RectTransform rectTransform = skillDragging.GetComponent<RectTransform>();
             rectTransform.sizeDelta = new Vector2(120.0f, 120.0f);
-            skillHandler.GetOriginalCavasGroup().blocksRaycasts = false;
+            skillHandler.GetOriginalCanvasGroup().blocksRaycasts = false;
 
             return skillDragging;
         }

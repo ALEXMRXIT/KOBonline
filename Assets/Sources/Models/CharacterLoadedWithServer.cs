@@ -19,6 +19,8 @@ namespace Assets.Sources.Models
         [SerializeField] private SmileAPI _smileAPI;
         [SerializeField] private ChatManager _chatManager;
         [SerializeField] private SkillManager _skillManager;
+        [SerializeField] private SpecificationManager _specificationManager;
+        [SerializeField] private RankTableHandler _rankTableHandler;
 
         private INetworkProcessor _clientProcessor;
         private GameObject _tempModelForOnlyCreateScene;
@@ -38,6 +40,8 @@ namespace Assets.Sources.Models
         public void EnableUICreateCharacter()
         {
             Debug.Log($"{nameof(EnableUICreateCharacter)} enabled ui.");
+
+            StartCoroutine(InternalStartLoadOtherConfigAsync());
 
             _blockPanel.SetActive(false);
             _gameSkillsPanel.SetActive(false);
@@ -72,6 +76,9 @@ namespace Assets.Sources.Models
             }
 
             yield return _skillManager.Initialize();
+            yield return _specificationManager.LoadCharacterSpecification(_clientProcessor);
+            yield return _rankTableHandler.LoadRankTable(_clientProcessor);
+
             yield return new WaitForSecondsRealtime(2f);
 
             _blockPanel.SetActive(false);

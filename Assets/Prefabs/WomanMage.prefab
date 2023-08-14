@@ -30406,7 +30406,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -30708,6 +30708,8 @@ MonoBehaviour:
   _baseDamageRedCrit: {fileID: 7275831088294848593, guid: ab4103538abf84161bc2d36497aeedf0,
     type: 3}
   _baseHealth: {fileID: 1044158484471258458, guid: d043a662edf3b47d88f828bdfff59cb3,
+    type: 3}
+  _baseDamageMiss: {fileID: 9049785560942623875, guid: c254ad457cb7941d0ab2d3c12929bbdd,
     type: 3}
   _effectHeal: {fileID: 4677039818687791794, guid: e133a7ad54dcb49c48106eb7b1c95b20,
     type: 3}

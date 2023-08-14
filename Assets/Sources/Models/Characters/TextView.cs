@@ -8,19 +8,24 @@ using System.Collections.Generic;
 using Assets.Sources.Models.Base;
 using Assets.Sources.Network.OutPacket;
 using Assets.Sources.Models.States.StateAnimations;
+using Assets.Sources.Models.Camera;
 
 namespace Assets.Sources.Models.Characters
 {
     public readonly struct Damage
     {
-        public Damage(bool isBot, int value)
+        public Damage(bool isBot, int value, bool isCriticalDamage, bool damageMiss)
         {
             ClientDamageIsBot = isBot;
             ClientDamageValue = value;
+            IsCriticalDamage = isCriticalDamage;
+            DamageMiss = damageMiss;
         }
 
         public readonly bool ClientDamageIsBot;
         public readonly int ClientDamageValue;
+        public readonly bool IsCriticalDamage;
+        public readonly bool DamageMiss;
     }
 
     public sealed class TextView : MonoBehaviour
@@ -31,6 +36,7 @@ namespace Assets.Sources.Models.Characters
         [SerializeField] private GameObject _baseDamageYellowCrit;
         [SerializeField] private GameObject _baseDamageRedCrit;
         [SerializeField] private GameObject _baseHealth;
+        [SerializeField] private GameObject _baseDamageMiss;
         [Space, SerializeField] private GameObject _effectHeal;
 
         private List<Damage> _contain = new List<Damage>();
@@ -63,21 +69,53 @@ namespace Assets.Sources.Models.Characters
                 {
                     GameObject damageView;
                     if (objectData.IsBot)
-                        damageView = Instantiate(_baseDamageYellow, _spawnTargetDamage);
+                    {
+                        if (!_contain[iterator].DamageMiss)
+                        {
+                            if (!_contain[iterator].IsCriticalDamage)
+                                damageView = Instantiate(_baseDamageYellow, _spawnTargetDamage);
+                            else
+                            {
+                                damageView = Instantiate(_baseDamageYellowCrit, _spawnTargetDamage);
+                                TargetSurveillanceCamera.Instance.Shake(0.1f, 0.02f);
+                            }
+                        }
+                        else
+                            damageView = Instantiate(_baseDamageMiss, _spawnTargetDamage);
+                    }
                     else
-                        damageView = Instantiate(_baseDamageRed, _spawnTargetDamage);
+                    {
+                        if (!_contain[iterator].DamageMiss)
+                        {
+                            if (!_contain[iterator].IsCriticalDamage)
+                                damageView = Instantiate(_baseDamageRed, _spawnTargetDamage);
+                            else
+                                damageView = Instantiate(_baseDamageRedCrit, _spawnTargetDamage);
+                        }
+                        else
+                            damageView = Instantiate(_baseDamageMiss, _spawnTargetDamage);
+                    }
 
                     objectData.SoundCharacterLink.CallTakeDamageSoundEffect();
 
-                    damageView.GetComponent<Text>().text = _contain[iterator].ClientDamageValue.ToString();
-                    objectData.ObjectContract.MinHealth = Mathf.Clamp(objectData.
-                        ObjectContract.MinHealth - _contain[iterator].ClientDamageValue,
-                            min: 0, max: objectData.ObjectContract.Health);
+                    if (!_contain[iterator].DamageMiss)
+                    {
+                        if (!_contain[iterator].IsCriticalDamage)
+                            damageView.GetComponent<Text>().text = _contain[iterator].ClientDamageValue.ToString();
+                        else
+                            damageView.GetComponent<Text>().text = $"{_contain[iterator].ClientDamageValue}!!";
 
-                    if (objectData.IsBot)
-                        objectData.ClientHud.UpdateEnemyHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
+                        objectData.ObjectContract.MinHealth = Mathf.Clamp(objectData.
+                            ObjectContract.MinHealth - _contain[iterator].ClientDamageValue,
+                                min: 0, max: objectData.ObjectContract.Health);
+
+                        if (objectData.IsBot)
+                            objectData.ClientHud.UpdateEnemyHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
+                        else
+                            objectData.ClientHud.UpdateHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
+                    }
                     else
-                        objectData.ClientHud.UpdateHealthBar(objectData.ObjectContract.MinHealth, objectData.ObjectContract.Health);
+                        damageView.GetComponent<Text>().text = $"Miss";
 
                     Destroy(damageView, 1.5f);
                     found = true;

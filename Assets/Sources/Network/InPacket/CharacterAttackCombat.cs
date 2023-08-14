@@ -21,12 +21,16 @@ namespace Assets.Sources.Network.InPacket
             _objId = networkPacket.ReadLong();
             _damage = networkPacket.ReadInt();
             _willSkillUse = networkPacket.InternalReadBool();
+            _isCriticalDamage = networkPacket.InternalReadBool();
+            _damageMiss = networkPacket.InternalReadBool();
         }
 
         private readonly ClientProcessor _client;
         private readonly long _objId;
         private readonly int _damage;
         private readonly bool _willSkillUse;
+        private readonly bool _isCriticalDamage;
+        private readonly bool _damageMiss;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -42,7 +46,7 @@ namespace Assets.Sources.Network.InPacket
                 if (!_willSkillUse && player.ClientAnimationState.GetCurrentPlayingAnimationState() != player._stateAnimationAttackMagic)
                     player.ClientAnimationState.SetCharacterState(player._stateAnimationAttack, player.ObjectContract.AttackSpeed);
 
-                Damage damage = new Damage(player.IsBot, _damage);
+                Damage damage = new Damage(player.IsBot, _damage, _isCriticalDamage, _damageMiss);
 
                 player.ClientTextView.AddDamage(damage);
             }

@@ -41,12 +41,15 @@ namespace Assets.Sources.Network
         private bool _loadedCharacterModel = false;
         private bool _loadedSkillData = false;
         private bool _isFirstSkillLoaded = false;
+        private bool _isRankTableLoaded = false;
         private List<SkillContract> _skillContracts;
         private List<SkillData> _skillDatas;
         private List<Skill> _skills;
         private GameCryptProtection _gameCrypt;
         private List<SlotBattle> _slotsAbilityInBattleMode;
         private TimeRound _timeRound;
+        private long _characterId;
+        private List<PlayerRankData> _temporaryContainerForPlayerRanks;
 
         public bool IsConnected => _tcpClient.Connected;
         public List<ObjectData> GetPlayers { get => _players; }
@@ -57,11 +60,14 @@ namespace Assets.Sources.Network
         public bool IsLoadedCharacterModel { get => _loadedCharacterModel; }
         public bool IsLoadedSkillData { get => _loadedSkillData; }
         public bool IsFirstLoadedSkillData { get => _isFirstSkillLoaded; }
+        public bool IsRankTableLoaded { get => _isRankTableLoaded; }
         public List<SkillContract> GetSkillContracts { get => _skillContracts; set => _skillContracts = value; }
         public List<SkillData> GetSkillDatas { get => _skillDatas; set => _skillDatas = value; }
         public List<Skill> GetSkills { get => _skills; set => _skills = value; }
         public IEnumerable<SlotBattle> GetBattleSlots { get => _slotsAbilityInBattleMode; }
         public TimeRound GetTimeRound { get => _timeRound; set => _timeRound = value; }
+        public long GetCharacterId { get => _characterId; set => _characterId = value; }
+        public List<PlayerRankData> GetTemporaryContainerForPlayerRanks { get => _temporaryContainerForPlayerRanks; }
 
         public ClientCurrentMenu ClientMenu
         {
@@ -80,6 +86,7 @@ namespace Assets.Sources.Network
             _cancelationTokenSources = new CancellationTokenSource();
             _gameCrypt = new GameCryptProtection();
             _characterRankTable = new RankTable();
+            _temporaryContainerForPlayerRanks = new List<PlayerRankData>();
 
             _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 27018);
             _tcpClient = new TcpClient();
@@ -154,6 +161,9 @@ namespace Assets.Sources.Network
         public void ResetLoadedSkillData() => _loadedSkillData = false;
         public void SetFirstLoadedSkillData() => _isFirstSkillLoaded = true;
         public void SetAbilityWithBattleMode(List<SlotBattle> slotBattles) => _slotsAbilityInBattleMode = slotBattles;
+        public void SetRankTableLoaded() => _isRankTableLoaded = true;
+        public void ResetRankTableLoaded() => _isRankTableLoaded = false;
+        public void ResetTemporaryContainer() => _temporaryContainerForPlayerRanks.Clear();
 
         public async Task SendPacketAsync(NetworkPacket packet, PacketImportance packetImportance = PacketImportance.None)
         {

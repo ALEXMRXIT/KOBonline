@@ -32,6 +32,7 @@ namespace Assets.Sources.Network.InPacket
             _playerContract.Mana = networkPacket.ReadInt();
             _playerContract.Sex = (PlayerSex)networkPacket.ReadInt();
             _playerContract.PlayerRank = networkPacket.ReadInt();
+            _playerContract.ScoreSpecification = networkPacket.ReadInt();
             _playerContract.Strength = networkPacket.ReadInt();
             _playerContract.Agility = networkPacket.ReadInt();
             _playerContract.Intelligence = networkPacket.ReadInt();
@@ -46,6 +47,14 @@ namespace Assets.Sources.Network.InPacket
             _playerContract.GameMasterStatus = networkPacket.InternalReadBool();
             _playerContract.PhysAttack = networkPacket.ReadInt();
             _playerContract.MagicAttack = networkPacket.ReadInt();
+            _playerContract.PhysDefence = networkPacket.ReadInt();
+            _playerContract.MagicDefence = networkPacket.ReadInt();
+            _playerContract.CritChance = networkPacket.ReadFloat();
+            _playerContract.CritDamageMultiply = networkPacket.ReadFloat();
+            _playerContract.DodgeChance = networkPacket.ReadFloat();
+            _playerContract.HitChance = networkPacket.ReadFloat();
+            _playerContract.NumberWinners = networkPacket.ReadInt();
+            _playerContract.NumberLosses = networkPacket.ReadInt();
         }
 
         private readonly PlayerContract _playerContract;
@@ -74,6 +83,7 @@ namespace Assets.Sources.Network.InPacket
                     playerData.ObjId = _objId;
                     playerData.IsBot = false;
                     playerData.ObjectContract = _playerContract;
+                    _client.GetCharacterId = _objId;
 
                     playerData._stateAnimationAttackMagic = new StateAnimationAttackMagic();
                     playerData._stateAnimationAttack = new StateAnimationAttack();

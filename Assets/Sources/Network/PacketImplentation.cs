@@ -39,6 +39,8 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x19, typeof(CreateAbilityRegistration));
             _packetHandlerServices.TryAdd(0x1A, typeof(UpdateAbility));
             _packetHandlerServices.TryAdd(0x1B, typeof(TimerServices));
+            _packetHandlerServices.TryAdd(0x1C, typeof(UpgradeSpecificationUpdate));
+            _packetHandlerServices.TryAdd(0x1D, typeof(ResponsePlayerRankTable));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

@@ -43,5 +43,10 @@ namespace Assets.Sources.MechanicUI
 
             _iconRank.sprite = _ranksSprite[_networkProcessor.GetParentObject().GetRank.GetIndexByRankTable(playerContract.PlayerRank)];
         }
+
+        public Sprite[] GetAllSpriteRankWithMainMenu()
+        {
+            return _ranksSprite;
+        }
     }
 }
