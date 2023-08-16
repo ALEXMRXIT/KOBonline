@@ -41,11 +41,11 @@ namespace Assets.Sources.Models
         {
             Debug.Log($"{nameof(EnableUICreateCharacter)} enabled ui.");
 
-            StartCoroutine(InternalStartLoadOtherConfigAsync());
-
             _blockPanel.SetActive(false);
             _gameSkillsPanel.SetActive(false);
             _gameRunPanel.SetActive(false);
+            _specificationManager.OpenOrClosePanel();
+            _rankTableHandler.OpenOrClosePanel();
 
             _createCharacterPanel.SetActive(true);
             _tempModelForOnlyCreateScene = CustomerCreateLogic.Instance.ShowModelForCreateVisualPlayer();
@@ -55,9 +55,18 @@ namespace Assets.Sources.Models
         {
             Debug.Log($"{nameof(EnableUIGameRun)} enable ui.");
 
+            if (!_blockPanel.activeSelf)
+            {
+                _blockPanel.SetActive(true);
+                _gameSkillsPanel.SetActive(true);
+                _gameRunPanel.SetActive(true);
+                _specificationManager.OpenOrClosePanel();
+                _rankTableHandler.OpenOrClosePanel();
+            }
+
             if (_tempModelForOnlyCreateScene != null)
             {
-                Destroy(_tempModelForOnlyCreateScene);
+                DestroyImmediate(_tempModelForOnlyCreateScene);
                 _tempModelForOnlyCreateScene = null;
             }
 

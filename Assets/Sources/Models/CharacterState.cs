@@ -5,6 +5,8 @@ using System.Collections;
 using Assets.Sources.Enums;
 using Assets.Sources.Network;
 using Assets.Sources.Interfaces;
+using System.Collections.Generic;
+using Assets.Sources.Models.Base;
 using Assets.Sources.Models.States;
 using Assets.Sources.Models.Characters;
 using Assets.Sources.Models.States.StateAnimations;
@@ -24,14 +26,13 @@ namespace Assets.Sources.Models
         {
             _networkProcessor = ClientProcessor.Instance;
 
-            if (_networkProcessor.GetParentObject().GetPlayers.FirstOrDefault(
-                x => !x.IsBot).ObjectContract.CharacterBaseClass == BaseClass.Warrior)
+            List<ObjectData> players = _networkProcessor.GetParentObject().GetPlayers;
+            if (players.Count > 0)
             {
-                _lengthAnimationClip = 1.5f;
-            }
-            else
-            {
-                _lengthAnimationClip = 2.283334f;
+                if (_networkProcessor.GetParentObject().GetPlayers.FirstOrDefault(x => !x.IsBot).ObjectContract.CharacterBaseClass == BaseClass.Warrior)
+                    _lengthAnimationClip = 1.5f;
+                else
+                    _lengthAnimationClip = 2.283334f;
             }
 
             _stateMachineAnimation = GetComponent<StateMachineAnimation>();

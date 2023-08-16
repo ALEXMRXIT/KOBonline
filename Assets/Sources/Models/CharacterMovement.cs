@@ -64,7 +64,7 @@ namespace Assets.Sources.Models
                 _objectData.UpdatePositionInServer.y,
                 _objectData.UpdatePositionInServer.z));
 
-            if (dist > 3f)
+            if (dist > 4f)
             {
                 transform.position = new Vector3(
                     _objectData.UpdatePositionInServer.x,

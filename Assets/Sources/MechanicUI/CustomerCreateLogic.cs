@@ -111,9 +111,7 @@ namespace Assets.Sources.MechanicUI
             _errorTextMessage.text = message;
         }
 
-        private void ButtonHandler
-            (ButtonDirectionAxis buttonDirectionAxis, CustomerType customerType,
-            EditCharacterComponent editCharacterComponent)
+        private void ButtonHandler(ButtonDirectionAxis buttonDirectionAxis, CustomerType customerType, EditCharacterComponent editCharacterComponent)
         {
             switch (buttonDirectionAxis)
             {
@@ -151,7 +149,7 @@ namespace Assets.Sources.MechanicUI
 
             if (_oldPlayer != null)
             {
-                Destroy(_oldPlayer);
+                DestroyImmediate(_oldPlayer);
                 _oldPlayer = null;
             }
 
