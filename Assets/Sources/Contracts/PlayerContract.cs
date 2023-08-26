@@ -45,5 +45,7 @@ namespace Assets.Sources.Contracts
         public int NumberOfFights { get; set; }
         public int NumberWinners { get; set; }
         public int NumberLosses { get; set; }
+        public int Crowns { get; set; }
+        public int SoulCrowns { get; set; }
     }
 }

@@ -55,6 +55,8 @@ namespace Assets.Sources.Network.InPacket
             _playerContract.HitChance = networkPacket.ReadFloat();
             _playerContract.NumberWinners = networkPacket.ReadInt();
             _playerContract.NumberLosses = networkPacket.ReadInt();
+            _playerContract.Crowns = networkPacket.ReadInt();
+            _playerContract.SoulCrowns = networkPacket.ReadInt();
         }
 
         private readonly PlayerContract _playerContract;

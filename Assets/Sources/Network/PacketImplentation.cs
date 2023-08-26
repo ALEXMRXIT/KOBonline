@@ -41,6 +41,11 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x1B, typeof(TimerServices));
             _packetHandlerServices.TryAdd(0x1C, typeof(UpgradeSpecificationUpdate));
             _packetHandlerServices.TryAdd(0x1D, typeof(ResponsePlayerRankTable));
+            _packetHandlerServices.TryAdd(0x1E, typeof(GettingPresents));
+            _packetHandlerServices.TryAdd(0x1F, typeof(GettingGiftPresentInPlayer));
+            _packetHandlerServices.TryAdd(0x20, typeof(UpdateCrownsBalance));
+            _packetHandlerServices.TryAdd(0x21, typeof(DeletePresentFromSlot));
+            _packetHandlerServices.TryAdd(0x22, typeof(SendingItemForPresent));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

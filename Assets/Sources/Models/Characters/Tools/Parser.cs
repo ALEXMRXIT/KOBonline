@@ -39,5 +39,14 @@ namespace Assets.Sources.Models.Characters.Tools
 
             return stringBuilder.AppendFormat("{0} s", value).ToString();
         }
+
+        public static string ConvertTimeSpanToTimeString(TimeSpan timeSpan)
+        {
+            string hours = timeSpan.Hours < 10 ? $"0{timeSpan.Hours}" : timeSpan.Hours.ToString();
+            string minutes = timeSpan.Minutes < 10 ? $"0{timeSpan.Minutes}" : timeSpan.Minutes.ToString();
+            string seconds = timeSpan.Seconds < 10 ? $"0{timeSpan.Seconds}" : timeSpan.Seconds.ToString();
+
+            return $"{hours}:{minutes}:{seconds}";
+        }
     }
 }

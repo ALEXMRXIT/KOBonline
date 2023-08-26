@@ -21,9 +21,11 @@ namespace Assets.Sources.Models
         [SerializeField] private SkillManager _skillManager;
         [SerializeField] private SpecificationManager _specificationManager;
         [SerializeField] private RankTableHandler _rankTableHandler;
+        [SerializeField] private PresentManager _presentManager;
 
         private INetworkProcessor _clientProcessor;
         private GameObject _tempModelForOnlyCreateScene;
+        private bool _isWillCreateCharacter = false;
 
         public static CharacterLoadedWithServer Instance;
 
@@ -46,6 +48,9 @@ namespace Assets.Sources.Models
             _gameRunPanel.SetActive(false);
             _specificationManager.OpenOrClosePanel();
             _rankTableHandler.OpenOrClosePanel();
+            _presentManager.OpenOrCloseWindow();
+
+            _isWillCreateCharacter = true;
 
             _createCharacterPanel.SetActive(true);
             _tempModelForOnlyCreateScene = CustomerCreateLogic.Instance.ShowModelForCreateVisualPlayer();
@@ -87,6 +92,12 @@ namespace Assets.Sources.Models
             yield return _skillManager.Initialize();
             yield return _specificationManager.LoadCharacterSpecification(_clientProcessor);
             yield return _rankTableHandler.LoadRankTable(_clientProcessor);
+
+            if (_isWillCreateCharacter)
+                _presentManager.OpenOrCloseWindow();
+
+            _clientProcessor.GetParentObject().GetPresentManager = _presentManager.GetInstance();
+            yield return _presentManager.InternalLoadPresentWithCharacter(_clientProcessor);
 
             yield return new WaitForSecondsRealtime(2f);
 

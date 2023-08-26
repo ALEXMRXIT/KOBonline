@@ -76,10 +76,6 @@ namespace Assets.Sources.UI
                 transform.SetAsLastSibling();
                 _animator.SetBool("manager", _showButton = !_showButton);
             }
-            else
-            {
-
-            }
         }
 
         private void InternalButtonClickHandler()
