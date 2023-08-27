@@ -38,6 +38,8 @@ namespace Assets.Sources.UI
         [SerializeField] private PresentMachine _presentMachine;
 
         private INetworkProcessor _networkProcessor;
+        private int _howMuchWillCostReRollGiftlvl1;
+        private int _howMuchWillCostReRollGiftlvl2;
 
         public static PresentManager Instance;
 
@@ -98,6 +100,12 @@ namespace Assets.Sources.UI
             }
         }
 
+        public void SetPrice(int howMuchWillCostReRollGiftlvl1, int howMuchWillCostReRollGiftlvl2)
+        {
+            _howMuchWillCostReRollGiftlvl1 = howMuchWillCostReRollGiftlvl1;
+            _howMuchWillCostReRollGiftlvl2 = howMuchWillCostReRollGiftlvl2;
+        }
+
         public void SetPresentContractWithOnlyAlone(PresentContract presentContract)
         {
             if (_presentModels[presentContract.Slot]._presentContract != null)
@@ -122,6 +130,16 @@ namespace Assets.Sources.UI
             }
         }
 
+        public void NoEnoughtCrownsForStartReRollMachine()
+        {
+            _presentMachine.ShowNoEnoughStartMachine();
+        }
+
+        public void StartMachineForPresent(int index)
+        {
+            _presentMachine.StartMachineWithIndex(index);
+        }
+
         public void DeletePresentWithSlotIndex(int slot)
         {
             PresentModel model = _presentModels.Where(x => x._slotIndex == slot).FirstOrDefault();
@@ -135,7 +153,10 @@ namespace Assets.Sources.UI
             model._buttonImage.sprite = _buttonNoActiveSprite;
             model._buttonText.color = _buttonNoActivate;
 
-            _presentMachine.SetStatusMachine(model._presentContract.PresentType, true);
+            int presentType = model._presentContract.PresentType;
+
+            _presentMachine.SetInMachineTypePresent(presentType, presentType);
+            _presentMachine.SetStatusMachine(presentType, true, _howMuchWillCostReRollGiftlvl1, _howMuchWillCostReRollGiftlvl2);
 
             model._presentContract = null;
         }

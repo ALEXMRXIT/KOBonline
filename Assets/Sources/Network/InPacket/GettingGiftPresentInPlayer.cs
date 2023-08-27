@@ -33,10 +33,15 @@ namespace Assets.Sources.Network.InPacket
                 _presentContracts[iterator].Slot = networkPacket.ReadInt();
                 _presentContracts[iterator].CostOfOneSecondGift = networkPacket.ReadInt();
             }
+
+            _howMuchWillCostReRollGiftlvl1 = networkPacket.ReadInt();
+            _howMuchWillCostReRollGiftlvl2 = networkPacket.ReadInt();
         }
 
         private readonly ClientProcessor _client;
         private readonly PresentContract[] _presentContracts;
+        private readonly int _howMuchWillCostReRollGiftlvl1;
+        private readonly int _howMuchWillCostReRollGiftlvl2;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -49,6 +54,10 @@ namespace Assets.Sources.Network.InPacket
             {
                 if (_client.GetPresentManager != null && _presentContracts.Length > 0)
                     _client.GetPresentManager.SetPresentContract(_presentContracts);
+
+                if (_client.GetPresentManager != null)
+                    _client.GetPresentManager.SetPrice(_howMuchWillCostReRollGiftlvl1, _howMuchWillCostReRollGiftlvl2);
+
                 _client.SetFlagIsLoadedPresents();
             }
             catch (Exception exception)

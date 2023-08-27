@@ -46,6 +46,8 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x20, typeof(UpdateCrownsBalance));
             _packetHandlerServices.TryAdd(0x21, typeof(DeletePresentFromSlot));
             _packetHandlerServices.TryAdd(0x22, typeof(SendingItemForPresent));
+            _packetHandlerServices.TryAdd(0x23, typeof(NoEnoughCrowns));
+            _packetHandlerServices.TryAdd(0x24, typeof(StartMachineForPresent));
         }
 
         private readonly Dictionary<byte, Type> _packetHandlerServices;

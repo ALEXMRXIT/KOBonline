@@ -23,16 +23,24 @@ namespace Assets.Sources.MechanicUI
         private int _indexItem;
         private const float DURATION_MAX = 0.15f;
         private long[] _itemId;
+        private int _typePresent;
+        private RefinePurchaseAttempt _refine;
 
-        public void Init(INetworkProcessor networkProcessor)
+        public void Init(INetworkProcessor networkProcessor, RefinePurchaseAttempt refinePurchaseAttempt)
         {
             for (int iterator = 0; iterator < _slots.Length; iterator++)
                 _slots[iterator].Init();
 
             _networkProcessor = networkProcessor;
+            _refine = refinePurchaseAttempt;
 
             _takeItem.onClick.AddListener(InternalTakeItemClickHandler);
             _playAgain.onClick.AddListener(InternalPlayAgainClickHandler);
+        }
+
+        public void SetInMachineTypePresent(int typePresent)
+        {
+            _typePresent = typePresent;
         }
 
         public void SetStatusMachine(bool status)
@@ -50,10 +58,16 @@ namespace Assets.Sources.MechanicUI
             _itemView = view;
         }
 
-        public void StartBuild()
+        public void StartBuild(int howMuchWillCostReRollGiftlvl1, int howMuchWillCostReRollGiftlvl2)
         {
             try
             {
+                switch (_typePresent)
+                {
+                    case 0: _refine.SetPrice(howMuchWillCostReRollGiftlvl1); break;
+                    case 1: _refine.SetPrice(howMuchWillCostReRollGiftlvl2); break;
+                }
+
                 _itemId = new long[_itemContracts.Length];
 
                 for (int iterator = 0; iterator < _itemContracts.Length; iterator++)
@@ -107,14 +121,25 @@ namespace Assets.Sources.MechanicUI
             if (_duration <= DURATION_MAX)
                 return;
 
-            _networkProcessor.SendPacketAsync(TakeItemFromPresentWinner.ToPacket(_itemId[_indexItem == 12 ? _indexItem - 1 : _indexItem]));
+            _networkProcessor.SendPacketAsync(TakeItemFromPresentWinner.ToPacket(0x00, _itemId[_indexItem == 12 ? _indexItem - 1 : _indexItem], _typePresent));
             gameObject.SetActive(false);
+
+            _refine.gameObject.SetActive(false);
+            _refine.ResetAttempt();
         }
 
         private void InternalPlayAgainClickHandler()
         {
             if (_duration <= DURATION_MAX)
                 return;
+
+            _refine.gameObject.SetActive(true);
+            _refine.Show(() => SendinBuyReRollPresent());
+        }
+
+        private void SendinBuyReRollPresent()
+        {
+            _networkProcessor.SendPacketAsync(TakeItemFromPresentWinner.ToPacket(0x01, _itemId[_indexItem == 12 ? _indexItem - 1 : _indexItem], _typePresent));
         }
     }
 }
