@@ -39,9 +39,7 @@ namespace Assets.Sources.Models
 
             if (_objectData.IsDeath)
             {
-                _characterState.SetCharacterState(_animationDeath, speed: 1f);
                 _characterTarget.ClearTarget();
-
                 return;
             }
 
@@ -49,10 +47,7 @@ namespace Assets.Sources.Models
                 _characterTarget.GetCurrentTarget().position);
 
             if (dist < _objectData.ObjectContract.AttackDistance)
-            {
-                _characterState.SetCharacterState(_animationIdle);
                 return;
-            }
 
             transform.position = Vector3.MoveTowards(transform.position,
                 _characterTarget.GetCurrentTarget().position,

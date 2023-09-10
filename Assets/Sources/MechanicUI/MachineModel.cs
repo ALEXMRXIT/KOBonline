@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.Sources.UI;
 using System.Collections;
 using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
@@ -14,7 +15,7 @@ namespace Assets.Sources.MechanicUI
         [SerializeField] private Image _coreSlot;
         [SerializeField] private Button _takeItem;
         [SerializeField] private Button _playAgain;
-        [SerializeField] private Slot[] _slots;
+        [SerializeField] private SlotPresent[] _slots;
 
         private ItemContract[] _itemContracts;
         private Sprite[] _itemView;
@@ -25,6 +26,7 @@ namespace Assets.Sources.MechanicUI
         private long[] _itemId;
         private int _typePresent;
         private RefinePurchaseAttempt _refine;
+        private PanelObject _panelObject;
 
         public void Init(INetworkProcessor networkProcessor, RefinePurchaseAttempt refinePurchaseAttempt)
         {
@@ -41,6 +43,11 @@ namespace Assets.Sources.MechanicUI
         public void SetInMachineTypePresent(int typePresent)
         {
             _typePresent = typePresent;
+        }
+
+        public void SetViewInformer(PanelObject panelObject)
+        {
+            _panelObject = panelObject;
         }
 
         public void SetStatusMachine(bool status)
@@ -73,6 +80,8 @@ namespace Assets.Sources.MechanicUI
                 for (int iterator = 0; iterator < _itemContracts.Length; iterator++)
                 {
                     _slots[iterator].SetImage(_itemView[_itemContracts[iterator].ItemId]);
+                    _slots[iterator].SetItemId(_itemContracts[iterator].ItemId);
+                    _slots[iterator].SetPanelView(_panelObject);
                     _itemId[iterator] = _itemContracts[iterator].ItemId;
                 }
             }

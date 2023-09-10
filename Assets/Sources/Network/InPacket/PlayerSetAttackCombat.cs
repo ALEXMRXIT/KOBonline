@@ -39,7 +39,7 @@ namespace Assets.Sources.Network.InPacket
                 if (player.GameObjectModel.TryGetComponent(out CharacterMovement characterMovement))
                     GameObject.Destroy(characterMovement);
 
-                player.ClientAnimationState.SetCharacterState(player._stateAnimationIdle);
+                player.ClientAnimationState.SetCharacterState(player._stateAnimationAttack);
             }
             catch (Exception exception)
             {

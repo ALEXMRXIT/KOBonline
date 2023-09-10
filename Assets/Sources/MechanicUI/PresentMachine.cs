@@ -2,6 +2,7 @@
 using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI.Models;
+using Assets.Sources.UI;
 
 namespace Assets.Sources.MechanicUI
 {
@@ -30,6 +31,11 @@ namespace Assets.Sources.MechanicUI
         public void SetInMachineTypePresent(int index, int typePresent)
         {
             _machineModel[index].SetInMachineTypePresent(typePresent);
+        }
+
+        public void SetInMachineViewPanelInformer(int index, PanelObject panelObject)
+        {
+            _machineModel[index].SetViewInformer(panelObject);
         }
 
         public void ShowNoEnoughStartMachine()

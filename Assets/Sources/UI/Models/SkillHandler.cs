@@ -122,6 +122,28 @@ namespace Assets.Sources.UI.Models
             _skillContract = skillContract;
             _skillManager = skillManager;
 
+            switch (skill.Id)
+            {
+                case 0:
+                    _skillContract.Description = "Fires an arrow at an enemy, dealing %d magic damage.";
+                    break;
+                case 1:
+                    _skillContract.Description = "Magic shield increases physical defense by %d points for %d seconds.";
+                    break;
+                case 2:
+                    _skillContract.Description = "The mage inflames the air and burns the enemy alive, dealing %d magic damage and inflicting a burning debuff. Reduces attack speed by %d%. And every second, the enemy takes %d burn damage. On %d seconds.";
+                    break;
+                case 3:
+                    _skillContract.Description = "Bash the enemy inflicting %d points of physical damage.";
+                    break;
+                case 4:
+                    _skillContract.Description = "The will of the warrior burns! Increases your physical defence by %d points for %d seconds.";
+                    break;
+                case 5:
+                    _skillContract.Description = "Increases HP max by %d and improves HP recovery by %d while resting or consuming a potion for %d seconds.";
+                    break;
+            }
+
             if (!gameObject.TryGetComponent(out CanvasGroup canvasGroup))
                 throw new MissingComponentException(nameof(CanvasGroup));
 

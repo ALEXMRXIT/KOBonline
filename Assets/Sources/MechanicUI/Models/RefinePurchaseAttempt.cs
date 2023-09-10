@@ -51,6 +51,7 @@ namespace Assets.Sources.MechanicUI.Models
             _crownCopperText.text = goldSplit[0].ToString();
 
             _func = funcCall;
+            transform.SetAsLastSibling();
         }
 
         public void ShowNoEnoughCrowns()

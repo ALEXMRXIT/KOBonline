@@ -24,7 +24,6 @@ namespace Assets.Sources.Network.InPacket
                 _skillContract[iterator].Id = networkPacket.ReadLong();
                 _skillContract[iterator].Class = (BaseClass)networkPacket.ReadInt();
                 _skillContract[iterator].Name = networkPacket.ReadString();
-                _skillContract[iterator].Description = networkPacket.ReadString();
                 _skillContract[iterator].TypeSkill = (SkillType)networkPacket.ReadByte();
                 _skillContract[iterator].UseType = (SkillUseType)networkPacket.ReadByte();
                 _skillContract[iterator].Invoke = networkPacket.InternalReadBool();

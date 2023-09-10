@@ -8,6 +8,8 @@ using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI;
 using Assets.Sources.Network.OutPacket;
 using Assets.Sources.Models.Characters.Tools;
+using Assets.Sources.UI.Models;
+using Assets.Sources.UI.Utilites;
 
 namespace Assets.Sources.UI
 {
@@ -33,6 +35,8 @@ namespace Assets.Sources.UI
         [SerializeField] private Sprite _buttonNoActiveSprite;
         [SerializeField] private Sprite _buttonActiveSprite;
         [SerializeField] private PresentView _presentView;
+        [SerializeField] private GameObject _panelInformation;
+        [SerializeField] private Transform _spawnPanelPresentInformation;
         [SerializeField] private Sprite[] _presentsType;
         [SerializeField] private PresentModel[] _presentModels;
         [SerializeField] private PresentMachine _presentMachine;
@@ -40,6 +44,7 @@ namespace Assets.Sources.UI
         private INetworkProcessor _networkProcessor;
         private int _howMuchWillCostReRollGiftlvl1;
         private int _howMuchWillCostReRollGiftlvl2;
+        private PanelObject _viewPanelInformer;
 
         public static PresentManager Instance;
 
@@ -47,6 +52,29 @@ namespace Assets.Sources.UI
         {
             _networkProcessor = networkProcessor;
             Instance = this;
+
+            GameObject panelInformation = Instantiate(_panelInformation, _spawnPanelPresentInformation);
+            PanelObject panelObject = new PanelObject();
+
+            if (!panelInformation.TryGetComponent(out ContentSizeFilterCustom contentSizeFilterCustom))
+                throw new MissingComponentException(nameof(ContentSizeFilterCustom));
+
+            if (!panelInformation.TryGetComponent(out InformationComponent informationComponent))
+                throw new MissingComponentException(nameof(InformationComponent));
+
+            if (!panelInformation.TryGetComponent(out RectTransform rectTransform))
+                throw new MissingComponentException(nameof(RectTransform));
+
+            contentSizeFilterCustom.Initialized();
+
+            panelObject.RectTransformPanelInformation = rectTransform;
+            panelObject.contentSizeFilterCustom = contentSizeFilterCustom;
+            panelObject.panelInformationObject = panelInformation;
+            panelObject.InformationComponentObject = informationComponent;
+
+            panelInformation.SetActive(false);
+
+            _viewPanelInformer = panelObject;
 
             for (int iterator = 0; iterator < _presentModels.Length; iterator++)
             {
@@ -156,6 +184,7 @@ namespace Assets.Sources.UI
             int presentType = model._presentContract.PresentType;
 
             _presentMachine.SetInMachineTypePresent(presentType, presentType);
+            _presentMachine.SetInMachineViewPanelInformer(presentType, _viewPanelInformer);
             _presentMachine.SetStatusMachine(presentType, true, _howMuchWillCostReRollGiftlvl1, _howMuchWillCostReRollGiftlvl2);
 
             model._presentContract = null;

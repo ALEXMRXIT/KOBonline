@@ -29,6 +29,7 @@ namespace Assets.Sources.UI
         public ContentSizeFilterCustom contentSizeFilterCustom;
         public GameObject panelInformationObject;
         public InformationComponent InformationComponentObject;
+        public RectTransform RectTransformPanelInformation;
     }
 
     public sealed class SkillManager : MonoBehaviour
