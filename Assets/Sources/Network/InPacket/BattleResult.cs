@@ -23,6 +23,7 @@ namespace Assets.Sources.Network.InPacket
             _experience = networkPacket.ReadLong();
             _gold = networkPacket.ReadInt();
             _rank = networkPacket.ReadInt();
+            _presentType = networkPacket.ReadInt();
         }
 
         private readonly ClientProcessor _client;
@@ -31,6 +32,7 @@ namespace Assets.Sources.Network.InPacket
         private readonly long _experience;
         private readonly int _gold;
         private readonly int _rank;
+        private readonly int _presentType;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -45,8 +47,8 @@ namespace Assets.Sources.Network.InPacket
                 player.SoundCharacterLink.StopBackgroundSound();
                 player.SoundCharacterLink.PlaySoundIfWinOrLosse(_isWin);
 
-                BattleResultSources battleResult = new
-                    BattleResultSources(_isRoundTimeOut, _isWin, _experience, _gold, _rank);
+                BattleResultSources battleResult = new BattleResultSources(
+                    _isRoundTimeOut, _isWin, _experience, _gold, _rank, _presentType);
                 InformationEndedBattle.Instance.ShowResultBattle(battleResult);
             }
             catch (Exception exception)

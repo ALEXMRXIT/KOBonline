@@ -10742,6 +10742,41 @@ MonoBehaviour:
     SkillSprite: {fileID: 1067295751, guid: cab67c824b26249d688667d26863d654, type: 3}
     SkillCloseSprite: {fileID: 94610256, guid: cab67c824b26249d688667d26863d654, type: 3}
     Handler: {fileID: 0}
+  - Id: 6
+    SkillSprite: {fileID: -1874995714, guid: 4eac2e981044746c18ebc11ed4b69aa8, type: 3}
+    SkillCloseSprite: {fileID: -1874995714, guid: 4eac2e981044746c18ebc11ed4b69aa8,
+      type: 3}
+    Handler: {fileID: 0}
+  - Id: 7
+    SkillSprite: {fileID: 909010239, guid: 32e592f4e1c8c4fb5a07ce503db6331d, type: 3}
+    SkillCloseSprite: {fileID: 909010239, guid: 32e592f4e1c8c4fb5a07ce503db6331d,
+      type: 3}
+    Handler: {fileID: 0}
+  - Id: 8
+    SkillSprite: {fileID: -154755971, guid: c900011a8dd4d4f57853ad73bd5aca85, type: 3}
+    SkillCloseSprite: {fileID: -154755971, guid: c900011a8dd4d4f57853ad73bd5aca85,
+      type: 3}
+    Handler: {fileID: 0}
+  - Id: 9
+    SkillSprite: {fileID: 1935605938, guid: 7b6c3776535004995acae0d67b6959c2, type: 3}
+    SkillCloseSprite: {fileID: 1935605938, guid: 7b6c3776535004995acae0d67b6959c2,
+      type: 3}
+    Handler: {fileID: 0}
+  - Id: 10
+    SkillSprite: {fileID: -1202215818, guid: b1b559ad6d3494a82bd1c58846d45414, type: 3}
+    SkillCloseSprite: {fileID: -1202215818, guid: b1b559ad6d3494a82bd1c58846d45414,
+      type: 3}
+    Handler: {fileID: 0}
+  - Id: 11
+    SkillSprite: {fileID: 905688694, guid: 04a23070bdd09466db35e418ede4d138, type: 3}
+    SkillCloseSprite: {fileID: 905688694, guid: 04a23070bdd09466db35e418ede4d138,
+      type: 3}
+    Handler: {fileID: 0}
+  - Id: 12
+    SkillSprite: {fileID: 603655615, guid: b3b8eba0aca19418f8336faac1d1c83d, type: 3}
+    SkillCloseSprite: {fileID: 603655615, guid: b3b8eba0aca19418f8336faac1d1c83d,
+      type: 3}
+    Handler: {fileID: 0}
 --- !u!1 &423227409
 GameObject:
   m_ObjectHideFlags: 0

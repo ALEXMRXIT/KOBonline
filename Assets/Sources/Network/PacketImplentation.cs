@@ -48,8 +48,10 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x22, typeof(SendingItemForPresent));
             _packetHandlerServices.TryAdd(0x23, typeof(NoEnoughCrowns));
             _packetHandlerServices.TryAdd(0x24, typeof(StartMachineForPresent));
+            _packetHandlerServices.TryAdd(0x25, typeof(PresentUpgradeSkillExperience));
+            _packetHandlerServices.TryAdd(0x26, typeof(UpdateContractDataSkill));
         }
-
+        
         private readonly Dictionary<byte, Type> _packetHandlerServices;
 
         public PacketImplementCodeResult ExecuteImplement

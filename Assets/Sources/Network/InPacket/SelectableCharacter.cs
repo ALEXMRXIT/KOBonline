@@ -57,6 +57,14 @@ namespace Assets.Sources.Network.InPacket
             _playerContract.NumberLosses = networkPacket.ReadInt();
             _playerContract.Crowns = networkPacket.ReadInt();
             _playerContract.SoulCrowns = networkPacket.ReadInt();
+
+            if (networkPacket.InternalReadBool())
+            {
+                _playerContract.AdditionalStrength = networkPacket.ReadInt();
+                _playerContract.AdditionalAgility = networkPacket.ReadInt();
+                _playerContract.AdditionalIntelligence = networkPacket.ReadInt();
+                _playerContract.AdditionalEndurance = networkPacket.ReadInt();
+            }
         }
 
         private readonly PlayerContract _playerContract;

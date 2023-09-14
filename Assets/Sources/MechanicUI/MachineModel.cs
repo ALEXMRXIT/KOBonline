@@ -130,7 +130,7 @@ namespace Assets.Sources.MechanicUI
             if (_duration <= DURATION_MAX)
                 return;
 
-            _networkProcessor.SendPacketAsync(TakeItemFromPresentWinner.ToPacket(0x00, _itemId[_indexItem == 12 ? _indexItem - 1 : _indexItem], _typePresent));
+            _networkProcessor.SendPacketAsync(TakeItemFromPresentWinner.ToPacket(0x00, _itemId[_indexItem == 0 ? 0 : _indexItem - 1], _typePresent));
             gameObject.SetActive(false);
 
             _refine.gameObject.SetActive(false);
@@ -148,7 +148,7 @@ namespace Assets.Sources.MechanicUI
 
         private void SendinBuyReRollPresent()
         {
-            _networkProcessor.SendPacketAsync(TakeItemFromPresentWinner.ToPacket(0x01, _itemId[_indexItem == 12 ? _indexItem - 1 : _indexItem], _typePresent));
+            _networkProcessor.SendPacketAsync(TakeItemFromPresentWinner.ToPacket(0x01, _itemId[_indexItem == 0 ? 0 : _indexItem - 1], _typePresent));
         }
     }
 }

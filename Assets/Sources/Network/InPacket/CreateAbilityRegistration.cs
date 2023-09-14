@@ -25,12 +25,14 @@ namespace Assets.Sources.Network.InPacket
             _charId = networkPacket.ReadLong();
             _skillId = networkPacket.ReadLong();
             _level = networkPacket.ReadInt();
+            _dateTime = networkPacket.InternalReadDateTime();
         }
 
         private readonly ClientProcessor _client;
         private readonly long _charId;
         private readonly long _skillId;
         private readonly int _level;
+        private readonly DateTime _dateTime;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -42,7 +44,7 @@ namespace Assets.Sources.Network.InPacket
             try
             {
                 ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _charId);
-                player.ClientVisualModelOfAbilityExecution.AddVisualAbility(_skillId, _level);
+                player.ClientVisualModelOfAbilityExecution.AddVisualAbility(_skillId, _level, _dateTime);
 
                 switch (_skillId)
                 {

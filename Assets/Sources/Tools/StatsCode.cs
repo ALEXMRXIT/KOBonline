@@ -16,4 +16,9 @@
         public const byte MoveSpeed = 0x0B;
         public const byte AttackSpeed = 0x0C;
     }
+
+    public static class ColorCode
+    {
+        public readonly static string ColorGreen = $"<color=#01A115>";
+    }
 }

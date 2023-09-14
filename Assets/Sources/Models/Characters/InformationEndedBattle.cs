@@ -22,6 +22,9 @@ namespace Assets.Sources.Models.Characters
         [SerializeField] private GameObject _rankGreen;
         [SerializeField] private GameObject _rankRed;
         [SerializeField] private Button _acceptButton;
+        [SerializeField] private GameObject _panelForPresents;
+        [SerializeField] private Image _slotForPresent;
+        [SerializeField] private Sprite[] _presents;
 
         public static InformationEndedBattle Instance;
 
@@ -32,6 +35,7 @@ namespace Assets.Sources.Models.Characters
             _networkProcessor = ClientProcessor.Instance;
             _acceptButton.onClick.AddListener(InternalButtonHandler);
             Instance = this;
+            _panelForPresents.SetActive(false);
         }
 
         private void InternalButtonHandler()
@@ -79,6 +83,12 @@ namespace Assets.Sources.Models.Characters
                 _rankRed.SetActive(true);
                 _rankRed.GetComponent<Text>().text = battleResultSources.AddRank < 0 ?
                     ($"{battleResultSources.AddRank}") : ($"-{battleResultSources.AddRank}");
+            }
+
+            if (battleResultSources.PresentType > -1)
+            {
+                _panelForPresents.SetActive(true);
+                _slotForPresent.sprite = _presents[battleResultSources.PresentType];
             }
         }
     }

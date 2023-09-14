@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Assets.Sources.UI;
 using Assets.Sources.Enums;
+using Assets.Sources.Tools;
 using Assets.Sources.Models;
 using Assets.Sources.Network;
 using Assets.Sources.Contracts;
@@ -45,6 +46,14 @@ namespace Assets.Sources.Network.InPacket
             player.ObjectContract.CritDamageMultiply = networkPacket.ReadFloat();
             player.ObjectContract.DodgeChance = networkPacket.ReadFloat();
             player.ObjectContract.HitChance = networkPacket.ReadFloat();
+
+            if (networkPacket.InternalReadBool())
+            {
+                player.ObjectContract.AdditionalStrength = networkPacket.ReadInt();
+                player.ObjectContract.AdditionalAgility = networkPacket.ReadInt();
+                player.ObjectContract.AdditionalIntelligence = networkPacket.ReadInt();
+                player.ObjectContract.AdditionalEndurance = networkPacket.ReadInt();
+            }
         }
 
         private readonly ClientProcessor _client;
@@ -62,31 +71,33 @@ namespace Assets.Sources.Network.InPacket
             try
             {
                 MainUI.Instance.UpdateUI(_playerContract);
-                SpecificationManager.Instance.InternalUpdateScoreSpecificationText(_playerContract.ScoreSpecification.ToString());
+                SpecificationManager specification = SpecificationManager.Instance;
+
+                specification.InternalUpdateScoreSpecificationText(_playerContract.ScoreSpecification.ToString());
 
                 switch (_specification)
                 {
                     case Specification.Strength:
-                        SpecificationManager.Instance.InternalUpdateStrengthText(_playerContract.Strength.ToString());
-                        SpecificationManager.Instance.InternalUpdatePhysDefenceText(_playerContract.PhysDefence.ToString());
-                        SpecificationManager.Instance.InternalUpdatePhysAttackText($"{_playerContract.PhysAttack}~{InternalParseDamage(_playerContract.PhysAttack)}");
+                        specification.InternalUpdateStrengthText($"{_playerContract.Strength+_playerContract.AdditionalStrength}{ColorCode.ColorGreen}+({_playerContract.AdditionalStrength})</color>");
+                        specification.InternalUpdatePhysDefenceText(_playerContract.PhysDefence.ToString());
+                        specification.InternalUpdatePhysAttackText($"{_playerContract.PhysAttack}~{InternalParseDamage(_playerContract.PhysAttack)}");
                         break;
                     case Specification.Agility:
-                        SpecificationManager.Instance.InternalUpdateAgilityText(_playerContract.Agility.ToString());
-                        SpecificationManager.Instance.InternalUpdateMoveSpeedText($"{(_playerContract.MoveSpeed * 10f).ToString("#.##")} %");
-                        SpecificationManager.Instance.InternalUpdateAttackSpeedText($"{(_playerContract.AttackSpeed * 10f).ToString("#.##")} %");
-                        SpecificationManager.Instance.InternalUpdateCriticalChangeText($"{_playerContract.CritChance.ToString("#.##")} %");
-                        SpecificationManager.Instance.InternalUpdateCriticalDamageMultiplyText($"{_playerContract.CritDamageMultiply.ToString("#.##")} %");
-                        SpecificationManager.Instance.InternalUpdateDodgeChanceText($"{_playerContract.DodgeChance.ToString("#.##")} %");
-                        SpecificationManager.Instance.InternalUpdateHitChangeText($"{_playerContract.HitChance.ToString("#.##")} %");
+                        specification.InternalUpdateAgilityText($"{_playerContract.Agility+_playerContract.AdditionalAgility}{ColorCode.ColorGreen}+({_playerContract.AdditionalAgility})</color>");
+                        specification.InternalUpdateMoveSpeedText($"{(_playerContract.MoveSpeed * 10f).ToString("#.##")} %");
+                        specification.InternalUpdateAttackSpeedText($"{(_playerContract.AttackSpeed * 10f).ToString("#.##")} %");
+                        specification.InternalUpdateCriticalChangeText($"{_playerContract.CritChance.ToString("#.##")} %");
+                        specification.InternalUpdateCriticalDamageMultiplyText($"{_playerContract.CritDamageMultiply.ToString("#.##")} %");
+                        specification.InternalUpdateDodgeChanceText($"{_playerContract.DodgeChance.ToString("#.##")} %");
+                        specification.InternalUpdateHitChangeText($"{_playerContract.HitChance.ToString("#.##")} %");
                         break;
                     case Specification.Intelligence:
-                        SpecificationManager.Instance.InternalUpdateIntelligenceText(_playerContract.Intelligence.ToString());
-                        SpecificationManager.Instance.InternalUpdateMagicAttackText($"{_playerContract.MagicAttack}~{InternalParseDamage(_playerContract.MagicAttack)}");
-                        SpecificationManager.Instance.InternalUpdateMagicDefenceText(_playerContract.MagicDefence.ToString());
+                        specification.InternalUpdateIntelligenceText($"{_playerContract.Intelligence+_playerContract.AdditionalIntelligence}{ColorCode.ColorGreen}+({_playerContract.AdditionalIntelligence})</color>");
+                        specification.InternalUpdateMagicAttackText($"{_playerContract.MagicAttack}~{InternalParseDamage(_playerContract.MagicAttack)}");
+                        specification.InternalUpdateMagicDefenceText(_playerContract.MagicDefence.ToString());
                         break;
                     case Specification.Endurance:
-                        SpecificationManager.Instance.InternalUpdateEnduranceText(_playerContract.Endurance.ToString());
+                        specification.InternalUpdateEnduranceText($"{_playerContract.Endurance+_playerContract.AdditionalEndurance}{ColorCode.ColorGreen}+({_playerContract.AdditionalEndurance})</color>");
                         break;
                 }
             }

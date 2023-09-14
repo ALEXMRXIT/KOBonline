@@ -9,5 +9,6 @@ namespace Assets.Sources.Contracts
         public int Experience { get; set; }
         public int Level { get; set; }
         public int SlotId { get; set; }
+        public bool WorksInNonCombat { get; set; }
     }
 }

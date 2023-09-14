@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using Assets.Sources.UI;
 using Assets.Sources.Enums;
 using Assets.Sources.Models;
 using Assets.Sources.Network;
@@ -15,47 +16,42 @@ using Assets.Sources.Models.States.StateAnimations;
 
 namespace Assets.Sources.Network.InPacket
 {
-    public sealed class GetSkillDataService : NetworkBasePacket
+    public sealed class PresentUpgradeSkillExperience : NetworkBasePacket
     {
-        public GetSkillDataService(NetworkPacket networkPacket, ClientProcessor clientProcessor)
+        public PresentUpgradeSkillExperience(NetworkPacket networkPacket, ClientProcessor clientProcessor)
         {
             _client = clientProcessor;
 
-            int count = networkPacket.ReadInt();
-            _skillData = new SkillData[count];
+            long id = networkPacket.ReadLong();
+            SkillData skillData = _client.GetSkillDatas.Where(s => s.SkillId == id).FirstOrDefault();
 
-            for (int iterator = 0; iterator < count; iterator++)
-            {
-                _skillData[iterator] = new SkillData();
-                _skillData[iterator].SkillId = networkPacket.ReadLong();
-                _skillData[iterator].Experience = networkPacket.ReadInt();
-                _skillData[iterator].Level = networkPacket.ReadInt();
-                _skillData[iterator].SlotId = networkPacket.ReadInt();
-                _skillData[iterator].WorksInNonCombat = networkPacket.InternalReadBool();
-            }
+            if (skillData == null)
+                return;
+
+            skillData.Experience = networkPacket.ReadInt();
+            _skillData = skillData;
         }
 
         private readonly ClientProcessor _client;
-        private readonly SkillData[] _skillData;
+        private readonly SkillData _skillData;
 
         public override PacketImplementCodeResult RunImpl()
         {
 #if UNITY_EDITOR
-            Debug.Log($"Execute {nameof(GetSkillDataService)}.");
+            Debug.Log($"Execute {nameof(PresentUpgradeSkillExperience)}.");
 #endif
             PacketImplementCodeResult codeError = new PacketImplementCodeResult();
 
             try
             {
-                _client.GetSkillDatas = new List<SkillData>(_skillData);
-                _client.SetLoadedSkillData();
+                SkillManager.Instance.ForceUpdateSkillInformation(_skillData);
             }
             catch (Exception exception)
             {
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
-                codeError.FireException = nameof(GetSkillDataService);
+                codeError.FireException = nameof(PresentUpgradeSkillExperience);
             }
 
             return codeError;

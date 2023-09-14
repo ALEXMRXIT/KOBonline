@@ -39,7 +39,7 @@ namespace Assets.Sources.MechanicUI
         public void UpdateUI(PlayerContract playerContract)
         {
             _characterHealth.text = "100/100";
-            _experience.text = $"{playerContract.Experience}/{playerContract.NextExperience}";
+            UpdateExperience(playerContract);
             _fillExperience.value = Mathf.Clamp(playerContract.Experience /
                 (float)playerContract.NextExperience, min: 0, max: 1);
             _characterLevel.text = $"Lvl. {playerContract.Level}";
@@ -48,6 +48,11 @@ namespace Assets.Sources.MechanicUI
             UpdateMoney(playerContract.Crowns, playerContract.SoulCrowns);
 
             _iconRank.sprite = _ranksSprite[_networkProcessor.GetParentObject().GetRank.GetIndexByRankTable(playerContract.PlayerRank)];
+        }
+
+        public void UpdateExperience(PlayerContract playerContract)
+        {
+            _experience.text = $"{playerContract.Experience}/{playerContract.NextExperience}";
         }
 
         public void UpdateMoney(int crowns, int soulCrowns)

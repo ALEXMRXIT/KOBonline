@@ -163,6 +163,12 @@ namespace Assets.Sources.UI.Models
             _informationSkillPanel.panelInformationObject.SetActive(false);
         }
 
+        public void UpdateSkillVisual(int experience)
+        {
+            _currentexperience += experience;
+            InternalUpdateText();
+        }
+
         public void OpenButtons()
         {
             _buttonsClickSkillHandler.SetBool("manager", true);

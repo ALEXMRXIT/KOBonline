@@ -57,6 +57,7 @@ namespace Assets.Sources.Network.InPacket
                 {
                     case 2: player.ClientTextView.ReduceNumberOfHealth(player, _health); break;
                     case 5: player.ClientTextView.HealTarget(player, _health); break;
+                    case 12: player.ClientTextView.HealTarget(player, _health); break;
                 }
             }
             catch (Exception exception)

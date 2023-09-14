@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine.UI;
 using System.Collections;
 using Assets.Sources.Enums;
+using Assets.Sources.Tools;
 using Assets.Sources.Network;
 using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
@@ -67,10 +68,10 @@ namespace Assets.Sources.UI
             _playerContract = playerContract;
 
             InternalUpdateScoreSpecificationText(playerContract.ScoreSpecification.ToString());
-            InternalUpdateStrengthText(playerContract.Strength.ToString());
-            InternalUpdateAgilityText(playerContract.Agility.ToString());
-            InternalUpdateIntelligenceText(playerContract.Intelligence.ToString());
-            InternalUpdateEnduranceText(playerContract.Endurance.ToString());
+            InternalUpdateStrengthText($"{_playerContract.Strength+_playerContract.AdditionalStrength}{ColorCode.ColorGreen}+({_playerContract.AdditionalStrength})</color>");
+            InternalUpdateAgilityText($"{_playerContract.Agility+_playerContract.AdditionalAgility}{ColorCode.ColorGreen}+({_playerContract.AdditionalAgility})</color>");
+            InternalUpdateIntelligenceText($"{_playerContract.Intelligence+_playerContract.AdditionalIntelligence}{ColorCode.ColorGreen}+({_playerContract.AdditionalIntelligence})</color>");
+            InternalUpdateEnduranceText($"{_playerContract.Endurance+_playerContract.AdditionalEndurance}{ColorCode.ColorGreen}+({_playerContract.AdditionalEndurance})</color>");
             InternalUpdatePhysAttackText($"{playerContract.PhysAttack}~{InternalParseDamage(playerContract.PhysAttack)}");
             InternalUpdateMagicAttackText($"{playerContract.MagicAttack}~{InternalParseDamage(playerContract.MagicAttack)}");
             InternalUpdatePhysDefenceText(playerContract.PhysDefence.ToString());

@@ -44,6 +44,8 @@ namespace Assets.Sources.UI
         [SerializeField] private AudioSource _skillDropSoundEffect;
         [Space, SerializeField] private List<Skill> _skills = new List<Skill>();
 
+        public static SkillManager Instance;
+
         private INetworkProcessor _networkProcessor;
         private Dictionary<long, KeyValuePair<Skill, SkillContract>> _skillContracts;
         private SkillHandler _lastUseSkillHandler;
@@ -52,6 +54,7 @@ namespace Assets.Sources.UI
         public IEnumerator Initialize()
         {
             _networkProcessor = ClientProcessor.Instance;
+            Instance = this;
             _skillContracts = new Dictionary<long, KeyValuePair<Skill, SkillContract>>();
 
             if (!_networkProcessor.GetParentObject().IsFirstLoadedSkillData)
@@ -64,6 +67,15 @@ namespace Assets.Sources.UI
 
             foreach (SkillContract skillContract in _networkProcessor.GetParentObject().GetSkillContracts)
             {
+                ClientProcessor clientProcessor = _networkProcessor.GetParentObject();
+                SkillData skillData = null;
+
+                skillData = clientProcessor.GetSkillDatas.Where(
+                        sk => sk.SkillId == skillContract.Id).FirstOrDefault();
+
+                if (skillData.WorksInNonCombat)
+                    continue;
+
                 Skill tempSkill = null;
                 foreach (Skill skill in _skills)
                 {
@@ -80,17 +92,12 @@ namespace Assets.Sources.UI
                 _skillContracts.TryAdd(tempSkill.Id, new KeyValuePair<Skill, SkillContract>(tempSkill, skillContract));
 
                 GameObject skillGameObject = Instantiate(_skillObject, _spawnContentSkills);
-                ClientProcessor clientProcessor = _networkProcessor.GetParentObject();
 
                 if (!skillGameObject.TryGetComponent(out SkillHandler skillHandler))
                     throw new MissingComponentException(nameof(SkillHandler));
 
                 int experience = 0;
                 int level = 0;
-                SkillData skillData = null;
-
-                skillData = clientProcessor.GetSkillDatas.Where(
-                        sk => sk.SkillId == skillContract.Id).FirstOrDefault();
 
                 if (skillData != null)
                 {
@@ -151,6 +158,18 @@ namespace Assets.Sources.UI
             }
 
             _networkProcessor.GetParentObject().SetFirstLoadedSkillData();
+        }
+
+        public void ForceUpdateSkillInformation(SkillData skillData)
+        {
+            _statusWindow = true;
+            gameObject.SetActive(true);
+
+            foreach (Skill skill in _skills)
+            {
+                if (skill.Id == skillData.SkillId)
+                    skill.Handler.UpdateSkillVisual(skillData.Experience);
+            }
         }
 
         public void SetLastUseSkillHandler(SkillHandler skillHandler)

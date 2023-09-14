@@ -55,33 +55,38 @@ namespace Assets.Sources.Models.Characters
                 StopCoroutine(_coroutine);
         }
 
-        public void AddVisualAbility(long skillId, int level = 0)
+        public void AddVisualAbility(long skillId, int level, DateTime dateTime)
         {
-            if (_skillContracts.Count == 0 || _skills.Count == 0)
-                return;
-
-            Sprite spriteAbility = _skills.FirstOrDefault(s => s.Id == skillId).SkillSprite;
-            SkillContract skillContract = _skillContracts.FirstOrDefault(s => s.Id == skillId);
-
-            int timeUse = 0;
-            if (skillContract.DeBuff) timeUse = skillContract.TimeBuffUse[level - 1];
-            else timeUse = skillContract.TimeUse;
-
-            if (!Instantiate(_ability.gameObject, _playerCanvas).TryGetComponent<VisualAbility>(out VisualAbility ability))
-                throw new ArgumentNullException(nameof(VisualAbility));
-
-            switch (skillId)
+            try
             {
-                case 1: ability.SetEffectForAbility(_abilityEffectLink.CreateMagicShieldPermanentEffect()); break;
-                case 4: ability.SetEffectForAbility(_abilityEffectLink.CreateStrongBodyPermanentEffect()); break;
-                case 5: ability.SetEffectForAbility(_abilityEffectLink.CreateHeroesPowerPermanentEffect()); break;
-                default: ability.SetEffectForAbility(null); break;
-            }
+                if (_skillContracts.Count == 0 || _skills.Count == 0)
+                    return;
 
-            ability.SetAbilityIcon(spriteAbility);
-            ability.SetOriginalIntTime(timeUse);
-            ability.SetAbilityText(Parser.ConvertTimeInt32ToTimeString(timeUse));
-            _visualAbilities.Add(ability);
+                Sprite spriteAbility = _skills.FirstOrDefault(s => s.Id == skillId).SkillSprite;
+                SkillContract skillContract = _skillContracts.FirstOrDefault(s => s.Id == skillId);
+
+                int timeUse = (int)dateTime.Subtract(DateTime.Now).TotalSeconds;
+
+                if (!Instantiate(_ability.gameObject, _playerCanvas).TryGetComponent<VisualAbility>(out VisualAbility ability))
+                    throw new ArgumentNullException(nameof(VisualAbility));
+
+                switch (skillId)
+                {
+                    case 1: ability.SetEffectForAbility(_abilityEffectLink.CreateMagicShieldPermanentEffect()); break;
+                    case 4: ability.SetEffectForAbility(_abilityEffectLink.CreateStrongBodyPermanentEffect()); break;
+                    case 5: ability.SetEffectForAbility(_abilityEffectLink.CreateHeroesPowerPermanentEffect()); break;
+                    default: ability.SetEffectForAbility(null); break;
+                }
+
+                ability.SetAbilityIcon(spriteAbility);
+                ability.SetOriginalIntTime(timeUse);
+                ability.SetAbilityText(Parser.ConvertTimeInt32ToTimeString(timeUse));
+                _visualAbilities.Add(ability);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError(exception.Message);
+            }
         }
 
         private IEnumerator HandlerAbility()

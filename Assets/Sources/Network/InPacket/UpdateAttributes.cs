@@ -40,7 +40,7 @@ namespace Assets.Sources.Network.InPacket
                     case StatsCode.Agility: _objectData.ObjectContract.Agility = networkPacket.ReadInt(); break;
                     case StatsCode.Intelligence: _objectData.ObjectContract.Intelligence = networkPacket.ReadInt(); break;
                     case StatsCode.Endurance: _objectData.ObjectContract.Endurance = networkPacket.ReadInt(); break;
-                    case StatsCode.Experience: _objectData.ObjectContract.Experience = networkPacket.ReadInt(); break;
+                    case StatsCode.Experience: _objectData.ObjectContract.Experience = networkPacket.ReadLong(); break;
                     case StatsCode.MoveSpeed: _objectData.ObjectContract.MoveSpeed = networkPacket.ReadInt(); break;
                     case StatsCode.AttackSpeed: _objectData.ObjectContract.AttackSpeed = networkPacket.ReadFloat(); break;
                 }
@@ -76,6 +76,10 @@ namespace Assets.Sources.Network.InPacket
                         HudCharacter hudCharacter = HudCharacter.Instance;
                         hudCharacter.UpdateHealthBar(_objectData.ObjectContract.MinHealth, _objectData.ObjectContract.Health);
                         hudCharacter.UpdateManaBar(_objectData.ObjectContract.MinMana, _objectData.ObjectContract.Mana);
+                    }
+                    else if (ClientProcessor.ClientSession.ClientSessionStatus == SessionStatus.SessionGameMenu)
+                    {
+                        MainUI.Instance.UpdateExperience(_objectData.ObjectContract);
                     }
                 }
 
