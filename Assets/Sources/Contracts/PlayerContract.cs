@@ -51,5 +51,6 @@ namespace Assets.Sources.Contracts
         public int NumberLosses { get; set; }
         public int Crowns { get; set; }
         public int SoulCrowns { get; set; }
+        public int Energy { get; set; }
     }
 }

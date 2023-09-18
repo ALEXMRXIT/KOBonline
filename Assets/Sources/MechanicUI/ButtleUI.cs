@@ -10,6 +10,7 @@ namespace Assets.Sources.MechanicUI
     public sealed class ButtleUI : MonoBehaviour
     {
         [SerializeField] private Text _description;
+        [SerializeField] private GameObject _windowMessage;
 
         public static ButtleUI Instance;
 
@@ -21,6 +22,7 @@ namespace Assets.Sources.MechanicUI
             Instance = this;
             _networkProcessor = ClientProcessor.Instance;
             gameObject.SetActive(false);
+            _windowMessage.SetActive(false);
         }
 
         private void OnEnable()
@@ -37,6 +39,16 @@ namespace Assets.Sources.MechanicUI
                 $"Level 1-5 ({values[0]} players).\nLevel 6-10 ({values[1]} players).\nLevel 11-15 ({values[2]} players).\n" +
                 $"Level 16-20 ({values[3]} players).\n\n<color=#ff0000ff>Update time 1 second. " +
                 $"Approximate waiting time is 5-10 seconds.</color>";
+        }
+
+        public void CloseWindow()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public void ShowWindow()
+        {
+            _windowMessage.SetActive(true);
         }
 
         private IEnumerator UpdateWaitTextRequest()

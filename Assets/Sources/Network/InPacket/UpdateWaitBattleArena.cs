@@ -16,6 +16,8 @@ namespace Assets.Sources.Network.InPacket
             _client = clientProcessor;
             _buttleUI = ButtleUI.Instance;
 
+            _errorEnergy = networkPacket.InternalReadBool();
+
             _values = new int[networkPacket.ReadByte()];
             for (int iterator = 0; iterator < _values.Length; iterator++)
                 _values[iterator] = networkPacket.ReadInt();
@@ -23,6 +25,7 @@ namespace Assets.Sources.Network.InPacket
 
         private readonly ClientProcessor _client;
         private readonly ButtleUI _buttleUI;
+        private readonly bool _errorEnergy;
         private readonly int[] _values;
 
         public override PacketImplementCodeResult RunImpl()
@@ -34,7 +37,18 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                _buttleUI.UpdateDescription(_values);
+                if (_buttleUI != null)
+                {
+                    if (_errorEnergy)
+                    {
+                        _buttleUI.CloseWindow();
+                        _buttleUI.ShowWindow();
+                    }
+                    else
+                    {
+                        _buttleUI.UpdateDescription(_values);
+                    }
+                }
             }
             catch (Exception exception)
             {

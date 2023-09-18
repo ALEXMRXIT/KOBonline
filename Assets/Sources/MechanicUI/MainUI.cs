@@ -10,6 +10,7 @@ namespace Assets.Sources.MechanicUI
     public sealed class MainUI : MonoBehaviour
     {
         [SerializeField] private Text _characterHealth;
+        [SerializeField] private Slider _characterEnergySlider;
         [SerializeField] private Text _experience;
         [SerializeField] private Slider _fillExperience;
         [SerializeField] private Text _characterLevel;
@@ -38,10 +39,10 @@ namespace Assets.Sources.MechanicUI
 
         public void UpdateUI(PlayerContract playerContract)
         {
-            _characterHealth.text = "100/100";
+            _characterHealth.text = $"{playerContract.Energy}/100";
+            _characterEnergySlider.value = Mathf.Clamp(playerContract.Energy / 100f, 0f, 1.0f);
             UpdateExperience(playerContract);
-            _fillExperience.value = Mathf.Clamp(playerContract.Experience /
-                (float)playerContract.NextExperience, min: 0, max: 1);
+            _fillExperience.value = Mathf.Clamp(playerContract.Experience / (float)playerContract.NextExperience, min: 0, max: 1);
             _characterLevel.text = $"Lvl. {playerContract.Level}";
             _characterName.text = $"{playerContract.CharacterName}";
             _rankValue.text = $"{playerContract.PlayerRank}";
