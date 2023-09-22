@@ -165,7 +165,7 @@ namespace Assets.Sources.UI.Models
 
         public void UpdateSkillVisual(int experience)
         {
-            _currentexperience += experience;
+            _currentexperience = experience;
             InternalUpdateText();
         }
 

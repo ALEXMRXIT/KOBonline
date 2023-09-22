@@ -8,16 +8,15 @@ namespace Assets.Sources.Models.Characters.Tools
         public static int[] SplitIntToMoney(int value)
         {
             int[] buffer = new int[3];
+            int multiply = 100;
 
             for (int iterator = 0; iterator < buffer.Length; iterator++)
             {
-                int powerIndex = iterator == 0 ? 1 : (iterator ==
-                    buffer.Length - 1 ? buffer.Length : iterator);
+                if (iterator == buffer.Length - 1)
+                    multiply *= 10;
 
-                int valueSpliting = (int)Math.Pow(100, powerIndex);
-
-                buffer[iterator] = value % valueSpliting;
-                value /= valueSpliting;
+                buffer[iterator] = value % multiply;
+                value /= multiply;
             }
 
             return buffer;

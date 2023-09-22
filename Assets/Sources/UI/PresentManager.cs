@@ -40,6 +40,7 @@ namespace Assets.Sources.UI
         [SerializeField] private Sprite[] _presentsType;
         [SerializeField] private PresentModel[] _presentModels;
         [SerializeField] private PresentMachine _presentMachine;
+        [SerializeField] private Canvas _canvas;
 
         private INetworkProcessor _networkProcessor;
         private int _howMuchWillCostReRollGiftlvl1;
@@ -88,7 +89,7 @@ namespace Assets.Sources.UI
 
             for (int iterator = 0; iterator < _presentMachine.MachineCount(); iterator++)
             {
-                _presentMachine.InitSlotFromMachine(iterator, networkProcessor);
+                _presentMachine.InitSlotFromMachine(iterator, networkProcessor, _canvas);
                 _presentMachine.SetStatus(iterator, false);
             }
 

@@ -18,5 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Arena1.unity
     guid: 76624ba05d0764314b06003bb952952b
   m_configObjects:
+    com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 4d4128f1f9305477ab7e07270cf91388,
+      type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000,
       guid: f3fc0a0ba05cd444fadd0cf588f52c7c, type: 2}

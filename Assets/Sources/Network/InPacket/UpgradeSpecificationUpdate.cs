@@ -70,7 +70,6 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                MainUI.Instance.UpdateUI(_playerContract);
                 SpecificationManager specification = SpecificationManager.Instance;
 
                 specification.InternalUpdateScoreSpecificationText(_playerContract.ScoreSpecification.ToString());

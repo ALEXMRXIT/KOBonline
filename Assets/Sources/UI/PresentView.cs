@@ -15,6 +15,7 @@ namespace Assets.Sources.UI
         [SerializeField] private Image _presentImage;
         [SerializeField] private Text _presentCostOpenNow;
         [SerializeField] private Button _presentButton;
+        [SerializeField] private Button _closeButton;
         [SerializeField] private Text _goldText;
         [SerializeField] private Text _silverText;
         [SerializeField] private Text _copperText;
@@ -26,6 +27,7 @@ namespace Assets.Sources.UI
         public void Init(INetworkProcessor networkProcessor)
         {
             _presentButton.onClick.AddListener(InternalClickOpen);
+            _closeButton.onClick.AddListener(InternalClickCloseWindow);
             _networkProcessor = networkProcessor;
 
             gameObject.SetActive(false);
@@ -64,6 +66,11 @@ namespace Assets.Sources.UI
         private void InternalClickOpen()
         {
             _networkProcessor.SendPacketAsync(RequestUsePresent.ToPacket(_presentContract.Slot));
+            gameObject.SetActive(false);
+        }
+
+        private void InternalClickCloseWindow()
+        {
             gameObject.SetActive(false);
         }
     }

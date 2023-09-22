@@ -28,10 +28,11 @@ namespace Assets.Sources.MechanicUI
         private RefinePurchaseAttempt _refine;
         private PanelObject _panelObject;
 
-        public void Init(INetworkProcessor networkProcessor, RefinePurchaseAttempt refinePurchaseAttempt)
+        public void Init(INetworkProcessor networkProcessor,
+            RefinePurchaseAttempt refinePurchaseAttempt, Canvas canvas)
         {
             for (int iterator = 0; iterator < _slots.Length; iterator++)
-                _slots[iterator].Init();
+                _slots[iterator].Init(canvas);
 
             _networkProcessor = networkProcessor;
             _refine = refinePurchaseAttempt;

@@ -14,7 +14,8 @@ namespace Assets.Sources.MechanicUI
 
         private ItemContract[] _itemContracts;
 
-        public void InitSlotFromMachine(int index, INetworkProcessor networkProcessor)
+        public void InitSlotFromMachine(int index,
+            INetworkProcessor networkProcessor, Canvas canvas)
         {
             if (_refine.gameObject.activeSelf)
             {
@@ -25,7 +26,7 @@ namespace Assets.Sources.MechanicUI
                 Debug.Log($"Initialise: {nameof(RefinePurchaseAttempt)} window.");
             }
 
-            _machineModel[index].Init(networkProcessor, _refine);
+            _machineModel[index].Init(networkProcessor, _refine, canvas);
         }
 
         public void SetInMachineTypePresent(int index, int typePresent)

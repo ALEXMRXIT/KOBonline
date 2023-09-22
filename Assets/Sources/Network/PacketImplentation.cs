@@ -50,6 +50,7 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x24, typeof(StartMachineForPresent));
             _packetHandlerServices.TryAdd(0x25, typeof(PresentUpgradeSkillExperience));
             _packetHandlerServices.TryAdd(0x26, typeof(UpdateContractDataSkill));
+            _packetHandlerServices.TryAdd(0x27, typeof(NoEnoughCrownsForSotre));
         }
         
         private readonly Dictionary<byte, Type> _packetHandlerServices;
