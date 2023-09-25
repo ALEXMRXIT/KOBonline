@@ -54,6 +54,11 @@ namespace Assets.Sources.MechanicUI
             _machineModel[index].SetStatusMachine(status);
         }
 
+        public void SetStatusRefine(bool status)
+        {
+            _refine.gameObject.SetActive(status);
+        }
+
         public void SetStatusMachine(int index, bool status,
             int howMuchWillCostReRollGiftlvl1, int howMuchWillCostReRollGiftlvl2)
         {

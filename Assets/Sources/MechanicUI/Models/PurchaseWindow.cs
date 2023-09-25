@@ -47,6 +47,10 @@ namespace Assets.Sources.MechanicUI.Models
                     _itemName = "<color=#FFCC00>Big Box</color>";
                     _price = 15015;
                     break;
+                case "com.gentech.kob.devilmanuscript":
+                    _itemName = "<color=#B7007A>Devil's manuscript</color>";
+                    _price = 3005;
+                    break;
             }
         }
 

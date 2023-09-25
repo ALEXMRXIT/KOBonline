@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using Assets.Sources.Contracts;
+using Assets.Sources.UI.Models;
 using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI;
+using Assets.Sources.UI.Utilites;
 using Assets.Sources.Network.OutPacket;
 using Assets.Sources.Models.Characters.Tools;
-using Assets.Sources.UI.Models;
-using Assets.Sources.UI.Utilites;
 
 namespace Assets.Sources.UI
 {
@@ -98,6 +98,16 @@ namespace Assets.Sources.UI
             yield return new WaitUntil(() => _networkProcessor.GetParentObject().IsLoadedPresents);
             _networkProcessor.GetParentObject().ResetFlagIsLoadedPresents();
             StartCoroutine(InternalUpdateTimePresent());
+        }
+
+        public void HiddenViewModel()
+        {
+            for (int iterator = 0; iterator < _presentMachine.MachineCount(); iterator++)
+            {
+                _presentMachine.SetStatus(iterator, false);
+                _presentMachine.SetStatusRefine(false);
+            }
+            _presentView.gameObject.SetActive(false);
         }
 
         public PresentManager GetInstance()

@@ -22,6 +22,8 @@ namespace Assets.Sources.Models
         [SerializeField] private SpecificationManager _specificationManager;
         [SerializeField] private RankTableHandler _rankTableHandler;
         [SerializeField] private PresentManager _presentManager;
+        [SerializeField] private SettingsHandler _settingsHandler;
+        [SerializeField] private GameObject _experiencePanel;
 
         private INetworkProcessor _clientProcessor;
         private GameObject _tempModelForOnlyCreateScene;
@@ -46,9 +48,12 @@ namespace Assets.Sources.Models
             _blockPanel.SetActive(false);
             _gameSkillsPanel.SetActive(false);
             _gameRunPanel.SetActive(false);
+            _experiencePanel.SetActive(false);
             _specificationManager.OpenOrClosePanel();
             _rankTableHandler.OpenOrClosePanel();
+            _presentManager.HiddenViewModel();
             _presentManager.OpenOrCloseWindow();
+            _settingsHandler.OpenOrClosePanel();
 
             _isWillCreateCharacter = true;
 
@@ -80,6 +85,7 @@ namespace Assets.Sources.Models
 
         private IEnumerator InternalStartLoadOtherConfigAsync()
         {
+            _experiencePanel.SetActive(true);
             yield return new WaitUntil(() => _clientProcessor.GetParentObject().IsLoadedCharacterModel);
             yield return _chatManager.GetMessagesWithChat(_clientProcessor);
 
@@ -98,6 +104,7 @@ namespace Assets.Sources.Models
 
             _clientProcessor.GetParentObject().GetPresentManager = _presentManager.GetInstance();
             yield return _presentManager.InternalLoadPresentWithCharacter(_clientProcessor);
+            _settingsHandler.InitializeSettingsWindow();
 
             yield return new WaitForSecondsRealtime(2f);
 

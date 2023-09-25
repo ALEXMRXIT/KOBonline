@@ -77,9 +77,13 @@ namespace Assets.Sources.Network.InPacket
                 switch (_specification)
                 {
                     case Specification.Strength:
+                    case Specification.Intelligence:
                         specification.InternalUpdateStrengthText($"{_playerContract.Strength+_playerContract.AdditionalStrength}{ColorCode.ColorGreen}+({_playerContract.AdditionalStrength})</color>");
                         specification.InternalUpdatePhysDefenceText(_playerContract.PhysDefence.ToString());
                         specification.InternalUpdatePhysAttackText($"{_playerContract.PhysAttack}~{InternalParseDamage(_playerContract.PhysAttack)}");
+                        specification.InternalUpdateIntelligenceText($"{_playerContract.Intelligence + _playerContract.AdditionalIntelligence}{ColorCode.ColorGreen}+({_playerContract.AdditionalIntelligence})</color>");
+                        specification.InternalUpdateMagicAttackText($"{_playerContract.MagicAttack}~{InternalParseDamage(_playerContract.MagicAttack)}");
+                        specification.InternalUpdateMagicDefenceText(_playerContract.MagicDefence.ToString());
                         break;
                     case Specification.Agility:
                         specification.InternalUpdateAgilityText($"{_playerContract.Agility+_playerContract.AdditionalAgility}{ColorCode.ColorGreen}+({_playerContract.AdditionalAgility})</color>");
@@ -89,11 +93,6 @@ namespace Assets.Sources.Network.InPacket
                         specification.InternalUpdateCriticalDamageMultiplyText($"{_playerContract.CritDamageMultiply.ToString("#.##")} %");
                         specification.InternalUpdateDodgeChanceText($"{_playerContract.DodgeChance.ToString("#.##")} %");
                         specification.InternalUpdateHitChangeText($"{_playerContract.HitChance.ToString("#.##")} %");
-                        break;
-                    case Specification.Intelligence:
-                        specification.InternalUpdateIntelligenceText($"{_playerContract.Intelligence+_playerContract.AdditionalIntelligence}{ColorCode.ColorGreen}+({_playerContract.AdditionalIntelligence})</color>");
-                        specification.InternalUpdateMagicAttackText($"{_playerContract.MagicAttack}~{InternalParseDamage(_playerContract.MagicAttack)}");
-                        specification.InternalUpdateMagicDefenceText(_playerContract.MagicDefence.ToString());
                         break;
                     case Specification.Endurance:
                         specification.InternalUpdateEnduranceText($"{_playerContract.Endurance+_playerContract.AdditionalEndurance}{ColorCode.ColorGreen}+({_playerContract.AdditionalEndurance})</color>");

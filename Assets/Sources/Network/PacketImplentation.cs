@@ -51,6 +51,7 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x25, typeof(PresentUpgradeSkillExperience));
             _packetHandlerServices.TryAdd(0x26, typeof(UpdateContractDataSkill));
             _packetHandlerServices.TryAdd(0x27, typeof(NoEnoughCrownsForSotre));
+            _packetHandlerServices.TryAdd(0x28, typeof(DeleteMovingComponent));
         }
         
         private readonly Dictionary<byte, Type> _packetHandlerServices;

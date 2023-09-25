@@ -28,6 +28,13 @@ namespace Assets.Sources.UI
             gameObject.SetActive(flag);
         }
 
+        public void InitForSettings(RankModel rankModel, ColorStatusButton colorStatusButton)
+        {
+            _rankModel = rankModel;
+            _colorStatusButton = colorStatusButton;
+            gameObject.SetActive(false);
+        }
+
         public void SetFlagActiveContent(bool flag)
         {
             SetFlagOnlyWithGameObject(flag);
