@@ -129,11 +129,12 @@ namespace Assets.Sources.UI
                 _presentModels[presentContracts[iterator].Slot]._buttonImage.sprite = _buttonActiveSprite;
                 _presentModels[presentContracts[iterator].Slot]._buttonText.color = _buttonActivate;
 
-                if (_presentModels[presentContracts[iterator].Slot]._dateTime.CompareTo(DateTime.Now) == -1)
+                int value = _presentModels[presentContracts[iterator].Slot]._dateTime.CompareTo(DateTime.UtcNow);
+                if (value == -1)
                     _presentModels[presentContracts[iterator].Slot]._timeText.text = "Open!";
                 else
                 {
-                    TimeSpan timeSpan = _presentModels[presentContracts[iterator].Slot]._dateTime.Subtract(DateTime.Now);
+                    TimeSpan timeSpan = _presentModels[presentContracts[iterator].Slot]._dateTime.Subtract(DateTime.UtcNow);
                     _presentModels[presentContracts[iterator].Slot]._timeText.text = Parser.ConvertTimeSpanToTimeString(timeSpan);
                 }
             }
@@ -160,7 +161,7 @@ namespace Assets.Sources.UI
             _presentModels[presentContract.Slot]._buttonImage.sprite = _buttonActiveSprite;
             _presentModels[presentContract.Slot]._buttonText.color = _buttonActivate;
 
-            if (_presentModels[presentContract.Slot]._dateTime.CompareTo(DateTime.Now) == -1)
+            if (_presentModels[presentContract.Slot]._dateTime.CompareTo(DateTime.UtcNow) == -1)
                 _presentModels[presentContract.Slot]._timeText.text = "Open!";
             else
             {
@@ -214,13 +215,13 @@ namespace Assets.Sources.UI
                 {
                     if (_presentModels[iterator]._presentContract != null)
                     {
-                        if (_presentModels[iterator]._dateTime < DateTime.Now && _presentModels[iterator]._timeText.text == "Open!")
+                        if (_presentModels[iterator]._dateTime < DateTime.UtcNow && _presentModels[iterator]._timeText.text == "Open!")
                             continue;
 
-                        TimeSpan timeSpan = _presentModels[iterator]._dateTime.Subtract(DateTime.Now);
+                        TimeSpan timeSpan = _presentModels[iterator]._dateTime.Subtract(DateTime.UtcNow);
                         _presentModels[iterator]._timeText.text = Parser.ConvertTimeSpanToTimeString(timeSpan);
 
-                        int compareResult = _presentModels[iterator]._dateTime.CompareTo(DateTime.Now);
+                        int compareResult = _presentModels[iterator]._dateTime.CompareTo(DateTime.UtcNow);
                         if (compareResult == -1 || compareResult == 0)
                             _presentModels[iterator]._timeText.text = "Open!";
                     }
