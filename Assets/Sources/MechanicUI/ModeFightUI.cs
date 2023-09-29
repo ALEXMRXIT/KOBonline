@@ -10,7 +10,6 @@ namespace Assets.Sources.MechanicUI
     public sealed class ModeFightUI : MonoBehaviour
     {
         [SerializeField] private Button _fightButton;
-        [SerializeField] private Button _chooseModeButton;
         [SerializeField] private Button _pvpOnlyButton;
         [SerializeField] private Button _singleOnlyButton;
         [SerializeField] private Button _cancelFight;
@@ -34,18 +33,12 @@ namespace Assets.Sources.MechanicUI
         {
             _gameMode = GameMode.PVPMode;
             _fightButton.onClick.AddListener(InternalFightButtonHandler);
-            _chooseModeButton.onClick.AddListener(InternalChooseModeButtonHandler);
             _cancelFight.onClick.AddListener(InternalCancelButtonHandler);
         }
 
         private void InternalFightButtonHandler()
         {
             _networkProcessor.SendPacketAsync(TryEnterRoom.ToPacket(_gameMode, isEnter: true));
-        }
-
-        private void InternalChooseModeButtonHandler()
-        {
-            _panelChooseMode.SetActive(!_panelChooseMode.activeSelf);
         }
 
         private void InternalPVPOnlyButtonHandler()

@@ -16,7 +16,7 @@ namespace Assets.Sources.Models.States
             SetAnimation(new StateAnimationIdle());
         }
 
-        public void CheckGettingComponent()
+        public void CheckGettingComponentNew()
         {
             if (_animator == null)
                 _animator = GetComponent<Animator>();

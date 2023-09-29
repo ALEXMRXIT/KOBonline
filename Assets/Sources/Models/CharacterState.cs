@@ -43,7 +43,7 @@ namespace Assets.Sources.Models
             if (_stateMachineAnimation == null)
                 _stateMachineAnimation = GetComponent<StateMachineAnimation>();
 
-            _stateMachineAnimation.CheckGettingComponent();
+            _stateMachineAnimation.CheckGettingComponentNew();
         }
 
         public IStateAnimation GetCurrentPlayingAnimationState()

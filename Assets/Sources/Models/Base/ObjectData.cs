@@ -23,6 +23,7 @@ namespace Assets.Sources.Models.Base
         public Vector3 UpdatePositionInServer;
         public bool ObjectIsLoadData = false;
         public StateAnimationAttackMagic _stateAnimationAttackMagic;
+        public StateAnimationAttackMagic2 _stateAnimationAttackMagic2;
         public StateAnimationAttack _stateAnimationAttack;
         public StateAnimationCastSpell1 _stateAnimationCastSpell1;
         public StateAnimationCastSpell2 _stateAnimationCastSpell2;

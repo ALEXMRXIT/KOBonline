@@ -43,9 +43,6 @@ namespace Assets.Sources.Network.InPacket
             {
                 ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
 
-                if (!_willSkillUse && player.ClientAnimationState.GetCurrentPlayingAnimationState() != player._stateAnimationAttackMagic)
-                    player.ClientAnimationState.SetCharacterState(player._stateAnimationAttack, player.ObjectContract.AttackSpeed);
-
                 Damage damage = new Damage(player.IsBot, _damage, _isCriticalDamage, _damageMiss);
 
                 player.ClientTextView.AddDamage(damage);

@@ -61,6 +61,7 @@ namespace Assets.Sources.Network.InPacket
                 enemyData.IsBot = true;
 
                 enemyData._stateAnimationAttackMagic = new StateAnimationAttackMagic();
+                enemyData._stateAnimationAttackMagic2 = new StateAnimationAttackMagic2();
                 enemyData._stateAnimationAttack = new StateAnimationAttack();
                 enemyData._stateAnimationCastSpell1 = new StateAnimationCastSpell1();
                 enemyData._stateAnimationCastSpell2 = new StateAnimationCastSpell2();

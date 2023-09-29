@@ -97,6 +97,7 @@ namespace Assets.Sources.Network.InPacket
                     _client.GetCharacterId = _objId;
 
                     playerData._stateAnimationAttackMagic = new StateAnimationAttackMagic();
+                    playerData._stateAnimationAttackMagic2 = new StateAnimationAttackMagic2();
                     playerData._stateAnimationAttack = new StateAnimationAttack();
                     playerData._stateAnimationCastSpell1 = new StateAnimationCastSpell1();
                     playerData._stateAnimationCastSpell2 = new StateAnimationCastSpell2();

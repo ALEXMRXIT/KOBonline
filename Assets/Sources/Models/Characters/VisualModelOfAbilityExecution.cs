@@ -65,7 +65,7 @@ namespace Assets.Sources.Models.Characters
                 Sprite spriteAbility = _skills.FirstOrDefault(s => s.Id == skillId).SkillSprite;
                 SkillContract skillContract = _skillContracts.FirstOrDefault(s => s.Id == skillId);
 
-                int timeUse = (int)dateTime.Subtract(DateTime.Now).TotalSeconds;
+                int timeUse = (int)dateTime.Subtract(DateTime.UtcNow).TotalSeconds;
 
                 if (!Instantiate(_ability.gameObject, _playerCanvas).TryGetComponent<VisualAbility>(out VisualAbility ability))
                     throw new ArgumentNullException(nameof(VisualAbility));

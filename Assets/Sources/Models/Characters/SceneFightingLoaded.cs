@@ -29,6 +29,7 @@ namespace Assets.Sources.Models.Characters
         [SerializeField] private VisualAbility _visualAbility;
         [SerializeField] private Transform _canvasPlayer;
         [SerializeField] private Transform _canvasEnemy;
+        [SerializeField] private Button _buttonAttacke;
 
         [Space]
         [SerializeField] private Vector3 _positionCamera2;
@@ -67,6 +68,12 @@ namespace Assets.Sources.Models.Characters
             _networkProcessor.GetParentObject().GetTimeRound = _timeRound;
             StartCoroutine(SetBattleSceneForActors());
             _panelWinner.SetActive(false);
+            _buttonAttacke.onClick.AddListener(InternalOnButtonCkickAttackingHandler);
+        }
+
+        private void InternalOnButtonCkickAttackingHandler()
+        {
+            _networkProcessor.SendPacketAsync(RequestAttacking.ToPacket());
         }
 
         private IEnumerator SetBattleSceneForActors()

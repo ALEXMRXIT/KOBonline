@@ -40,7 +40,6 @@ namespace Assets.Sources.MechanicUI
         public void UpdateUI(PlayerContract playerContract)
         {
             UpdateEnergy(playerContract);
-            _characterEnergySlider.value = Mathf.Clamp(playerContract.Energy / 100f, 0f, 1.0f);
             UpdateExperience(playerContract);
             _fillExperience.value = Mathf.Clamp(playerContract.Experience / (float)playerContract.NextExperience, min: 0, max: 1);
             _characterLevel.text = $"Lvl. {playerContract.Level}";
@@ -59,6 +58,7 @@ namespace Assets.Sources.MechanicUI
         public void UpdateEnergy(PlayerContract playerContract)
         {
             _characterHealth.text = $"{playerContract.Energy}/100";
+            _characterEnergySlider.value = Mathf.Clamp(playerContract.Energy / 100f, 0f, 1.0f);
         }
 
         public void UpdateMoney(int crowns, int soulCrowns)

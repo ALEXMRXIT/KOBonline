@@ -51,6 +51,10 @@ namespace Assets.Sources.MechanicUI.Models
                     _itemName = "<color=#B7007A>Devil's manuscript</color>";
                     _price = 3005;
                     break;
+                case "com.gentech.kob.energyitem":
+                    _itemName = "<color=#FFCC00>100 energy</color>";
+                    _price = 1000;
+                    break;
             }
         }
 

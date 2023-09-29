@@ -44,6 +44,7 @@ namespace Assets.Sources.Network.InPacket
                     case 1: player.ClientAnimationState.SetCharacterState(player._stateAnimationAttackMagic); break;
                     case 2: player.ClientAnimationState.SetCharacterState(player._stateAnimationCastSpell1); break;
                     case 3: player.ClientAnimationState.SetCharacterState(player._stateAnimationCastSpell2); break;
+                    case 4: player.ClientAnimationState.SetCharacterState(player._stateAnimationAttackMagic2); break;
                 }
             }
             catch (Exception exception)
