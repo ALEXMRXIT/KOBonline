@@ -92,7 +92,7 @@ namespace Assets.Sources.Network
             _characterRankTable = new RankTable();
             _temporaryContainerForPlayerRanks = new List<PlayerRankData>();
 
-            _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 27018);
+            _endPoint = new IPEndPoint(IPAddress.Parse("207.154.232.128"), 27018);
             _tcpClient = new TcpClient();
 
             try
