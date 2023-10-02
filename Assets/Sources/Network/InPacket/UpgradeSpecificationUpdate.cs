@@ -72,6 +72,7 @@ namespace Assets.Sources.Network.InPacket
             {
                 SpecificationManager specification = SpecificationManager.Instance;
 
+                specification.gameObject.SetActive(true);
                 specification.InternalUpdateScoreSpecificationText(_playerContract.ScoreSpecification.ToString());
 
                 switch (_specification)

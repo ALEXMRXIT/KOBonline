@@ -168,7 +168,10 @@ namespace Assets.Sources.UI
             foreach (Skill skill in _skills)
             {
                 if (skill.Id == skillData.SkillId)
+                {
                     skill.Handler.UpdateSkillVisual(skillData.Experience);
+                    break;
+                }
             }
         }
 

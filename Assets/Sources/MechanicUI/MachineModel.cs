@@ -98,6 +98,8 @@ namespace Assets.Sources.MechanicUI
             _duration = 0f;
             float smoothed = 0.01f;
             GameObject effect = null;
+            const float min_smooth = 0.001f;
+            const float max_smooth = 0.004f;
 
             _coreSlot.sprite = _slots[index].GetCurrentSlotSprite();
 
@@ -110,8 +112,8 @@ namespace Assets.Sources.MechanicUI
                 effect = _slots[tempIndex].SetEffectEnable();
                 _coreSlot.sprite = _slots[tempIndex].GetCurrentSlotSprite();
 
-                yield return new WaitForSeconds(smoothed += Time.deltaTime);
-                _duration += UnityEngine.Random.Range(0.002f, 0.004f);
+                yield return new WaitForSeconds(smoothed += min_smooth);
+                _duration += UnityEngine.Random.Range(min_smooth, max_smooth);
             }
 
             if (_duration >= DURATION_MAX)
