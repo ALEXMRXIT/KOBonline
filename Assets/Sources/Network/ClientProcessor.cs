@@ -73,7 +73,7 @@ namespace Assets.Sources.Network
         public List<PlayerRankData> GetTemporaryContainerForPlayerRanks { get => _temporaryContainerForPlayerRanks; }
         public PresentManager GetPresentManager { get => _presentManager; set => _presentManager = value; }
 
-        public ClientCurrentMenu ClientMenu
+        public ClientCurrentMenu CurrentSession
         {
             get => _clientCurrentMenu;
             set => _clientCurrentMenu = value;

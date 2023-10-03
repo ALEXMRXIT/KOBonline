@@ -33,7 +33,7 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                if (_client.ClientMenu == ClientCurrentMenu.Game)
+                if (_client.CurrentSession == ClientCurrentMenu.Game)
                     StoreHandler.Instance.OnEnoughtSoulCrowns();
             }
             catch (Exception exception)

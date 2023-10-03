@@ -19,9 +19,9 @@ namespace Assets.Sources.Network.InPacket
             if (_messageType == 0x00)
                 _message = networkPacket.ReadString();
 
-            if (clientProcessor.ClientMenu == ClientCurrentMenu.Login)
+            if (clientProcessor.CurrentSession == ClientCurrentMenu.Login)
                 _authLogic = AuthLogic.Instance;
-            else if (clientProcessor.ClientMenu == ClientCurrentMenu.Create)
+            else if (clientProcessor.CurrentSession == ClientCurrentMenu.Create)
                 _customerCreateLogic = CustomerCreateLogic.Instance;
         }
 
@@ -41,9 +41,9 @@ namespace Assets.Sources.Network.InPacket
             PacketImplementCodeResult codeError = new PacketImplementCodeResult();
             CallBalckMessageError messageError = null;
 
-            if (_client.ClientMenu == ClientCurrentMenu.Login)
+            if (_client.CurrentSession == ClientCurrentMenu.Login)
                 messageError = _authLogic.ShowErrorMessage;
-            else if (_client.ClientMenu == ClientCurrentMenu.Create)
+            else if (_client.CurrentSession == ClientCurrentMenu.Create)
                 messageError = _customerCreateLogic.ShowErrorMessage;
 
             try
@@ -65,7 +65,7 @@ namespace Assets.Sources.Network.InPacket
                         messageError($"Invalid username or password, please try again later.");
                         break;
                     case MessageId.MessageCharacterCreate:
-                        _client.ClientMenu = ClientCurrentMenu.Create;
+                        _client.CurrentSession = ClientCurrentMenu.Create;
                         CharacterLoadedWithServer.Instance.EnableUICreateCharacter();
                         break;
                     case MessageId.MessageCharacterNameIsEmpty:
@@ -87,7 +87,7 @@ namespace Assets.Sources.Network.InPacket
                         messageError("Your name is not available.");
                         break;
                     case MessageId.MessageGameRun:
-                        _client.ClientMenu = ClientCurrentMenu.Game;
+                        _client.CurrentSession = ClientCurrentMenu.Game;
                         CharacterLoadedWithServer.Instance.EnableUIGameRun();
                         break;
                 }

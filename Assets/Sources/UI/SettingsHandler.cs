@@ -30,7 +30,8 @@ namespace Assets.Sources.UI
             _lastActiveRank = _windowModels[0];
             _lastActiveRank._rankContent.SetFlagActiveContent(true);
 
-            OpenOrClosePanel();
+            if (gameObject.activeSelf)
+                OpenOrClosePanel();
         }
 
         private void InternalButtonClickHandler(int index)

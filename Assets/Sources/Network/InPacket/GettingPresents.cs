@@ -42,7 +42,7 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                if (_client.ClientMenu == ClientCurrentMenu.Game)
+                if (_client.CurrentSession == ClientCurrentMenu.Game)
                     _client.GetPresentManager.SetPresentContractWithOnlyAlone(_presentContract);
             }
             catch (Exception exception)

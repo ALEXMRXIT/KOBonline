@@ -35,7 +35,7 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                if (_client.ClientMenu == ClientCurrentMenu.Game)
+                if (_client.CurrentSession == ClientCurrentMenu.Game)
                     PresentManager.Instance.DeletePresentWithSlotIndex(_slotIndex);
             }
             catch (Exception exception)

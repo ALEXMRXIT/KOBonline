@@ -36,7 +36,7 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                if (_client.ClientMenu == ClientCurrentMenu.Game)
+                if (_client.CurrentSession == ClientCurrentMenu.Game)
                 {
                     ObjectData player = _client.GetPlayers.FirstOrDefault(player => player.ObjId == _client.GetCharacterId);
                     player.ObjectContract.Crowns = _crowns;

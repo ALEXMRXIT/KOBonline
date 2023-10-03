@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
-using Assets.Sources.UI;
 using Assets.Sources.Enums;
 using Assets.Sources.Models;
 using Assets.Sources.Network;
-using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using Assets.Sources.MechanicUI;
 using Assets.Sources.Models.Base;
@@ -15,36 +13,36 @@ using Assets.Sources.Models.States.StateAnimations;
 
 namespace Assets.Sources.Network.InPacket
 {
-    public sealed class StartMachineForPresent : NetworkBasePacket
+    public sealed class ReceivedErrorMessage : NetworkBasePacket
     {
-        public StartMachineForPresent(NetworkPacket networkPacket, ClientProcessor clientProcessor)
+        public ReceivedErrorMessage(NetworkPacket networkPacket, ClientProcessor clientProcessor)
         {
             _client = clientProcessor;
 
-            _machineType = networkPacket.ReadInt();
+            _errorMessage = networkPacket.ReadString();
         }
 
         private readonly ClientProcessor _client;
-        private readonly int _machineType;
+        private readonly string _errorMessage;
 
         public override PacketImplementCodeResult RunImpl()
         {
 #if UNITY_EDITOR
-            Debug.Log($"Execute {nameof(StartMachineForPresent)}.");
+            Debug.Log($"Execute {nameof(ReceivedErrorMessage)}.");
 #endif
             PacketImplementCodeResult codeError = new PacketImplementCodeResult();
 
             try
             {
                 if (_client.CurrentSession == ClientCurrentMenu.Game)
-                    PresentManager.Instance.StartMachineForPresent(_machineType);
+                    ErrorMessageWindow.Instance.ShowWindow(_errorMessage);
             }
             catch (Exception exception)
             {
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
-                codeError.FireException = nameof(StartMachineForPresent);
+                codeError.FireException = nameof(ReceivedErrorMessage);
             }
 
             return codeError;

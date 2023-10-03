@@ -112,6 +112,8 @@ namespace Assets.Sources.Models
             _gameSkillsPanel.SetActive(false);
             _createCharacterPanel.SetActive(false);
             _gameRunPanel.SetActive(true);
+
+            _clientProcessor.SendPacketAsync(CheckErrorMessageService.ToPacket());
         }
     }
 }
