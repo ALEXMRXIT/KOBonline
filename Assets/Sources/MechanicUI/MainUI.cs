@@ -23,6 +23,7 @@ namespace Assets.Sources.MechanicUI
         [SerializeField] private Text _soulCrownGoldText;
         [SerializeField] private Text _soulCrownSilverText;
         [SerializeField] private Text _soulCrownCopperText;
+        [SerializeField] private Text _onlineText;
 
         [Space]
         [SerializeField] private Sprite[] _ranksSprite;
@@ -37,11 +38,15 @@ namespace Assets.Sources.MechanicUI
             _networkProcessor = ClientProcessor.Instance;
         }
 
+        public void UpdateOnlineView(int count)
+        {
+            _onlineText.text = $"Online: {count}";
+        }
+
         public void UpdateUI(PlayerContract playerContract)
         {
             UpdateEnergy(playerContract);
             UpdateExperience(playerContract);
-            _fillExperience.value = Mathf.Clamp(playerContract.Experience / (float)playerContract.NextExperience, min: 0, max: 1);
             _characterLevel.text = $"Lvl. {playerContract.Level}";
             _characterName.text = $"{playerContract.CharacterName}";
             _rankValue.text = $"{playerContract.PlayerRank}";
@@ -53,6 +58,7 @@ namespace Assets.Sources.MechanicUI
         public void UpdateExperience(PlayerContract playerContract)
         {
             _experience.text = $"{playerContract.Experience}/{playerContract.NextExperience}";
+            _fillExperience.value = Mathf.Clamp(playerContract.Experience / (float)playerContract.NextExperience, min: 0, max: 1);
         }
 
         public void UpdateEnergy(PlayerContract playerContract)

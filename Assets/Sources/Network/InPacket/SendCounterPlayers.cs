@@ -15,41 +15,35 @@ using Assets.Sources.Models.States.StateAnimations;
 
 namespace Assets.Sources.Network.InPacket
 {
-    public sealed class DeleteMovingComponent : NetworkBasePacket
+    public sealed class SendCounterPlayers : NetworkBasePacket
     {
-        public DeleteMovingComponent(NetworkPacket networkPacket, ClientProcessor clientProcessor)
+        public SendCounterPlayers(NetworkPacket networkPacket, ClientProcessor clientProcessor)
         {
             _client = clientProcessor;
-
-            _objId = networkPacket.ReadLong();
+            _count = networkPacket.ReadInt();
         }
 
         private readonly ClientProcessor _client;
-        private readonly long _objId;
+        private readonly int _count;
 
         public override PacketImplementCodeResult RunImpl()
         {
 #if UNITY_EDITOR
-            Debug.Log($"Execute {nameof(DeleteMovingComponent)}.");
+            Debug.Log($"Execute {nameof(SendCounterPlayers)}.");
 #endif
             PacketImplementCodeResult codeError = new PacketImplementCodeResult();
 
             try
             {
-                ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
-
-                if (player.GameObjectModel.TryGetComponent(out CharacterMovement characterMovement))
-                {
-                    characterMovement.InternalStopCoroutine();
-                    GameObject.Destroy(characterMovement);
-                }
+                if (_client.CurrentSession == ClientCurrentMenu.Game)
+                    MainUI.Instance.UpdateOnlineView(_count);
             }
             catch (Exception exception)
             {
                 codeError.ErrorCode = -1;
                 codeError.ErrorMessage = exception.Message;
                 codeError.InnerException = exception;
-                codeError.FireException = nameof(DeleteMovingComponent);
+                codeError.FireException = nameof(SendCounterPlayers);
             }
 
             return codeError;

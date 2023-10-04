@@ -85,6 +85,7 @@ namespace Assets.Sources.Network
         private void Awake()
         {
             Instance = this;
+            Application.targetFrameRate = 50;
             ClientSession = new GameSession(SessionStatus.SessionAuthorization);
             ClientSession.OnSessionChange += ClientSessionOnSessionChange;
             _cancelationTokenSources = new CancellationTokenSource();

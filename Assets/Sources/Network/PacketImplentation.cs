@@ -18,9 +18,9 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x04, typeof(CharacterEnemyInfo));
             _packetHandlerServices.TryAdd(0x05, typeof(SendTimeBuff));
             _packetHandlerServices.TryAdd(0x06, typeof(UpdateContractPositionInScene));
-            _packetHandlerServices.TryAdd(0x07, typeof(UpdateCharacterMainPosition));
+            //_packetHandlerServices.TryAdd(0x07, typeof(UpdateCharacterMainPosition));
             _packetHandlerServices.TryAdd(0x08, typeof(AddMovementComponent));
-            _packetHandlerServices.TryAdd(0x09, typeof(UpdateCharacterEnemyPosition));
+            //_packetHandlerServices.TryAdd(0x09, typeof(UpdateCharacterEnemyPosition));
             _packetHandlerServices.TryAdd(0x0A, typeof(AddHUDInMainCharacter));
             _packetHandlerServices.TryAdd(0x0B, typeof(AddHUDInEnemyCharacter));
             _packetHandlerServices.TryAdd(0x0C, typeof(CharacterAttackCombat));
@@ -53,6 +53,7 @@ namespace Assets.Sources.Network
             _packetHandlerServices.TryAdd(0x27, typeof(NoEnoughCrownsForSotre));
             _packetHandlerServices.TryAdd(0x28, typeof(DeleteMovingComponent));
             _packetHandlerServices.TryAdd(0x29, typeof(ReceivedErrorMessage));
+            _packetHandlerServices.TryAdd(0x2A, typeof(SendCounterPlayers));
         }
         
         private readonly Dictionary<byte, Type> _packetHandlerServices;

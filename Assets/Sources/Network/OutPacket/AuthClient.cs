@@ -7,13 +7,14 @@ namespace Assets.Sources.Network.OutPacket
         private readonly static byte _opcode = 0x00;
 
         public static NetworkPacket AuthToPacket(string login,
-            string password, AuthType authType)
+            string password, AuthType authType, string version)
         {
             NetworkPacket packet = new NetworkPacket(_opcode);
 
             packet.WriteByte((byte)authType);
             packet.WriteString(login);
             packet.WriteString(password);
+            packet.WriteString(version);
 
             return packet;
         }

@@ -14,6 +14,7 @@
         MessageBlockCreateCharacter = 0x09,
         MessageMaxCharacter = 0x0A,
         MessageIncorrectName = 0x0B,
-        MessageGameRun = 0x0C
+        MessageGameRun = 0x0C,
+        MessageVersionClientFail = 0x0D
     }
 }

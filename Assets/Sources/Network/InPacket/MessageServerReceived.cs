@@ -90,6 +90,9 @@ namespace Assets.Sources.Network.InPacket
                         _client.CurrentSession = ClientCurrentMenu.Game;
                         CharacterLoadedWithServer.Instance.EnableUIGameRun();
                         break;
+                    case MessageId.MessageVersionClientFail:
+                        messageError($"You are using an old version of the client. Please update your game client.");
+                        break;
                 }
             }
             catch (Exception exception)

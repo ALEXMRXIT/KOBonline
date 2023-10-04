@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using Assets.Sources.Enums;
 using Assets.Sources.Network;
 using Assets.Sources.Models.Base;
@@ -6,7 +7,7 @@ using Assets.Sources.Models.Characters;
 using Assets.Sources.Network.OutPacket;
 using Assets.Sources.Models.States.StateAnimations;
 
-#pragma warning disable CS4014
+#pragma warning disable
 
 namespace Assets.Sources.Models
 {
@@ -19,17 +20,37 @@ namespace Assets.Sources.Models
         private StateAnimationRun _animationRun;
         private StateAnimationDeath _animationDeath;
         private StateAnimationIdle _animationIdle;
+        private Coroutine _coroutine;
+        private ClientProcessor _processor;
 
-        public void Init(CharacterTarget characterTarget, ObjectData data)
+        public void Init(CharacterTarget characterTarget, ObjectData data, ClientProcessor processor)
         {
             _characterState = GetComponent<CharacterState>();
 
             _characterTarget = characterTarget;
             _objectData = data;
+            _processor = processor;
 
             _animationRun = new StateAnimationRun();
             _animationDeath = new StateAnimationDeath();
             _animationIdle = new StateAnimationIdle();
+
+            _coroutine = StartCoroutine(InternalUpdate());
+        }
+
+        public void InternalStopCoroutine()
+        {
+            if (_coroutine != null)
+                StopCoroutine(_coroutine);
+        }
+
+        private IEnumerator InternalUpdate()
+        {
+            while (true)
+            {
+                _processor.SendPacketAsync(InternalUpdatePosition.ToPacket(transform.position.x, transform.position.y, transform.position.z));
+                yield return new WaitForSeconds(0.4f);
+            }
         }
 
         private void Update()
@@ -54,18 +75,18 @@ namespace Assets.Sources.Models
                 Time.deltaTime * _objectData.ObjectContract.MoveSpeed);
             _characterState.SetCharacterState(_animationRun, _objectData.ObjectContract.MoveSpeed / 2f);
 
-            dist = Vector3.Distance(transform.position, new Vector3(
-                _objectData.UpdatePositionInServer.x,
-                _objectData.UpdatePositionInServer.y,
-                _objectData.UpdatePositionInServer.z));
+            //dist = Vector3.Distance(transform.position, new Vector3(
+            //    _objectData.UpdatePositionInServer.x,
+            //    _objectData.UpdatePositionInServer.y,
+            //    _objectData.UpdatePositionInServer.z));
 
-            if (dist > 4f)
-            {
-                transform.position = new Vector3(
-                    _objectData.UpdatePositionInServer.x,
-                    _objectData.UpdatePositionInServer.y,
-                    _objectData.UpdatePositionInServer.z);
-            }
+            //if (dist > 4f)
+            //{
+            //    transform.position = new Vector3(
+            //        _objectData.UpdatePositionInServer.x,
+            //        _objectData.UpdatePositionInServer.y,
+            //        _objectData.UpdatePositionInServer.z);
+            //}
         }
     }
 }

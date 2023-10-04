@@ -29,8 +29,6 @@ namespace Assets.Sources.MechanicUI
             _authButton.onClick.AddListener(() => ButtonHandleAuth(AuthType.Auth));
             _registrationButton.onClick.AddListener(() => ButtonHandleAuth(AuthType.Registration));
             _networkProcessor = ClientProcessor.Instance;
-
-            //_networkProcessor.SendPacketAsync(AuthClient.AuthToPacket("qwertyu", "test", AuthType.Auth));
         }
 
         private void ButtonHandleAuth(AuthType authType)
@@ -41,7 +39,8 @@ namespace Assets.Sources.MechanicUI
                 return;
             }
 
-            _networkProcessor.SendPacketAsync(AuthClient.AuthToPacket(_loginInput.text, _passwordInput.text, authType));
+            _networkProcessor.SendPacketAsync(AuthClient.AuthToPacket(_loginInput.text,
+                _passwordInput.text, authType, Application.version));
             _passwordInput.text = string.Empty;
             _errorText.text = string.Empty;
         }
