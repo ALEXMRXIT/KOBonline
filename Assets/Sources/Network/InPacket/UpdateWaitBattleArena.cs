@@ -18,15 +18,21 @@ namespace Assets.Sources.Network.InPacket
 
             _errorEnergy = networkPacket.InternalReadBool();
 
-            _values = new int[networkPacket.ReadByte()];
-            for (int iterator = 0; iterator < _values.Length; iterator++)
-                _values[iterator] = networkPacket.ReadInt();
+            if (!_errorEnergy)
+            {
+                _values = new int[networkPacket.ReadByte()];
+                for (int iterator = 0; iterator < _values.Length; iterator++)
+                    _values[iterator] = networkPacket.ReadInt();
+
+                _games = networkPacket.ReadInt();
+            }
         }
 
         private readonly ClientProcessor _client;
         private readonly ButtleUI _buttleUI;
         private readonly bool _errorEnergy;
         private readonly int[] _values;
+        private readonly int _games;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -37,16 +43,19 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                if (_buttleUI != null)
+                if (_client.CurrentSession == ClientCurrentMenu.Game)
                 {
-                    if (_errorEnergy)
+                    if (_buttleUI != null)
                     {
-                        _buttleUI.CloseWindow();
-                        _buttleUI.ShowWindow();
-                    }
-                    else
-                    {
-                        _buttleUI.UpdateDescription(_values);
+                        if (_errorEnergy)
+                        {
+                            _buttleUI.CloseWindow();
+                            _buttleUI.ShowWindow();
+                        }
+                        else
+                        {
+                            _buttleUI.UpdateDescription(_values, _games);
+                        }
                     }
                 }
             }

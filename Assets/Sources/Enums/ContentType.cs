@@ -4,6 +4,7 @@
     {
         WinRate = 0x00,
         ByLevel = 0x01,
-        NumOfFight = 0x02
+        NumOfFight = 0x02,
+        Rate = 0x03
     }
 }

@@ -18,11 +18,18 @@ namespace Assets.Sources.Network.InPacket
 
             int length = networkPacket.ReadInt();
             _buffer = new int[length];
+
             for (int iterator = 0; iterator < length; iterator++)
                 _buffer[iterator] = networkPacket.ReadInt();
+
+            length = networkPacket.ReadInt();
+            _names = new string[length];
+            for (int iterator = 0; iterator < length; iterator++)
+                _names[iterator] = networkPacket.ReadString();
         }
 
         private readonly ClientProcessor _client;
+        private readonly string[] _names;
         private readonly int[] _buffer;
 
         public override PacketImplementCodeResult RunImpl()
@@ -34,7 +41,7 @@ namespace Assets.Sources.Network.InPacket
 
             try
             {
-                _client.GetRank.TableInit(_buffer);
+                _client.GetRank.TableInit(_buffer, _names);
             }
             catch (Exception exception)
             {

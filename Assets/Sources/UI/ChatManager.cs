@@ -6,12 +6,14 @@ using System.Text;
 using UnityEngine.UI;
 using System.Collections;
 using Assets.Sources.Enums;
+using Assets.Sources.Models;
 using Assets.Sources.Network;
 using Assets.Sources.UI.Models;
 using Assets.Sources.Contracts;
 using Assets.Sources.Interfaces;
 using System.Collections.Generic;
 using Assets.Sources.Models.Base;
+using Assets.Sources.UI.Utilites;
 using Assets.Sources.Network.OutPacket;
 using Assets.Sources.Models.Characters.Smile;
 
@@ -26,13 +28,19 @@ namespace Assets.Sources.UI
         [SerializeField] private string _animationName;
         [SerializeField] private GameObject _prefabBlockMessage;
         [SerializeField] private Transform _spawnContent;
-        [SerializeField] private SelectChannel _selectChannel;
         [SerializeField] private TMP_InputField _inputField;
         [SerializeField] private Button _sendButton;
         [SerializeField] private ScrollRect _scrollRectChat;
         [SerializeField] private SmileAPI _smileAPI;
         [SerializeField] private Animator _panelAnimator;
         [SerializeField] private Scrollbar _scrollbar;
+        [SerializeField] private SelectableChannelChat _selectableChannelChat;
+        [SerializeField] private ErrorMessageWindow _errorMessageWindow;
+        [SerializeField] private Toggle _channelWorldToggle;
+        [SerializeField] private Toggle _channelStoryToggle;
+        [SerializeField] private Toggle _channelPrivateMessageToggle;
+        [SerializeField] private Toggle _channelClassToggle;
+        [SerializeField] private GameObject _buttonAnimationInChannelSelected;
 
         private Animator _chatAnimator;
         private Button _chatButton;
@@ -40,11 +48,17 @@ namespace Assets.Sources.UI
         private Queue<RectTransform> _chatStack = new Queue<RectTransform>();
         private INetworkProcessor _networkProcessor;
         private RectTransform _rectContent;
+        private StringBuilder _stringBuilder;
+        private StringBuilder _stringBuilderPrivateMessage;
+        private string _privateChannelName;
 
         private readonly string[] _colorChannel =
         {
-            "#FFF583",
-            "#F80000"
+            "#FFF583ff", // world channel
+            "#F80000ff", // server channel
+            "#613600ff", // story channel
+            "#610059ff", // private message channel
+            "#00a4baff"  // class channel
         };
 
         public static ChatManager Instance;
@@ -62,6 +76,33 @@ namespace Assets.Sources.UI
         private void OnEnable() => _smileAPI.OnSmileClickhandler += InternalChatManagerOnSmileClickhandler;
         private void OnDisable() => _smileAPI.OnSmileClickhandler -= InternalChatManagerOnSmileClickhandler;
 
+        public SelectableChannelChat GetRefSelectableChannelChat()
+        {
+            return _selectableChannelChat;
+        }
+
+        public void ClearInputField()
+        {
+            _inputField.text = string.Empty;
+        }
+
+        public void SetNameForArgs(string name)
+        {
+            if (!_inputField.text.Contains(name))
+                _inputField.text = _inputField.text.Insert(0, name + "/ ");
+            _privateChannelName = name;
+        }
+
+        public void ResetButtonAnimation()
+        {
+            if (!StaticFields._buttonAnimationInChannelSelection)
+                return;
+
+            StaticFields._buttonAnimationInChannelSelection = false;
+            PlayerPrefs.SetInt(nameof(StaticFields._buttonAnimationInChannelSelection), Convert.ToInt32(StaticFields._buttonAnimationInChannelSelection));
+            _buttonAnimationInChannelSelected.SetActive(false);
+        }
+
         private void Start()
         {
             _chatButton.onClick.AddListener(InternalButtonOnHandler);
@@ -71,6 +112,8 @@ namespace Assets.Sources.UI
         public IEnumerator GetMessagesWithChat(INetworkProcessor networkProcessor)
         {
             ClientProcessor clientProcessor = networkProcessor.GetParentObject();
+            _stringBuilder = new StringBuilder(capacity: 8 * 8 * 4);
+            _stringBuilderPrivateMessage = new StringBuilder(8 * 8);
 
             if (clientProcessor == null)
                 throw new NullReferenceException(nameof(ClientProcessor));
@@ -78,6 +121,48 @@ namespace Assets.Sources.UI
             ObjectData player = clientProcessor.GetParentObject().GetPlayers.FirstOrDefault(x => !x.IsBot);
             clientProcessor.SendPacketAsync(LoadMessages.ToPacket(player.ObjectContract.CharacterName));
             yield return new WaitUntil(() => clientProcessor.IsChatMessageLoaded);
+
+            if (PlayerPrefs.HasKey(nameof(StaticFields._incomingMessagesFromWorld)))
+                StaticFields._incomingMessagesFromWorld = Convert.ToBoolean(PlayerPrefs.GetInt(nameof(StaticFields._incomingMessagesFromWorld)));
+            else
+                StaticFields._incomingMessagesFromWorld = true;
+
+            if (PlayerPrefs.HasKey(nameof(StaticFields._incomingMessageFromStory)))
+                StaticFields._incomingMessageFromStory = Convert.ToBoolean(PlayerPrefs.GetInt(nameof(StaticFields._incomingMessageFromStory)));
+            else
+                StaticFields._incomingMessageFromStory = true;
+
+            if (PlayerPrefs.HasKey(nameof(StaticFields._incomingMessageFromPrivateMessage)))
+                StaticFields._incomingMessageFromPrivateMessage = Convert.ToBoolean(PlayerPrefs.GetInt(nameof(StaticFields._incomingMessageFromPrivateMessage)));
+            else
+                StaticFields._incomingMessageFromPrivateMessage = true;
+
+            if (PlayerPrefs.HasKey(nameof(StaticFields._incomingMessageFromClass)))
+                StaticFields._incomingMessageFromClass = Convert.ToBoolean(PlayerPrefs.GetInt(nameof(StaticFields._incomingMessageFromClass)));
+            else
+                StaticFields._incomingMessageFromClass = true;
+
+            if (PlayerPrefs.HasKey(nameof(StaticFields._buttonAnimationInChannelSelection)))
+                StaticFields._buttonAnimationInChannelSelection = Convert.ToBoolean(PlayerPrefs.GetInt(nameof(StaticFields._buttonAnimationInChannelSelection)));
+            else
+                StaticFields._buttonAnimationInChannelSelection = true;
+
+            _channelWorldToggle.isOn = StaticFields._incomingMessagesFromWorld;
+            _channelStoryToggle.isOn = StaticFields._incomingMessageFromStory;
+            _channelPrivateMessageToggle.isOn = StaticFields._incomingMessageFromPrivateMessage;
+            _channelClassToggle.isOn = StaticFields._incomingMessageFromClass;
+
+            if (!StaticFields._buttonAnimationInChannelSelection)
+                _buttonAnimationInChannelSelected.SetActive(false);
+
+            _selectableChannelChat.Init(networkProcessor, _colorChannel, this);
+
+            _networkProcessor.SendPacketAsync(OnValueChangeToggleChannel.ToPacket(Channel.Story, StaticFields._incomingMessageFromStory));
+            _networkProcessor.SendPacketAsync(OnValueChangeToggleChannel.ToPacket(Channel.World, StaticFields._incomingMessagesFromWorld));
+            _networkProcessor.SendPacketAsync(OnValueChangeToggleChannel.ToPacket(Channel.PrivateMessage, StaticFields._incomingMessageFromPrivateMessage));
+            _networkProcessor.SendPacketAsync(OnValueChangeToggleChannel.ToPacket(Channel.Class, StaticFields._incomingMessageFromClass));
+
+            _selectableChannelChat.OpenOrClosePanel();
             CloseChat();
         }
 
@@ -97,7 +182,7 @@ namespace Assets.Sources.UI
             _scrollbar.value = 0f;
         }
 
-        public void AddMessageWithChat(ChatUserData chatUserData)
+        public void AddMessageWithChat(ChatUserData chatUserData, string[] args)
         {
             if (_chatStack.Count > 50)
             {
@@ -111,21 +196,62 @@ namespace Assets.Sources.UI
                 Destroy(rectTransform.gameObject);
             }
 
-            StringBuilder stringBuilder = new StringBuilder();
-
             ClientProcessor clientProcessor = _networkProcessor.GetParentObject();
             string color = InternalGetColorWithChannel(chatUserData.MessageChannel);
 
-            if (chatUserData.MessageChannel != Channel.Server)
+            if (chatUserData.MessageChannel == Channel.World || chatUserData.MessageChannel == Channel.Class)
             {
-                stringBuilder.Append($"<mark>[{Enum.GetName(typeof(Channel), chatUserData.MessageChannel)}]" +
-                    $"</mark><sprite={InternalGetConversionRankId(chatUserData, clientProcessor.GetRank.GetIndexByRankTable(chatUserData.MessageRankId))}" +
-                    $"><color={color}>{chatUserData.MessageCharacterName}: {chatUserData.Message}</color>");
+                string insertTagLink = string.Empty;
+
+                if (chatUserData.MessageChannel == Channel.World) insertTagLink = "worldselectchannel";
+                else if (chatUserData.MessageChannel == Channel.Class) insertTagLink = "classselectchannel";
+
+                _stringBuilder.Append($"<link=\"{insertTagLink}\"><color={color}><u><mark>[{Enum.GetName(typeof(Channel), chatUserData.MessageChannel)}]</mark></link>" +
+                    $"<sprite={InternalGetConversionRankId(chatUserData, clientProcessor.GetRank.GetIndexByRankTable(chatUserData.MessageRankId))}" +
+                    $"><link=\"refName\">{chatUserData.MessageCharacterName}</link></u>: {chatUserData.Message}</color>");
             }
-            else
+            else if (chatUserData.MessageChannel == Channel.Server || chatUserData.MessageChannel == Channel.Story)
             {
-                stringBuilder.Append($"<color={color}>[{Enum.GetName(typeof(Channel), chatUserData.MessageChannel)}] " +
-                    $"{chatUserData.Message}</color>");
+                if (chatUserData.MessageChannel == Channel.Server)
+                {
+                    _stringBuilder.Append($"<color={color}><u><mark>[{Enum.GetName(typeof(Channel), chatUserData.MessageChannel)}]</mark></u> " +
+                        $"{chatUserData.Message}</color>");
+                }
+                else if (chatUserData.MessageChannel == Channel.Story)
+                {
+                    _stringBuilder.Append($"<link=\"storyselectchannel\"><color={color}><u><mark>[{Enum.GetName(typeof(Channel), chatUserData.MessageChannel)}]</mark></u></link> " +
+                        $"{chatUserData.Message}</color>");
+                }
+            }
+            else if (chatUserData.MessageChannel == Channel.PrivateMessage)
+            {
+                try
+                {
+                    string name = _networkProcessor.GetParentObject().GetPlayers.Where(x => x.ObjectContract.ObjId ==
+                        _networkProcessor.GetParentObject().GetCharacterId).FirstOrDefault().ObjectContract.CharacterName;
+
+                    if (string.IsNullOrEmpty(name))
+                        throw new Exception();
+
+                    if (args == null || args.Length == 0)
+                        throw new Exception();
+
+                    if (name.Equals(args[0], StringComparison.OrdinalIgnoreCase))
+                    {
+                        _stringBuilder.Append($"<link=\"prmesselectchannel\"><color={color}><u><mark>[Private Message]" +
+                            $"</mark></link><sprite={InternalGetConversionRankId(chatUserData, clientProcessor.GetRank.GetIndexByRankTable(chatUserData.MessageRankId))}></u>" +
+                            $"<u><link=\"refName\">{chatUserData.MessageCharacterName}</link></u> Tell you: {chatUserData.Message}</color>");
+                    }
+                    else
+                    {
+                        _stringBuilder.Append($"<link=\"prmesselectchannel\"><color={color}><u><mark>[Private Message]" +
+                            $"</mark></u></link>You tell <u><link=\"refName\">{_privateChannelName}</link></u>: {chatUserData.Message}</color>");
+                    }
+                }
+                catch
+                {
+                    _stringBuilder.Append($"<mark><color={color}>[Error]</mark>Unknown error with the private messages channel. Please restart the game. If the error persists, please report it to the game master, thank you.</color>");
+                }
             }
 
             GameObject messagePanel = Instantiate(_prefabBlockMessage, _spawnContent);
@@ -135,6 +261,11 @@ namespace Assets.Sources.UI
 
             if (!messagePanel.TryGetComponent(out RectTransform rect))
                 throw new MissingComponentException(nameof(RectTransform));
+
+            if (!messagePanel.TryGetComponent(out ChatMessageSelected chatMessageSelected))
+                throw new MissingComponentException(nameof(ChatMessageSelected));
+
+            chatMessageSelected.Init(this, textMeshProUGUI);
             _chatStack.Enqueue(rect);
 
             float sizeDeltaAll = 0;
@@ -145,7 +276,8 @@ namespace Assets.Sources.UI
             float rectYAxis = rect.gameObject.transform.localPosition.y;
 
             rect.gameObject.transform.localPosition = new Vector2(rectXAxis, rectYAxis - sizeDeltaAll);
-            textMeshProUGUI.text = stringBuilder.ToString();
+            textMeshProUGUI.text = _stringBuilder.ToString();
+            _stringBuilder.Clear();
             Canvas.ForceUpdateCanvases();
 
             sizeDeltaAll = 0;
@@ -155,7 +287,7 @@ namespace Assets.Sources.UI
             if (sizeDeltaAll >= -360)
                 _rectContent.sizeDelta = new Vector2(_rectContent.sizeDelta.x, sizeDeltaAll);
 
-            if (_scrollbar.value < 0.1f)
+            if (_scrollbar.value <= 0.1f)
                 _scrollbar.value = 0f;
         }
 
@@ -172,15 +304,60 @@ namespace Assets.Sources.UI
 
         private void InternalButtonOnSendhandler()
         {
-            Channel channel = _selectChannel.GetSelectedChannel();
+            Channel channel = _selectableChannelChat.GetSelectedChannel();
+
+            if (channel == Channel.Story)
+            {
+                _errorMessageWindow.ShowWindow("It is impossible to write messages to this channel!", isRequest: false);
+                return;
+            }
 
             ObjectData player = _networkProcessor.GetParentObject().GetPlayers.FirstOrDefault(x => !x.IsBot);
             string characterName = player.ObjectContract.CharacterName;
             string message = _inputField.text;
+            string[] args = null;
 
-            _networkProcessor.GetParentObject().SendPacketAsync(LoadMessages.ToPacket(channel, characterName, message));
+            if (channel == Channel.PrivateMessage)
+            {
+                string[] parseString = message.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parseString.Length == 0 || parseString.Length == 1)
+                {
+                    _errorMessageWindow.ShowWindow("Cannot send message. There was an error formatting the recipient name arguments.", isRequest: false);
+                    return;
+                }
 
-            _inputField.text = string.Empty;
+                string name = _networkProcessor.GetParentObject().GetPlayers.Where(x => x.ObjectContract.ObjId ==
+                    _networkProcessor.GetParentObject().GetCharacterId).FirstOrDefault().ObjectContract.CharacterName;
+
+                if (name.Equals(parseString[0], StringComparison.OrdinalIgnoreCase))
+                {
+                    _errorMessageWindow.ShowWindow("You can't text yourself!", isRequest: false);
+                    return;
+                }
+
+                args = new string[1];
+                args[0] = parseString[0];
+                _privateChannelName = parseString[0];
+
+                int index = 0;
+                foreach (string text in parseString)
+                {
+                    if (index++ == 0)
+                        continue;
+
+                    _stringBuilderPrivateMessage.Append(text);
+                }
+
+                message = _stringBuilderPrivateMessage.ToString();
+                _stringBuilderPrivateMessage.Clear();
+            }
+
+            _networkProcessor.GetParentObject().SendPacketAsync(LoadMessages.ToPacket(channel, characterName, message, args));
+
+            if (channel != Channel.PrivateMessage)
+                ClearInputField();
+            else
+                _inputField.text = $"{_privateChannelName}\\ ";
         }
 
         private int InternalGetConversionRankId(ChatUserData chatUserData, int id)

@@ -19,6 +19,8 @@ namespace Assets.Sources.UI
         [SerializeField] private Text _goldText;
         [SerializeField] private Text _silverText;
         [SerializeField] private Text _copperText;
+        [SerializeField] private AudioSource _open;
+        [SerializeField] private AudioSource _close;
         [SerializeField] private Sprite[] _presentsType;
 
         private INetworkProcessor _networkProcessor;
@@ -37,11 +39,16 @@ namespace Assets.Sources.UI
         {
             _presentContract = presentModel._presentContract;
             _presentImage.sprite = InternalGetSpriteWithPresentType(presentModel._presentContract.PresentType);
+            _open.Play();
 
             DateTime dateTime = new DateTime(_presentContract.Time);
             if (dateTime.CompareTo(DateTime.UtcNow) == -1)
             {
                 _presentCostOpenNow.text = $"Open free!";
+
+                _goldText.text = "0";
+                _silverText.text = "0";
+                _copperText.text = "0";
             }
             else
             {
@@ -72,6 +79,7 @@ namespace Assets.Sources.UI
         private void InternalClickCloseWindow()
         {
             gameObject.SetActive(false);
+            _close.Play();
         }
     }
 }

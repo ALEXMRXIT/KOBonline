@@ -10,6 +10,9 @@ namespace Assets.Sources.MechanicUI
     {
         [SerializeField] private RefinePurchaseAttempt _refine;
         [Space, SerializeField] private MachineModel[] _machineModel;
+        [SerializeField] private AudioSource _open;
+        [SerializeField] private AudioSource _close;
+        [SerializeField] private AudioSource _winner;
         [SerializeField] private Sprite[] _itemsView;
 
         private ItemContract[] _itemContracts;
@@ -26,7 +29,7 @@ namespace Assets.Sources.MechanicUI
                 Debug.Log($"Initialise: {nameof(RefinePurchaseAttempt)} window.");
             }
 
-            _machineModel[index].Init(networkProcessor, _refine, canvas);
+            _machineModel[index].Init(networkProcessor, _refine, canvas, _winner);
         }
 
         public void SetInMachineTypePresent(int index, int typePresent)
@@ -52,6 +55,11 @@ namespace Assets.Sources.MechanicUI
         public void SetStatus(int index, bool status)
         {
             _machineModel[index].SetStatusMachine(status);
+
+            if (status)
+                _open.Play();
+            else
+                _close.Play();
         }
 
         public void SetStatusRefine(bool status)

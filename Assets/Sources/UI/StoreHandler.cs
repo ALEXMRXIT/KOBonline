@@ -11,10 +11,13 @@ namespace Assets.Sources.UI
     public sealed class StoreHandler : MonoBehaviour
     {
         [SerializeField] private PurchaseWindow _purchaseWindow;
+        [SerializeField] private AudioSource _open;
+        [SerializeField] private AudioSource _close;
 
         public static StoreHandler Instance;
 
         private INetworkProcessor _networkProcessor;
+        private bool _statusWindow = false;
 
         private void Awake()
         {
@@ -28,7 +31,13 @@ namespace Assets.Sources.UI
 
         public void ActiveStorePanel()
         {
-            gameObject.SetActive(true);
+            _statusWindow = !_statusWindow;
+            gameObject.SetActive(_statusWindow);
+
+            if (!_statusWindow)
+                _close.Play();
+            else
+                _close.Play();
         }
 
         public void OnPurchaseCompleted(Product product)

@@ -1728,6 +1728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb65cc2993621482aa1ab1305150d67b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _useClientForLocalConnectServer: 0
 --- !u!114 &743008534
 MonoBehaviour:
   m_ObjectHideFlags: 0

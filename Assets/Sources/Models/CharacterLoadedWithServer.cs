@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Audio;
 using Assets.Sources.UI;
 using System.Collections;
 using Assets.Sources.Network;
@@ -24,6 +25,9 @@ namespace Assets.Sources.Models
         [SerializeField] private PresentManager _presentManager;
         [SerializeField] private SettingsHandler _settingsHandler;
         [SerializeField] private GameObject _experiencePanel;
+        [SerializeField] private AudioMixerGroup _musics;
+        [SerializeField] private AudioMixerGroup _sounds;
+        [SerializeField] private AudioMixerGroup _death;
 
         private INetworkProcessor _clientProcessor;
         private GameObject _tempModelForOnlyCreateScene;
@@ -105,6 +109,8 @@ namespace Assets.Sources.Models
             _clientProcessor.GetParentObject().GetPresentManager = _presentManager.GetInstance();
             yield return _presentManager.InternalLoadPresentWithCharacter(_clientProcessor);
             _settingsHandler.InitializeSettingsWindow();
+
+            _clientProcessor.SendPacketAsync(CorrectData.ToPacket());
 
             yield return new WaitForSecondsRealtime(2f);
 

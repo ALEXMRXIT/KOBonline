@@ -42,6 +42,8 @@ namespace Assets.Sources.UI
         [SerializeField] private GameObject _panelInformation;
         [Space, SerializeField] private AudioSource _skillTakeSoundEffect;
         [SerializeField] private AudioSource _skillDropSoundEffect;
+        [SerializeField] private AudioSource _open;
+        [SerializeField] private AudioSource _close;
         [Space, SerializeField] private List<Skill> _skills = new List<Skill>();
 
         public static SkillManager Instance;
@@ -194,6 +196,11 @@ namespace Assets.Sources.UI
             CloseAllSelectedMenu();
             _statusWindow = !_statusWindow;
             gameObject.SetActive(_statusWindow);
+
+            if (!_statusWindow)
+                _close.Play();
+            else
+                _open.Play();
         }
     }
 }

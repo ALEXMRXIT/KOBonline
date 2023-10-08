@@ -44,6 +44,7 @@ namespace Assets.Sources.Network.InPacket
                     case StatsCode.MoveSpeed: _objectData.ObjectContract.MoveSpeed = networkPacket.ReadInt(); break;
                     case StatsCode.AttackSpeed: _objectData.ObjectContract.AttackSpeed = networkPacket.ReadFloat(); break;
                     case StatsCode.Energy: _objectData.ObjectContract.Energy = networkPacket.ReadInt(); break;
+                    case StatsCode.NextExperience: _objectData.ObjectContract.NextExperience = networkPacket.ReadLong(); break;
                 }
             }
         }
@@ -80,6 +81,7 @@ namespace Assets.Sources.Network.InPacket
                     }
                     else if (ClientProcessor.ClientSession.ClientSessionStatus == SessionStatus.SessionGameMenu)
                     {
+                        MainUI.Instance.UpdateLevel(_objectData.ObjectContract);
                         MainUI.Instance.UpdateExperience(_objectData.ObjectContract);
                         MainUI.Instance.UpdateEnergy(_objectData.ObjectContract);
                     }

@@ -27,15 +27,17 @@ namespace Assets.Sources.MechanicUI
         private int _typePresent;
         private RefinePurchaseAttempt _refine;
         private PanelObject _panelObject;
+        private AudioSource _winner;
 
         public void Init(INetworkProcessor networkProcessor,
-            RefinePurchaseAttempt refinePurchaseAttempt, Canvas canvas)
+            RefinePurchaseAttempt refinePurchaseAttempt, Canvas canvas, AudioSource winner)
         {
             for (int iterator = 0; iterator < _slots.Length; iterator++)
                 _slots[iterator].Init(canvas);
 
             _networkProcessor = networkProcessor;
             _refine = refinePurchaseAttempt;
+            _winner = winner;
 
             _takeItem.onClick.AddListener(InternalTakeItemClickHandler);
             _playAgain.onClick.AddListener(InternalPlayAgainClickHandler);
@@ -117,7 +119,10 @@ namespace Assets.Sources.MechanicUI
             }
 
             if (_duration >= DURATION_MAX)
+            {
                 _indexItem = index;
+                _winner.Play();
+            }
         }
 
         private int IncrementIndex(ref int value)

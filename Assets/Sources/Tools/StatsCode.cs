@@ -16,6 +16,7 @@
         public const byte MoveSpeed = 0x0B;
         public const byte AttackSpeed = 0x0C;
         public const byte Energy = 0x0D;
+        public const byte NextExperience = 0x0F;
     }
 
     public static class ColorCode

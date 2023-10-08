@@ -30,10 +30,20 @@ namespace Assets.Sources.Network.InPacket
                     networkPacket.ReadByte(), networkPacket.ReadInt(), networkPacket.InternalReadBool(),
                         networkPacket.ReadInt(), networkPacket.ReadString(), networkPacket.ReadString());
             }
+
+            if (networkPacket.InternalReadBool())
+            {
+                int length = networkPacket.ReadInt();
+                _args = new string[length];
+
+                for (int iterator = 0; iterator < length; iterator++)
+                    _args[iterator] = networkPacket.ReadString();
+            }
         }
 
         private readonly ClientProcessor _client;
         private readonly ChatUserData[] _datas;
+        private readonly string[] _args;
 
         public override PacketImplementCodeResult RunImpl()
         {
@@ -45,7 +55,7 @@ namespace Assets.Sources.Network.InPacket
             try
             {
                 foreach (ChatUserData chatUserData in _datas)
-                    ChatManager.Instance.AddMessageWithChat(chatUserData);
+                    ChatManager.Instance.AddMessageWithChat(chatUserData, _args);
 
                 _client.SetLoadedChatMessages();
             }

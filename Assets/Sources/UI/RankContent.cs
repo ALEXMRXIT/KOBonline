@@ -77,7 +77,7 @@ namespace Assets.Sources.UI
                     throw new MissingComponentException(nameof(PlayerRankModel));
 
                 playerRankModel.SetSpriteRanks(_mainUI.GetAllSpriteRankWithMainMenu());
-                playerRankModel.SetModel(players[iterator], networkProcessor, contentType);
+                playerRankModel.SetModel(players[iterator], networkProcessor, contentType, iterator + 1);
             }
         }
     }

@@ -19,7 +19,7 @@ namespace Assets.Sources.Network.OutPacket
         }
 
         public static NetworkPacket ToPacket(Channel channel,
-            string characterName, string message)
+            string characterName, string message, string[] _args = null)
         {
             NetworkPacket packet = new NetworkPacket(0x08);
 
@@ -27,6 +27,15 @@ namespace Assets.Sources.Network.OutPacket
             packet.WriteString(characterName);
             packet.WriteByte((byte)channel);
             packet.WriteString(message);
+
+            if (_args != null)
+            {
+                packet.InternalWriteBool(true);
+                packet.WriteInt(_args.Length);
+
+                for (int iterator = 0; iterator < _args.Length; iterator++)
+                    packet.WriteString(_args[iterator]);
+            }
 
             return packet;
         }

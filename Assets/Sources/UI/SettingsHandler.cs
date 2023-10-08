@@ -11,6 +11,8 @@ namespace Assets.Sources.UI
     public sealed class SettingsHandler : MonoBehaviour
     {
         [SerializeField] private ColorStatusButton _colorStatusButton;
+        [SerializeField] private AudioSource _open;
+        [SerializeField] private AudioSource _close;
         [SerializeField] private RankModel[] _windowModels;
 
         private RankModel _lastActiveRank;
@@ -41,6 +43,7 @@ namespace Assets.Sources.UI
             if (_lastActiveRank != null)
                 _lastActiveRank._rankContent.SetFlagActiveContent(false);
 
+            _open.Play();
             model._rankContent.SetFlagActiveContent(true);
             _lastActiveRank = model;
         }
@@ -49,6 +52,11 @@ namespace Assets.Sources.UI
         {
             _statusWindow = !_statusWindow;
             gameObject.SetActive(_statusWindow);
+
+            if (!_statusWindow)
+                _close.Play();
+            else
+                _open.Play();
         }
     }
 }

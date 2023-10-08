@@ -41,10 +41,14 @@ namespace Assets.Sources.UI
         [SerializeField] private Text _rankText;
         [SerializeField] private Text _winRateText;
         [SerializeField] private Text _numberOfFightsText;
+        [SerializeField] private Text _healthText;
+        [SerializeField] private Text _manaText;
         [SerializeField] private Button _buttonUpgradeStrength;
         [SerializeField] private Button _buttonUpgradeAgility;
         [SerializeField] private Button _buttonUpgradeIntelligence;
         [SerializeField] private Button _buttonUpgradeEndurance;
+        [SerializeField] private AudioSource _open;
+        [SerializeField] private AudioSource _close;
         [SerializeField] private WinRateConfigeration[] _winRateConfigerations;
 
         private bool _statusWindow = true;
@@ -85,6 +89,8 @@ namespace Assets.Sources.UI
             InternalUpdateRankText(playerContract.PlayerRank.ToString());
             InternalUpdateWinRateText($"{InternalParseSingleToStringIwthForma(InternalWinRateCalculate(playerContract))} %");
             InternalUpdateNumberOfFightsText((playerContract.NumberWinners + playerContract.NumberLosses).ToString());
+            InternalUpdateHealthText(playerContract.Health.ToString());
+            InternalUpdateManaText(playerContract.Mana.ToString());
 
             for (int iterator = 0; iterator < _winRateConfigerations.Length; iterator++)
             {
@@ -193,6 +199,10 @@ namespace Assets.Sources.UI
 
         public void InternalUpdateNumberOfFightsText(string message) => _numberOfFightsText.text = message;
 
+        public void InternalUpdateHealthText(string message) => _healthText.text = message;
+
+        public void InternalUpdateManaText(string message) => _manaText.text = message;
+
         private int InternalParseDamage(int damage)
         {
             if (damage < 1000)
@@ -207,6 +217,11 @@ namespace Assets.Sources.UI
         {
             _statusWindow = !_statusWindow;
             gameObject.SetActive(_statusWindow);
+
+            if (!_statusWindow)
+                _close.Play();
+            else
+                _open.Play();
         }
     }
 }

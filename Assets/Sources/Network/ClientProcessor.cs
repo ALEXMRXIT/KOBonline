@@ -26,7 +26,10 @@ namespace Assets.Sources.Network
     [RequireComponent(typeof(DontDestroyComponent))]
     public sealed class ClientProcessor : MonoBehaviour, INetworkProcessor
     {
+        [SerializeField] private bool _useClientForLocalConnectServer;
+
         private ConcurrentQueue<byte[]> _queueBufferFromServer;
+        private ConcurrentQueue<string> _queueBufferForErrorConnection;
         private PacketImplentation _packetHandlerImplementation;
         private TcpClient _tcpClient;
         private NetworkStream _networkStream;
@@ -93,7 +96,11 @@ namespace Assets.Sources.Network
             _characterRankTable = new RankTable();
             _temporaryContainerForPlayerRanks = new List<PlayerRankData>();
 
-            _endPoint = new IPEndPoint(IPAddress.Parse("207.154.232.128"), 27018);
+            if (!_useClientForLocalConnectServer)
+                _endPoint = new IPEndPoint(IPAddress.Parse("207.154.232.128"), 27018);
+            else
+                _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 27018);
+
             _tcpClient = new TcpClient();
 
             try
@@ -113,6 +120,7 @@ namespace Assets.Sources.Network
             }
 
             _queueBufferFromServer = new ConcurrentQueue<byte[]>();
+            _queueBufferForErrorConnection = new ConcurrentQueue<string>();
             _packetHandlerImplementation = new PacketImplentation();
         }
 
@@ -155,6 +163,12 @@ namespace Assets.Sources.Network
                         $"Exception: {packetImplementCodeResult.InnerException.Message}\n" +
                         $"File: {packetImplementCodeResult.FireException}");
                 }
+            }
+
+            if (_queueBufferForErrorConnection.TryDequeue(out string message))
+            {
+                ErrorMessageWindow.Instance.ShowWindow(message, isRequest: false, () => Application.Quit());
+                Terminate();
             }
         }
 
@@ -227,21 +241,9 @@ namespace Assets.Sources.Network
                     _gameCrypt.DecryptBuffer(GameCryptProtection.KEY_CRYPT, buffer);
                     _queueBufferFromServer.Enqueue(buffer);
                 }
-                catch (OperationCanceledException canceledException)
+                catch
                 {
-                    Debug.Log(canceledException.Message);
-
-                    if (IsConnected)
-                        Terminate();
-
-                    return;
-                }
-                catch (Exception exception)
-                {
-                    Debug.Log(exception.Message);
-
-                    if (IsConnected)
-                        Terminate();
+                    _queueBufferForErrorConnection.Enqueue("You have been disconnected from the server.");
                 }
 
                 cancellationTokenSource.Token.ThrowIfCancellationRequested();

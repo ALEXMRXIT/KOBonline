@@ -35,21 +35,25 @@ namespace Assets.Sources.Models
             _animationDeath = new StateAnimationDeath();
             _animationIdle = new StateAnimationIdle();
 
-            _coroutine = StartCoroutine(InternalUpdate());
+            if (!data.IsBot)
+                _coroutine = StartCoroutine(InternalUpdate());
         }
 
         public void InternalStopCoroutine()
         {
             if (_coroutine != null)
+            {
                 StopCoroutine(_coroutine);
+                _coroutine = null;
+            }
         }
 
         private IEnumerator InternalUpdate()
         {
             while (true)
             {
-                _processor.SendPacketAsync(InternalUpdatePosition.ToPacket(transform.position.x, transform.position.y, transform.position.z));
-                yield return new WaitForSeconds(0.4f);
+                _processor.SendPacketAsync(InternalUpdatePosition.ToPacket());
+                yield return new WaitForSeconds(0.5f);
             }
         }
 

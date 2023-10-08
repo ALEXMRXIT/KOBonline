@@ -220,7 +220,7 @@ namespace Assets.Sources.Models.Characters
         private void OnDestroy()
         {
             _networkProcessor.GetParentObject().GetTimeRound = null;
-            _networkProcessor.GetParentObject().GetPlayers.RemoveAll(x => x.IsBot);
+            _networkProcessor.GetParentObject().GetPlayers.RemoveAll(x => x.ObjId != _networkProcessor.GetParentObject().GetCharacterId);
             _networkProcessor.GetParentObject().SetAbilityWithBattleMode(null);
             _networkProcessor.GetParentObject().GetNetworkDataLoader.Reset();
         }

@@ -72,7 +72,6 @@ namespace Assets.Sources.Network.InPacket
             {
                 SpecificationManager specification = SpecificationManager.Instance;
 
-                specification.gameObject.SetActive(true);
                 specification.InternalUpdateScoreSpecificationText(_playerContract.ScoreSpecification.ToString());
 
                 switch (_specification)
@@ -85,6 +84,7 @@ namespace Assets.Sources.Network.InPacket
                         specification.InternalUpdateIntelligenceText($"{_playerContract.Intelligence + _playerContract.AdditionalIntelligence}{ColorCode.ColorGreen}+({_playerContract.AdditionalIntelligence})</color>");
                         specification.InternalUpdateMagicAttackText($"{_playerContract.MagicAttack}~{InternalParseDamage(_playerContract.MagicAttack)}");
                         specification.InternalUpdateMagicDefenceText(_playerContract.MagicDefence.ToString());
+                        specification.InternalUpdateManaText(_playerContract.Mana.ToString());
                         break;
                     case Specification.Agility:
                         specification.InternalUpdateAgilityText($"{_playerContract.Agility+_playerContract.AdditionalAgility}{ColorCode.ColorGreen}+({_playerContract.AdditionalAgility})</color>");
@@ -97,6 +97,7 @@ namespace Assets.Sources.Network.InPacket
                         break;
                     case Specification.Endurance:
                         specification.InternalUpdateEnduranceText($"{_playerContract.Endurance+_playerContract.AdditionalEndurance}{ColorCode.ColorGreen}+({_playerContract.AdditionalEndurance})</color>");
+                        specification.InternalUpdateHealthText(_playerContract.Health.ToString());
                         break;
                 }
             }

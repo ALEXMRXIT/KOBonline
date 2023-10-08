@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Assets.Sources.Network;
@@ -12,6 +13,8 @@ namespace Assets.Sources.Models
         [SerializeField] private Button _button;
 
         private INetworkProcessor _networkProcessor;
+        private bool _isRequest;
+        private Action _action;
 
         public static ErrorMessageWindow Instance;
 
@@ -24,15 +27,21 @@ namespace Assets.Sources.Models
             gameObject.SetActive(false);
         }
 
-        public void ShowWindow(string message)
+        public void ShowWindow(string message, bool isRequest = true, Action action = null)
         {
             gameObject.SetActive(true);
+            _isRequest = isRequest;
             _text.text = message;
+            _action = action;
         }
 
         private void InternalOnClickHandler()
         {
-            _networkProcessor.SendPacketAsync(CheckErrorMessageService.ToPacket());
+            if (_action != null)
+                _action();
+
+            if (_isRequest)
+                _networkProcessor.SendPacketAsync(CheckErrorMessageService.ToPacket());
             gameObject.SetActive(false);
         }
     }

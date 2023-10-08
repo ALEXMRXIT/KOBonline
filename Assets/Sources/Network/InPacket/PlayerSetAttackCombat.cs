@@ -37,7 +37,10 @@ namespace Assets.Sources.Network.InPacket
                 ObjectData player = _client.GetPlayers.FirstOrDefault(x => x.ObjId == _objId);
 
                 if (player.GameObjectModel.TryGetComponent(out CharacterMovement characterMovement))
+                {
+                    characterMovement.InternalStopCoroutine();
                     GameObject.Destroy(characterMovement);
+                }
 
                 player.ClientAnimationState.SetCharacterState(player._stateAnimationIdle);
             }

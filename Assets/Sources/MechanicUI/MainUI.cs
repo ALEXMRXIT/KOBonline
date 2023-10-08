@@ -47,12 +47,17 @@ namespace Assets.Sources.MechanicUI
         {
             UpdateEnergy(playerContract);
             UpdateExperience(playerContract);
-            _characterLevel.text = $"Lvl. {playerContract.Level}";
+            UpdateLevel(playerContract);
             _characterName.text = $"{playerContract.CharacterName}";
             _rankValue.text = $"{playerContract.PlayerRank}";
             UpdateMoney(playerContract.Crowns, playerContract.SoulCrowns);
 
             _iconRank.sprite = _ranksSprite[_networkProcessor.GetParentObject().GetRank.GetIndexByRankTable(playerContract.PlayerRank)];
+        }
+
+        public void UpdateLevel(PlayerContract playerContract)
+        {
+            _characterLevel.text = $"Lvl. {playerContract.Level}";
         }
 
         public void UpdateExperience(PlayerContract playerContract)
