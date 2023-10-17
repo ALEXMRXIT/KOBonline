@@ -41,6 +41,9 @@ namespace Assets.Sources.UI
         [SerializeField] private Toggle _channelPrivateMessageToggle;
         [SerializeField] private Toggle _channelClassToggle;
         [SerializeField] private GameObject _buttonAnimationInChannelSelected;
+        [SerializeField] private RectTransform _windowCharacterManager;
+        [SerializeField] private ManagerSelectableCharacterWithChat _managerSelectableCharacterWithChat;
+        [SerializeField] private Transform _spawnSelectablePanel;
 
         private Animator _chatAnimator;
         private Button _chatButton;
@@ -89,7 +92,12 @@ namespace Assets.Sources.UI
         public void SetNameForArgs(string name)
         {
             if (!_inputField.text.Contains(name))
-                _inputField.text = _inputField.text.Insert(0, name + "/ ");
+            {
+                if (!string.IsNullOrEmpty(_inputField.text))
+                    _inputField.text = $"{name}/ ";
+                else
+                    _inputField.text = _inputField.text.Insert(0, name + "/ ");
+            }
             _privateChannelName = name;
         }
 
@@ -101,6 +109,11 @@ namespace Assets.Sources.UI
             StaticFields._buttonAnimationInChannelSelection = false;
             PlayerPrefs.SetInt(nameof(StaticFields._buttonAnimationInChannelSelection), Convert.ToInt32(StaticFields._buttonAnimationInChannelSelection));
             _buttonAnimationInChannelSelected.SetActive(false);
+        }
+
+        public void InviteOnDuel(string inviteCharacterName)
+        {
+
         }
 
         private void Start()
@@ -156,6 +169,7 @@ namespace Assets.Sources.UI
                 _buttonAnimationInChannelSelected.SetActive(false);
 
             _selectableChannelChat.Init(networkProcessor, _colorChannel, this);
+            _managerSelectableCharacterWithChat.Init(_windowCharacterManager, _spawnSelectablePanel, this);
 
             _networkProcessor.SendPacketAsync(OnValueChangeToggleChannel.ToPacket(Channel.Story, StaticFields._incomingMessageFromStory));
             _networkProcessor.SendPacketAsync(OnValueChangeToggleChannel.ToPacket(Channel.World, StaticFields._incomingMessagesFromWorld));
@@ -265,7 +279,7 @@ namespace Assets.Sources.UI
             if (!messagePanel.TryGetComponent(out ChatMessageSelected chatMessageSelected))
                 throw new MissingComponentException(nameof(ChatMessageSelected));
 
-            chatMessageSelected.Init(this, textMeshProUGUI);
+            chatMessageSelected.Init(this, textMeshProUGUI, _managerSelectableCharacterWithChat);
             _chatStack.Enqueue(rect);
 
             float sizeDeltaAll = 0;

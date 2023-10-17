@@ -8,11 +8,14 @@ namespace Assets.Sources.UI.Utilites
     {
         private ChatManager _chat;
         private TextMeshProUGUI _textMeshProUGUI;
+        private ManagerSelectableCharacterWithChat _managerSelectableCharacterWithChat;
 
-        public void Init(ChatManager chatManager, TextMeshProUGUI textMeshProUGUI)
+        public void Init(ChatManager chatManager, TextMeshProUGUI textMeshProUGUI,
+            ManagerSelectableCharacterWithChat managerSelectableCharacterWithChat)
         {
             _chat = chatManager;
             _textMeshProUGUI = textMeshProUGUI;
+            _managerSelectableCharacterWithChat = managerSelectableCharacterWithChat;
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -42,8 +45,13 @@ namespace Assets.Sources.UI.Utilites
                         _chat.ClearInputField();
                         break;
                     case "refName":
-                        _chat.GetRefSelectableChannelChat().InternalOnButtonClickPrivateMessageHandler(isOpenWindow: false);
-                        _chat.SetNameForArgs(linkInfo.GetLinkText());
+                        Vector3 worldPointInRectangle;
+                        RectTransformUtility.ScreenPointToWorldPointInRectangle(_textMeshProUGUI.rectTransform,
+                            eventData.pressPosition, null, out worldPointInRectangle);
+
+                        _managerSelectableCharacterWithChat.SetPosition(worldPointInRectangle);
+                        _managerSelectableCharacterWithChat.SetStatusGameObject(status: true);
+                        _managerSelectableCharacterWithChat.SetArgs(new string[] { linkInfo.GetLinkText() });
                         break;
                 }
             }

@@ -37,7 +37,7 @@ namespace Assets.Sources.UI
             if (!_statusWindow)
                 _close.Play();
             else
-                _close.Play();
+                _open.Play();
         }
 
         public void OnPurchaseCompleted(Product product)

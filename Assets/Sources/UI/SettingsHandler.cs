@@ -43,7 +43,7 @@ namespace Assets.Sources.UI
             if (_lastActiveRank != null)
                 _lastActiveRank._rankContent.SetFlagActiveContent(false);
 
-            _open.Play();
+            _close.Play();
             model._rankContent.SetFlagActiveContent(true);
             _lastActiveRank = model;
         }
