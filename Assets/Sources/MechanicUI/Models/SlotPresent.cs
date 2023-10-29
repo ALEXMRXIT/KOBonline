@@ -13,6 +13,7 @@ namespace Assets.Sources.MechanicUI.Models
     {
         [SerializeField] private GameObject _effect;
         [SerializeField] private string _colorArguments;
+        [SerializeField] private bool _ignoreSlot = false;
 
         private Image _image;
         private long _itemId;
@@ -25,6 +26,11 @@ namespace Assets.Sources.MechanicUI.Models
             _canvas = canvas;
 
             SetEffectDisable();
+        }
+
+        public bool IfIgnoreSlots()
+        {
+            return _ignoreSlot;
         }
 
         public void SetImage(Sprite sprite)

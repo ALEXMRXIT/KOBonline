@@ -28,6 +28,7 @@ namespace Assets.Sources.Models
         [SerializeField] private AudioMixerGroup _musics;
         [SerializeField] private AudioMixerGroup _sounds;
         [SerializeField] private AudioMixerGroup _death;
+        [SerializeField] private SingleMode _singleMode;
 
         private INetworkProcessor _clientProcessor;
         private GameObject _tempModelForOnlyCreateScene;
@@ -58,6 +59,8 @@ namespace Assets.Sources.Models
             _presentManager.HiddenViewModel();
             _presentManager.OpenOrCloseWindow();
             _settingsHandler.OpenOrClosePanel();
+            _singleMode.OpenOrClosePanel();
+            MainUI.Instance.GetInviteHandlerRef().HidenInviteMessage();
 
             _isWillCreateCharacter = true;
 
@@ -109,6 +112,8 @@ namespace Assets.Sources.Models
             _clientProcessor.GetParentObject().GetPresentManager = _presentManager.GetInstance();
             yield return _presentManager.InternalLoadPresentWithCharacter(_clientProcessor);
             _settingsHandler.InitializeSettingsWindow();
+            yield return MainUI.Instance.GetInviteHandlerRef().Initialization(_clientProcessor);
+            yield return _singleMode.Initialise(_clientProcessor);
 
             _clientProcessor.SendPacketAsync(CorrectData.ToPacket());
 

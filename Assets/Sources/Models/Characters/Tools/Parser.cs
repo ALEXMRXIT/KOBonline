@@ -41,9 +41,22 @@ namespace Assets.Sources.Models.Characters.Tools
 
         public static string ConvertTimeSpanToTimeString(TimeSpan timeSpan)
         {
-            string hours = timeSpan.Hours < 10 ? $"0{timeSpan.Hours}" : timeSpan.Hours.ToString();
-            string minutes = timeSpan.Minutes < 10 ? $"0{timeSpan.Minutes}" : timeSpan.Minutes.ToString();
-            string seconds = timeSpan.Seconds < 10 ? $"0{timeSpan.Seconds}" : timeSpan.Seconds.ToString();
+            string hours = string.Empty;
+            string minutes = string.Empty;
+            string seconds = string.Empty;
+
+            if (timeSpan.Hours > 0)
+                hours = timeSpan.Hours < 10 ? $"0{timeSpan.Hours}" : timeSpan.Hours.ToString();
+            else
+                hours = "00";
+            if (timeSpan.Minutes > 0)
+                minutes = timeSpan.Minutes < 10 ? $"0{timeSpan.Minutes}" : timeSpan.Minutes.ToString();
+            else
+                minutes = "00";
+            if (timeSpan.Seconds > 0)
+                seconds = timeSpan.Seconds < 10 ? $"0{timeSpan.Seconds}" : timeSpan.Seconds.ToString();
+            else
+                seconds = "00";
 
             return $"{hours}:{minutes}:{seconds}";
         }

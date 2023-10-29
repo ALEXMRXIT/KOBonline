@@ -8,7 +8,7 @@ namespace Assets.Sources.Scenes
     {
         private void Awake()
         {
-            StartCoroutine(PlayLogo(10f));
+            StartCoroutine(PlayLogo(8f));
         }
 
         private IEnumerator PlayLogo(float duration)

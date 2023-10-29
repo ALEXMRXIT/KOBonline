@@ -113,7 +113,7 @@ namespace Assets.Sources.UI
 
         public void InviteOnDuel(string inviteCharacterName)
         {
-
+            _networkProcessor.GetParentObject().SendPacketAsync(InviteOnDuelService.ToPacket(0x00, inviteCharacterName));
         }
 
         private void Start()
@@ -130,10 +130,6 @@ namespace Assets.Sources.UI
 
             if (clientProcessor == null)
                 throw new NullReferenceException(nameof(ClientProcessor));
-
-            ObjectData player = clientProcessor.GetParentObject().GetPlayers.FirstOrDefault(x => !x.IsBot);
-            clientProcessor.SendPacketAsync(LoadMessages.ToPacket(player.ObjectContract.CharacterName));
-            yield return new WaitUntil(() => clientProcessor.IsChatMessageLoaded);
 
             if (PlayerPrefs.HasKey(nameof(StaticFields._incomingMessagesFromWorld)))
                 StaticFields._incomingMessagesFromWorld = Convert.ToBoolean(PlayerPrefs.GetInt(nameof(StaticFields._incomingMessagesFromWorld)));
@@ -178,6 +174,8 @@ namespace Assets.Sources.UI
 
             _selectableChannelChat.OpenOrClosePanel();
             CloseChat();
+
+            yield break;
         }
 
         public void OpenChat()

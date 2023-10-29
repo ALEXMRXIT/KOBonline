@@ -49,11 +49,17 @@ namespace Assets.Sources.UI
         [SerializeField] private Button _buttonUpgradeEndurance;
         [SerializeField] private AudioSource _open;
         [SerializeField] private AudioSource _close;
+        [SerializeField] private Animator _animatorButton;
+        [SerializeField] private Image _buttonWindow;
+        [SerializeField] private Sprite _originalSprite;
+        [SerializeField] private Sprite _originalUpgradeButtonSprite;
         [SerializeField] private WinRateConfigeration[] _winRateConfigerations;
 
         private bool _statusWindow = true;
         private INetworkProcessor _networkProcessor;
         private PlayerContract _playerContract;
+        private Image[] _imagesButton;
+        private Animator[] _animatorButtons;
 
         public static SpecificationManager Instance;
 
@@ -70,6 +76,20 @@ namespace Assets.Sources.UI
 
             PlayerContract playerContract = data.ObjectContract;
             _playerContract = playerContract;
+
+            _imagesButton = new Image[4];
+
+            _imagesButton[0] = _buttonUpgradeStrength.GetComponent<Image>();
+            _imagesButton[1] = _buttonUpgradeAgility.GetComponent<Image>();
+            _imagesButton[2] = _buttonUpgradeIntelligence.GetComponent<Image>();
+            _imagesButton[3] = _buttonUpgradeEndurance.GetComponent<Image>();
+
+            _animatorButtons = new Animator[4];
+
+            _animatorButtons[0] = _buttonUpgradeStrength.GetComponent<Animator>();
+            _animatorButtons[1] = _buttonUpgradeAgility.GetComponent<Animator>();
+            _animatorButtons[2] = _buttonUpgradeIntelligence.GetComponent<Animator>();
+            _animatorButtons[3] = _buttonUpgradeEndurance.GetComponent<Animator>();
 
             InternalUpdateScoreSpecificationText(playerContract.ScoreSpecification.ToString());
             InternalUpdateStrengthText($"{_playerContract.Strength+_playerContract.AdditionalStrength}{ColorCode.ColorGreen}+({_playerContract.AdditionalStrength})</color>");
@@ -134,7 +154,11 @@ namespace Assets.Sources.UI
         private void InternalOnButtonUpgradeStrengthHandler()
         {
             if (_playerContract.ScoreSpecification <= 0)
+            {
+                _animatorButton.enabled = false;
+                _buttonWindow.sprite = _originalSprite;
                 return;
+            }
 
             _networkProcessor.SendPacketAsync(SendUpgradeSpecification.ToPacket(Specification.Strength, 1));
         }
@@ -142,7 +166,11 @@ namespace Assets.Sources.UI
         private void InternalOnButtonUpgradeAgilityHandler()
         {
             if (_playerContract.ScoreSpecification <= 0)
+            {
+                _animatorButton.enabled = false;
+                _buttonWindow.sprite = _originalSprite;
                 return;
+            }
 
             _networkProcessor.SendPacketAsync(SendUpgradeSpecification.ToPacket(Specification.Agility, 1));
         }
@@ -150,7 +178,11 @@ namespace Assets.Sources.UI
         private void InternalOnButtonUpgradeIntelligenceHandler()
         {
             if (_playerContract.ScoreSpecification <= 0)
+            {
+                _animatorButton.enabled = false;
+                _buttonWindow.sprite = _originalSprite;
                 return;
+            }
 
             _networkProcessor.SendPacketAsync(SendUpgradeSpecification.ToPacket(Specification.Intelligence, 1));
         }
@@ -158,12 +190,38 @@ namespace Assets.Sources.UI
         private void InternalOnButtonUpgradeEnduranceHandler()
         {
             if (_playerContract.ScoreSpecification <= 0)
+            {
+                _animatorButton.enabled = false;
+                _buttonWindow.sprite = _originalSprite;
                 return;
+            }
 
             _networkProcessor.SendPacketAsync(SendUpgradeSpecification.ToPacket(Specification.Endurance, 1));
         }
 
-        public void InternalUpdateScoreSpecificationText(string message) => _scoreSpecificationText.text = message;
+        public void InternalUpdateScoreSpecificationText(string message)
+        {
+            if (_playerContract.ScoreSpecification > 0)
+            {
+                _animatorButton.enabled = true;
+
+                for (int iterator = 0; iterator < _animatorButtons.Length; iterator++)
+                    _animatorButtons[iterator].enabled = true;
+            }
+            else
+            {
+                _animatorButton.enabled = false;
+                _buttonWindow.sprite = _originalSprite;
+
+                for (int iterator = 0; iterator < _animatorButtons.Length; iterator++)
+                    _animatorButtons[iterator].enabled = false;
+
+                for (int iterator = 0; iterator < _animatorButtons.Length; iterator++)
+                    _imagesButton[iterator].sprite = _originalUpgradeButtonSprite;
+            }
+
+            _scoreSpecificationText.text = message;
+        }
 
         public void InternalUpdateStrengthText(string message) => _strengthText.text = message;
 

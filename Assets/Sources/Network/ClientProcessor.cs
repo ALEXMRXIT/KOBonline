@@ -46,6 +46,7 @@ namespace Assets.Sources.Network
         private bool _isFirstSkillLoaded = false;
         private bool _isRankTableLoaded = false;
         private bool _isLoadedPresents = false;
+        private bool _isLoadedSinglePlayer = false;
         private List<SkillContract> _skillContracts;
         private List<SkillData> _skillDatas;
         private List<Skill> _skills;
@@ -55,6 +56,7 @@ namespace Assets.Sources.Network
         private long _characterId;
         private List<PlayerRankData> _temporaryContainerForPlayerRanks;
         private PresentManager _presentManager;
+        private SinglePlayerDataModel[] _singlePlayerDataModels;
 
         public bool IsConnected => _tcpClient.Connected;
         public List<ObjectData> GetPlayers { get => _players; }
@@ -67,6 +69,7 @@ namespace Assets.Sources.Network
         public bool IsFirstLoadedSkillData { get => _isFirstSkillLoaded; }
         public bool IsRankTableLoaded { get => _isRankTableLoaded; }
         public bool IsLoadedPresents { get => _isLoadedPresents; }
+        public bool IsLoadedSinglePlayer { get => _isLoadedSinglePlayer; }
         public List<SkillContract> GetSkillContracts { get => _skillContracts; set => _skillContracts = value; }
         public List<SkillData> GetSkillDatas { get => _skillDatas; set => _skillDatas = value; }
         public List<Skill> GetSkills { get => _skills; set => _skills = value; }
@@ -75,6 +78,7 @@ namespace Assets.Sources.Network
         public long GetCharacterId { get => _characterId; set => _characterId = value; }
         public List<PlayerRankData> GetTemporaryContainerForPlayerRanks { get => _temporaryContainerForPlayerRanks; }
         public PresentManager GetPresentManager { get => _presentManager; set => _presentManager = value; }
+        public SinglePlayerDataModel[] SinglePlayerDataCollection { get => _singlePlayerDataModels; set => _singlePlayerDataModels = value; }
 
         public ClientCurrentMenu CurrentSession
         {
@@ -185,6 +189,8 @@ namespace Assets.Sources.Network
         public void ResetTemporaryContainer() => _temporaryContainerForPlayerRanks.Clear();
         public void ResetFlagIsLoadedPresents() => _isLoadedPresents = false;
         public void SetFlagIsLoadedPresents() => _isLoadedPresents = true;
+        public void SetFlagIsLoadedSinglePlayer() => _isLoadedSinglePlayer = true;
+        public void ResetFlagIsLoadedSinglePlayer() => _isLoadedSinglePlayer = false;
 
         public async Task SendPacketAsync(NetworkPacket packet, PacketImportance packetImportance = PacketImportance.None)
         {

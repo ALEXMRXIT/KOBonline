@@ -24,6 +24,7 @@ namespace Assets.Sources.MechanicUI
         [SerializeField] private Text _soulCrownSilverText;
         [SerializeField] private Text _soulCrownCopperText;
         [SerializeField] private Text _onlineText;
+        [SerializeField] private InviteMessageHandler _inviteMessageHandler;
 
         [Space]
         [SerializeField] private Sprite[] _ranksSprite;
@@ -41,6 +42,16 @@ namespace Assets.Sources.MechanicUI
         public void UpdateOnlineView(int count)
         {
             _onlineText.text = $"Online: {count}";
+        }
+
+        public void ShowInviteMessageCost(byte code, int energy, string inviteCharacterName)
+        {
+            _inviteMessageHandler.InviteShowInformationForEnergy(code, energy, inviteCharacterName);
+        }
+        
+        public InviteMessageHandler GetInviteHandlerRef()
+        {
+            return _inviteMessageHandler;
         }
 
         public void UpdateUI(PlayerContract playerContract)

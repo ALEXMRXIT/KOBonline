@@ -1658,6 +1658,7 @@ MonoBehaviour:
     type: 2}
   _sounds: {fileID: 752072259395928182, guid: 2026f83813104444cb7c80793023b391, type: 2}
   _death: {fileID: 6679726496496762584, guid: 2026f83813104444cb7c80793023b391, type: 2}
+  _singleMode: {fileID: 1870129368}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3384,6 +3385,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1371283485}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1870129368 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1085736408133388747, guid: cf45a43e77a9f460fa48911e06d1010f,
+    type: 3}
+  m_PrefabInstance: {fileID: 5542706216164903302}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 129076402b1764ecb9c326a1dfefcdc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1924759017 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e5e959ddade1f2f429f9de1b52741738,
@@ -3842,7 +3855,7 @@ PrefabInstance:
     - target: {fileID: 691040819915553840, guid: cf45a43e77a9f460fa48911e06d1010f,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.003007789
+      value: 0.0034784724
       objectReference: {fileID: 0}
     - target: {fileID: 854761839949577060, guid: cf45a43e77a9f460fa48911e06d1010f,
         type: 3}
@@ -3924,6 +3937,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1085736408133388747, guid: cf45a43e77a9f460fa48911e06d1010f,
+        type: 3}
+      propertyPath: _open
+      value: 
+      objectReference: {fileID: 1700560941}
+    - target: {fileID: 1085736408133388747, guid: cf45a43e77a9f460fa48911e06d1010f,
+        type: 3}
+      propertyPath: _close
+      value: 
+      objectReference: {fileID: 1043317159}
     - target: {fileID: 1122071095040260942, guid: cf45a43e77a9f460fa48911e06d1010f,
         type: 3}
       propertyPath: m_AnchorMax.y

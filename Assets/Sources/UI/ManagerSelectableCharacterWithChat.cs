@@ -8,6 +8,7 @@ namespace Assets.Sources.UI
     {
         [SerializeField] private Button _privateMessage;
         [SerializeField] private Button _challangeDuel;
+        [SerializeField] private Button _cancelButton;
 
         private string[] _args;
         private RectTransform _rectTransform;
@@ -17,6 +18,7 @@ namespace Assets.Sources.UI
         {
             _privateMessage.onClick.AddListener(InternalOnClickPrivteMessageHandler);
             _challangeDuel.onClick.AddListener(InternalOnClickChallengeDuelHandler);
+            _cancelButton.onClick.AddListener(InternalOnClickCancelHandler);
 
             _rectTransform = panel;
             _rectTransform.SetParent(parent, worldPositionStays: false);
@@ -49,7 +51,12 @@ namespace Assets.Sources.UI
 
         private void InternalOnClickChallengeDuelHandler()
         {
+            _chat.InviteOnDuel(_args[0]);
+            SetStatusGameObject(status: false);
+        }
 
+        private void InternalOnClickCancelHandler()
+        {
             SetStatusGameObject(status: false);
         }
     }

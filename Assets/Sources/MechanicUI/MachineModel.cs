@@ -28,12 +28,15 @@ namespace Assets.Sources.MechanicUI
         private RefinePurchaseAttempt _refine;
         private PanelObject _panelObject;
         private AudioSource _winner;
+        private SlotPresent _coreSlotPresent;
 
         public void Init(INetworkProcessor networkProcessor,
             RefinePurchaseAttempt refinePurchaseAttempt, Canvas canvas, AudioSource winner)
         {
             for (int iterator = 0; iterator < _slots.Length; iterator++)
                 _slots[iterator].Init(canvas);
+
+            _coreSlotPresent = _coreSlot.GetComponent<SlotPresent>();
 
             _networkProcessor = networkProcessor;
             _refine = refinePurchaseAttempt;
@@ -82,6 +85,9 @@ namespace Assets.Sources.MechanicUI
 
                 for (int iterator = 0; iterator < _itemContracts.Length; iterator++)
                 {
+                    if (_slots[iterator].IfIgnoreSlots())
+                        continue;
+
                     _slots[iterator].SetImage(_itemView[_itemContracts[iterator].ItemId]);
                     _slots[iterator].SetItemId(_itemContracts[iterator].ItemId);
                     _slots[iterator].SetPanelView(_panelObject);
@@ -122,6 +128,10 @@ namespace Assets.Sources.MechanicUI
             {
                 _indexItem = index;
                 _winner.Play();
+
+                _coreSlotPresent.SetItemId(_itemId[_indexItem == 0 ? 0 : _indexItem - 1]);
+                _coreSlotPresent.SetEffectEnable();
+                _coreSlotPresent.SetPanelView(_panelObject);
             }
         }
 
