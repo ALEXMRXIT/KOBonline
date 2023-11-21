@@ -67,6 +67,9 @@ namespace Assets.Sources.Models.Characters
 
                 int timeUse = (int)dateTime.Subtract(DateTime.UtcNow).TotalSeconds;
 
+                if (timeUse <= 0)
+                    return;
+
                 if (!Instantiate(_ability.gameObject, _playerCanvas).TryGetComponent<VisualAbility>(out VisualAbility ability))
                     throw new ArgumentNullException(nameof(VisualAbility));
 

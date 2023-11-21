@@ -6,9 +6,9 @@ using System.Collections;
 using Assets.Sources.Network;
 using System.Collections.Generic;
 using Assets.Sources.Models.Base;
+using Assets.Sources.Models.Camera;
 using Assets.Sources.Network.OutPacket;
 using Assets.Sources.Models.States.StateAnimations;
-using Assets.Sources.Models.Camera;
 
 namespace Assets.Sources.Models.Characters
 {

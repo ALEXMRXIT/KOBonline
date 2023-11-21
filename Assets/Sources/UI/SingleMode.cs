@@ -135,7 +135,7 @@ namespace Assets.Sources.UI
                     requiredLevelColor = "red";
 
                 string levelRebootColor = string.Empty;
-                TimeSpan timeSpan = (new DateTime(_singlePlayerDataModels[index].Time)).Subtract(DateTime.UtcNow);
+                TimeSpan timeSpan = (new DateTime(_singlePlayerDataModels[index].Time, DateTimeKind.Utc)).Subtract(DateTime.UtcNow);
 
                 if (timeSpan.Hours > 0 || timeSpan.Minutes > 0 || timeSpan.Seconds > 0)
                     levelRebootColor = "red";

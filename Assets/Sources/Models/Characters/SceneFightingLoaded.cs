@@ -30,6 +30,7 @@ namespace Assets.Sources.Models.Characters
         [SerializeField] private Transform _canvasPlayer;
         [SerializeField] private Transform _canvasEnemy;
         [SerializeField] private Button _buttonAttacke;
+        [SerializeField] private Joystick _joystick;
 
         [Space]
         [SerializeField] private Vector3 _positionCamera2;
@@ -53,6 +54,8 @@ namespace Assets.Sources.Models.Characters
         {
             _timeRound = GetComponent<TimeRound>();
             _slotBattles = new List<SlotBattle>(capacity: _slots.Count);
+            _joystick.gameObject.SetActive(false);
+
             for (int iterator = 0; iterator < _slots.Count; iterator++)
             {
                 if (!_slots[iterator].TryGetComponent(out SlotBattle slotBattle))
@@ -88,10 +91,7 @@ namespace Assets.Sources.Models.Characters
                         objectData.ObjectContract, showModel: false).ShowModel(updatePosition: true, blockDisableActive: true);
 
                     if (objectData.ObjectContract.RotationY == 0f)
-                    {
-                        _mainCamera.gameObject.transform.position = _positionCamera2;
-                        _mainCamera.gameObject.transform.rotation = Quaternion.Euler(_rotationCamera2);
-                    }
+                        _mainCamera.gameObject.transform.SetPositionAndRotation(_positionCamera2, Quaternion.Euler(_rotationCamera2));
 
                     _mainCamera.SetupCameraMovedForTarget(objectData.GameObjectModel.transform);
                     break;
